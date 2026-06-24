@@ -25,6 +25,18 @@
     "view_all": "Ver todos los proyectos",
     "view_case": "Ver caso"
   },
+  "why_me": {
+    "section_label": "Diferencial",
+    "section_title": "Por qué trabajar conmigo",
+    "item1_title": "Comunicación directa",
+    "item1_desc": "Hablo contigo durante todo el proceso. Sin intermediarios, sin demoras, sin sorpresas.",
+    "item2_title": "Código moderno y escalable",
+    "item2_desc": "Uso Next.js, TypeScript y PostgreSQL. Tu web puede crecer sin tener que rehacer todo desde cero.",
+    "item3_title": "Entrega completa",
+    "item3_desc": "No solo el código: diseño, SEO inicial, hosting y lanzamiento incluidos en cada proyecto.",
+    "item4_title": "Bilingüe y remoto",
+    "item4_desc": "Trabajo con clientes en Ecuador y el mundo, en español e inglés, sin problemas de zona horaria."
+  },
   "how_i_work": {
     "section_label": "Proceso",
     "section_title": "De idea suelta a web publicada",

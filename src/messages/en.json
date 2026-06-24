@@ -25,6 +25,18 @@
     "view_all": "See all projects",
     "view_case": "See case"
   },
+  "why_me": {
+    "section_label": "Why me",
+    "section_title": "Why work with me",
+    "item1_title": "Direct communication",
+    "item1_desc": "I talk with you throughout the whole process. No middlemen, no delays, no surprises.",
+    "item2_title": "Modern, scalable code",
+    "item2_desc": "I use Next.js, TypeScript and PostgreSQL. Your site can grow without rebuilding from scratch.",
+    "item3_title": "Full delivery",
+    "item3_desc": "Not just code: design, initial SEO, hosting and launch included in every project.",
+    "item4_title": "Bilingual and remote",
+    "item4_desc": "I work with clients in Ecuador and worldwide, in Spanish and English, across any timezone."
+  },
   "how_i_work": {
     "section_label": "Process",
     "section_title": "From loose idea to published website",

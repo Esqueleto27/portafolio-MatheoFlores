@@ -20,6 +20,7 @@ export default async function Home() {
       <HeroSection />
       <ServicesSection services={services} locale={locale} />
       <FeaturedProjectsSection projects={featuredProjects} locale={locale} />
+      <WhyMeSection />
       <HowIWorkSection />
       <CtaSection />
     </>
@@ -154,13 +155,42 @@ function HeroSection() {
             {t("description")}
           </p>
 
+          {/* Tech stack badges */}
+          <div
+            data-reveal
+            style={{
+              display: "flex",
+              gap: "8px",
+              flexWrap: "wrap",
+              transitionDelay: "0.42s",
+            }}
+          >
+            {["Next.js", "TypeScript", "PostgreSQL", "React"].map((tech) => (
+              <span
+                key={tech}
+                style={{
+                  padding: "4px 11px",
+                  borderRadius: "6px",
+                  background: "var(--fill2)",
+                  border: "1px solid var(--hair)",
+                  fontSize: "12px",
+                  fontFamily: "var(--font-geist-mono)",
+                  color: "var(--muted)",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
           <div
             data-reveal
             style={{
               display: "flex",
               gap: "12px",
               flexWrap: "wrap",
-              transitionDelay: "0.44s",
+              transitionDelay: "0.50s",
             }}
           >
             <Button as={Link} href="/contact" variant="primary">
@@ -444,6 +474,156 @@ function FeaturedProjectsSection({
                 locale={locale}
                 viewCaseLabel={t("view_case")}
               />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Why me ──────────────────────────────────────────────────────── */
+function WhyMeSection() {
+  const t = useTranslations("why_me");
+
+  const items = [
+    {
+      num: "01",
+      title: t("item1_title"),
+      desc: t("item1_desc"),
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      ),
+    },
+    {
+      num: "02",
+      title: t("item2_title"),
+      desc: t("item2_desc"),
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </svg>
+      ),
+    },
+    {
+      num: "03",
+      title: t("item3_title"),
+      desc: t("item3_desc"),
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      ),
+    },
+    {
+      num: "04",
+      title: t("item4_title"),
+      desc: t("item4_desc"),
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+      ),
+    },
+  ] as const;
+
+  return (
+    <section style={{ padding: "80px clamp(20px, 6vw, 72px)" }}>
+      <div style={{ maxWidth: "1180px", margin: "0 auto" }}>
+        <p
+          data-reveal
+          style={{
+            fontSize: "11px",
+            fontWeight: 500,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--accent-2)",
+            fontFamily: "var(--font-geist-mono)",
+            marginBottom: "12px",
+          }}
+        >
+          {t("section_label")}
+        </p>
+
+        <h2
+          data-reveal
+          style={{
+            fontSize: "clamp(30px, 3.8vw, 46px)",
+            fontWeight: 600,
+            letterSpacing: "-0.03em",
+            color: "var(--text)",
+            marginBottom: "48px",
+            transitionDelay: "0.08s",
+          }}
+        >
+          {t("section_title")}
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {items.map((item, i) => (
+            <div
+              key={item.num}
+              data-reveal
+              style={{
+                padding: "28px 24px",
+                borderRadius: "16px",
+                border: "1px solid var(--hair)",
+                background: "var(--card)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "14px",
+                transitionDelay: `${i * 0.07}s`,
+              }}
+            >
+              <div
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "10px",
+                  background: "rgb(37 99 235 / 0.1)",
+                  border: "1px solid rgb(37 99 235 / 0.2)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--accent)",
+                  flexShrink: 0,
+                }}
+              >
+                {item.icon}
+              </div>
+              <h3
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  color: "var(--text)",
+                  letterSpacing: "-0.02em",
+                  margin: 0,
+                }}
+              >
+                {item.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "14.5px",
+                  color: "var(--muted)",
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>

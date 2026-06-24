@@ -149,6 +149,18 @@ body {
   font-size: 14px;
 }
 
+/* ===== FOCUS VISIBLE (keyboard nav — WCAG 2.4.7) ===== */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 /* ===== LINK HOVER UTILITIES ===== */
 .link-accent {
   color: var(--accent-2);

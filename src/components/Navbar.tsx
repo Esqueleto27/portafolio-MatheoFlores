@@ -35,6 +35,7 @@ export function Navbar() {
       }}
     >
       <nav
+        aria-label={locale === "es" ? "Navegación principal" : "Main navigation"}
         style={{
           display: "flex",
           alignItems: "center",

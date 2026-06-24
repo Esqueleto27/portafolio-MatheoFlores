@@ -94,6 +94,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={t(key)}
+                aria-label={t(key)}
                 className="link-muted"
                 style={{
                   display: "inline-flex",
