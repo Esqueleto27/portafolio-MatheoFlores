@@ -1,0 +1,123 @@
+{
+  "nav": {
+    "projects": "Projects",
+    "about": "About",
+    "contact": "Contact",
+    "cta": "Quote website"
+  },
+  "hero": {
+    "available": "Available for remote work",
+    "name": "Matheo Flores",
+    "role": "Full Stack Developer",
+    "subtitle": "I build modern web applications with Next.js, TypeScript and PostgreSQL.",
+    "description": "I turn ideas into production-ready digital products.",
+    "cta_primary": "Contact me",
+    "cta_secondary": "See projects"
+  },
+  "services": {
+    "section_label": "Services",
+    "section_title": "Choose the kind of website your business needs",
+    "section_desc": "If you are not sure where to start, I can guide you too. The goal is to turn your need into a clear, professional website ready to launch."
+  },
+  "featured_projects": {
+    "section_label": "Proof",
+    "section_title": "Projects that show how I solve real problems",
+    "view_all": "See all projects",
+    "view_case": "See case"
+  },
+  "how_i_work": {
+    "section_label": "Process",
+    "section_title": "From loose idea to published website",
+    "step1_title": "I clarify what you need to sell",
+    "step1_desc": "First I understand your business, your customers and the action you want people to take on your website.",
+    "step2_title": "I define a structure that builds trust",
+    "step2_desc": "I organize the content, propose the design and prepare an experience made to convince.",
+    "step3_title": "I build a professional website",
+    "step3_desc": "I develop a fast, responsive, editable site with SEO foundations from the start.",
+    "step4_title": "I launch it ready to use",
+    "step4_desc": "I set up hosting, domain, forms and basic analytics. You leave with a real website, not loose files."
+  },
+  "cta_section": {
+    "title": "Let's talk about the website that can sell for you",
+    "desc": "Tell me what you need and I will reply within 24 hours with a clear next step.",
+    "cta": "I want my website"
+  },
+  "footer": {
+    "tagline": "Complete websites for businesses that want to sell better.",
+    "nav_title": "Pages",
+    "contact_title": "Contact",
+    "rights": "All rights reserved",
+    "social_linkedin": "LinkedIn",
+    "social_upwork": "Upwork",
+    "social_workana": "Workana"
+  },
+  "projects_page": {
+    "section_label": "Cases and demos",
+    "section_title": "See the kind of result I can build for your business",
+    "section_desc": "Every project starts from a specific problem: selling, presenting a brand, attracting customers or managing content without depending on anyone.",
+    "filter_category": "Category",
+    "filter_service": "Service type",
+    "all": "All",
+    "category_cliente": "Client",
+    "category_demo": "Demo / Personal",
+    "empty_title": "No projects match those filters",
+    "empty_desc": "Try a different combination of category or service."
+  },
+  "project_detail": {
+    "back": "← All projects",
+    "problem": "Problem",
+    "solution": "Solution",
+    "technologies": "Technologies",
+    "live_site": "View live site"
+  },
+  "about": {
+    "section_title": "About me",
+    "intro_title": "I'm Matheo Flores and I build complete websites for businesses that want to sell better",
+    "intro_desc_1": "I work as a full-stack developer, but my starting point is not code: it is understanding what your business needs to achieve and what a person should feel when they land on your website.",
+    "intro_desc_2": "From Quito, I work with local and remote clients. I handle strategy, design, development, initial SEO, hosting and launch so you do not have to coordinate several people.",
+    "approach_title": "How I work",
+    "approach_desc": "I do not sell dressed-up templates. I build a custom website with clear messaging, professional design and a technical foundation that can grow with you.",
+    "stack_title": "My stack",
+    "stack_desc": "The tools I build with every day"
+  },
+  "contact": {
+    "section_label": "Contact",
+    "section_title": "Tell me what website you need and I will show you how to move forward",
+    "section_desc": "You do not need to have everything figured out. Send me the idea, the type of business and the timeline; I will reply within 24 hours with a clear recommendation.",
+    "form_name": "Name",
+    "form_email": "Email",
+    "form_service": "Project type",
+    "form_timeline": "Timeline",
+    "form_message": "Tell me what you want your website to achieve",
+    "timeline_urgent": "Urgent",
+    "timeline_month": "1 month",
+    "timeline_no_rush": "No rush",
+    "timeline_exploring": "Exploring options",
+    "submit": "Send message",
+    "sending": "Sending...",
+    "required": "This field is required",
+    "invalid_email": "Invalid email",
+    "or_find_me": "Or find me on",
+    "avatar_alt": "Matheo Flores photo",
+    "error_sending": "Error sending. Please try again."
+  },
+  "thank_you": {
+    "title": "Message sent!",
+    "desc": "Thanks for sharing your idea. I review every message personally and will get back to you within 24 hours with a clear path forward.",
+    "back": "Back to home",
+    "see_projects": "See projects"
+  },
+  "login": {
+    "section_title": "Restricted access",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "forgot": "Forgot your password?",
+    "error_required": "Required field"
+  },
+  "forgot": {
+    "title": "Really?",
+    "desc": "This area is for Matheo only. If you're not Matheo, there's nothing to see here. 😉",
+    "back": "Back to home"
+  }
+}

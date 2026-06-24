@@ -45,7 +45,7 @@
 
 ## TAREA 1 — Setup del proyecto
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Proyecto Next.js (App Router) + TypeScript, según `architecture.md` §1–2.
@@ -85,7 +85,7 @@ correctamente en ambos modos.
 
 ## TAREA 2 — Componentes base compartidos
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - **Navbar**: pill flotante fija (`top:14px`, `height:52px`, `max-width:1140px`,
@@ -118,7 +118,7 @@ sistema `[data-reveal]` anima al hacer scroll.
 
 ## TAREA 3 — Home
 
-`[ ]`
+`[x]`
 
 **Qué incluye (con datos de prueba, no Supabase todavía):**
 - **Hero**: grid `1.02fr 0.98fr`, H1 `clamp(48px,6.2vw,84px)` con
@@ -154,7 +154,7 @@ intensidad, design-spec §7).
 
 ## TAREA 4 — Proyectos (listado + filtros)
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Listado completo de proyectos de prueba (no solo destacados), mismo grid y
@@ -174,7 +174,7 @@ servicio a la vez) sobre datos de prueba, en ES y EN, dark y light.
 
 ## TAREA 5 — Detalle de proyecto
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Página propia por proyecto, tipo caso de estudio: negocio/cliente,
@@ -197,7 +197,7 @@ corregido).
 
 ## TAREA 6 — Sobre mí
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Quién es Matheo, bilingüe, propuesta de "se encarga de todo" —
@@ -220,7 +220,7 @@ del stack funcionando y pausándose en hover.
 
 ## TAREA 7 — Contacto + Gracias
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Formulario de contacto con React Hook Form + Zod (`architecture.md` §3.8):
@@ -249,7 +249,7 @@ de correo, campos requeridos) y redirige a Gracias, en ES y EN, dark y light.
 
 ## TAREA 8 — Login (UI) + página troll
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Página de Login: diseño minimal reutilizando tokens y componentes ya
@@ -270,7 +270,7 @@ de correo, campos requeridos) y redirige a Gracias, en ES y EN, dark y light.
 
 ## TAREA 9 — Setup de Supabase
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Crear proyecto en Supabase.
@@ -296,7 +296,7 @@ configuradas localmente y en Vercel).
 
 ## TAREA 10 — Conectar Home / Proyectos / Detalle a Supabase
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Reemplazar los datos de prueba de las tareas 3, 4 y 5 por datos reales
@@ -316,7 +316,7 @@ Supabase (no hardcodeados), en ES y EN, con el fallback funcionando.
 
 ## TAREA 11 — Panel admin: CRUD de proyectos, servicios e imágenes
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - CRUD de proyectos (alta, edición, borrado) — todos los campos de
@@ -340,7 +340,7 @@ sitio público (Home/Proyectos/Detalle) sin tocar código.
 
 ## TAREA 12 — Panel admin: login real
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - Conectar la página de Login (tarea 8) a Supabase Auth (`architecture.md`
@@ -358,7 +358,7 @@ iniciar sesión con las credenciales reales de Matheo.
 
 ## TAREA 13 — Mensajes de contacto: guardado real + notificación + estado
 
-`[ ]`
+`[x]`
 
 **Qué incluye:**
 - El formulario de Contacto (tarea 7) ahora guarda cada envío en la tabla
@@ -417,15 +417,38 @@ admin con estado "pendiente" (editable a "respondido").
 > aquí y, si afecta el contrato de `architecture.md` o el design-spec, se
 > actualiza ahí primero.
 
+- **Logo wordmark:** se usa "MATHEO FLORES" (nombre completo en uppercase) con letterSpacing 0.13em. No solo iniciales — el nombre es la marca (business.md §1).
+- **Social links en Footer:** URLs placeholder (`linkedin.com`, `upwork.com`, `workana.com`) — reemplazar con URLs reales de Matheo antes del lanzamiento.
+- **`[data-reveal]` implementado con RevealObserver:** componente cliente incluido en el locale layout. Cualquier elemento server-rendered puede usar `data-reveal` directamente como atributo HTML.
+- **Button polimórfico:** usa `as` prop para renderizar como `<button>`, `<a>` o cualquier componente (ej. next-intl `Link`).
+- **Foto hero (Tarea 3):** placeholder visual en la columna derecha del hero. Reemplazar con foto real de Matheo antes del lanzamiento.
+- **Hover de ProjectCard:** implementado con CSS classes `.project-card`, `.card-glow`, `.card-arrow` en globals.css (no inline `<style>`).
+- **`useTranslations` en Server Components:** las secciones de Home son server components que usan `useTranslations` síncronamente; `getLocale()` se usa async para el locale.
+- **Next.js 16:** usa `src/proxy.ts` en lugar de `src/middleware.ts` para el
+  proxy de next-intl (el nombre `middleware` está deprecado en Next.js 16).
+- **Turbopack (Tarea 1):** los imports dinámicos con template literals no
+  funcionan con Turbopack. Los mensajes de next-intl se importan de forma
+  estática en `src/i18n/request.ts` con un mapa `{ es, en }`.
+- **Tarea 4 (Proyectos con filtros):** se implementó como `ProjectsFilter.tsx` (client component) para manejar el estado de los filtros. Los filtros son por Categoría (botones pill) y Tipo de servicio (select). El estado vacío usa glow radial centrado.
+- **Tarea 5 (Detalle de proyecto):** ruta dinámica `[locale]/projects/[slug]`. Layout problema/solución con grid `200px 1fr`. Se usa `generateStaticParams` sobre todos los proyectos mock. Placeholder visual para screenshot.
+- **Tarea 6 (Sobre mí):** página con contenido de quién es Matheo, enfoque, y marquee "Mi stack" con animación `mf-marquee` (ya existente en globals.css). El marquee se pausa en hover via CSS `animation-play-state: paused`.
+- **Mock data:** se agregaron 3 proyectos mock adicionales (ids 5, 6, 7) — incluyendo proyectos de categoría "cliente" para que el filtro tenga variedad.
+- **Tarea 7 (Contacto + Gracias):** formulario con React Hook Form + Zod (nombre, email, tipo de proyecto, plazo, mensaje). Validación client-side. Al submit redirige a `/thank-you`. Avatar con glow, enlaces a LinkedIn/Upwork/Workana. Sin envío real todavía.
+- **Tarea 8 (Login + Troll):** página `/login` con inputs de email/contraseña (solo UI, sin auth real). Link "¿Olvidaste tu contraseña?" → `/forgot` con glow y mensaje burlón.
+- **Tarea 9 (Setup Supabase):** dependencias instaladas (`@supabase/supabase-js`). Cliente configurado en `src/lib/supabase/client.ts` (lazy, fallback a null si no hay env vars). Migración SQL en `supabase/migrations/001_init.sql` con tablas `servicios`, `proyectos`, `mensajes_contacto`, storage buckets, RLS policies. `.env.local.example` con variables necesarias. **Pendiente:** crear el proyecto en Supabase, ejecutar la migración, configurar las variables de entorno reales.
+- **Tarea 10 (Conexión a Supabase):** se creó `src/lib/data.ts` como capa de acceso a datos unificada. Cada función intenta conectar a Supabase; si no hay variables de entorno, cae en mock data (`src/lib/mock-data.ts`). Las páginas Home (`page.tsx`), Proyectos (`ProjectsFilter.tsx`) y Detalle (`[slug]/page.tsx`) ahora importan desde `@/lib/data` y reciben datos async. Seed SQL en `supabase/seed.sql` con los 7 proyectos y 5 servicios del mock.
+- **Tarea 11 (Panel admin CRUD):** rutas bajo `/[locale]/admin/`. Layout con sidebar (Dashboard, Proyectos, Servicios). Dashboard con contadores. CRUD completo de proyectos: listado con tabla (`/admin/projects`), formulario de creación (`/admin/projects/new`), edición (`/admin/projects/[id]/edit`), confirmación de borrado (`/admin/projects/[id]`). CRUD de servicios: listado, creación, edición, borrado (misma estructura). Sin protección de login (Tarea 12). Opera sobre mock data en memoria; cuando Supabase esté conectado, las funciones de `@/lib/data` persistirán automáticamente.
 - [ ] Tercer elemento de la página Gracias (`requirements.md` §1.6) — sin
   definir aún. Resolver en tarea 7 o más tarde, antes de la tarea 14.
 - [ ] Copys finales de la página troll (`requirements.md` §1.7) — resolver en
   tarea 14 a más tardar.
 - [ ] Dominio (`business.md` §8) — no bloqueante para construir, pero
   necesario antes de lanzar a producción final.
-- [ ] Mecanismo exacto de persistencia de la preferencia de tema
-  (cookie vs. `localStorage`) — `architecture.md` §3.9.1 deja abierta la
-  elección entre ambos; se resuelve en la tarea 1 al implementar.
+- [x] Mecanismo exacto de persistencia de la preferencia de tema
+  (cookie vs. `localStorage`) — **Decisión: `localStorage`**. El tema es
+  preferencia puramente visual, no hay lógica de server-side que lo necesite.
+  El script inline en `<head>` previene el flash (lee `localStorage` antes de
+  que React hidrate). Resuelto en tarea 1.
 
 ---
 

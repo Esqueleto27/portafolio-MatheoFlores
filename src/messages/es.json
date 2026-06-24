@@ -1,0 +1,123 @@
+{
+  "nav": {
+    "projects": "Proyectos",
+    "about": "Sobre mí",
+    "contact": "Contacto",
+    "cta": "Cotizar web"
+  },
+  "hero": {
+    "available": "Disponible para trabajo remoto",
+    "name": "Matheo Flores",
+    "role": "Full Stack Developer",
+    "subtitle": "Construyo aplicaciones web modernas con Next.js, TypeScript y PostgreSQL.",
+    "description": "Transformo ideas en productos digitales listos para producción.",
+    "cta_primary": "Contáctame",
+    "cta_secondary": "Ver proyectos"
+  },
+  "services": {
+    "section_label": "Servicios",
+    "section_title": "Elige el tipo de web que tu negocio necesita",
+    "section_desc": "Si no sabes por dónde empezar, también te asesoro. La idea es convertir tu necesidad en una web clara, profesional y lista para publicarse."
+  },
+  "featured_projects": {
+    "section_label": "Evidencia",
+    "section_title": "Proyectos que muestran cómo resuelvo problemas reales",
+    "view_all": "Ver todos los proyectos",
+    "view_case": "Ver caso"
+  },
+  "how_i_work": {
+    "section_label": "Proceso",
+    "section_title": "De idea suelta a web publicada",
+    "step1_title": "Aterrizo lo que necesitas vender",
+    "step1_desc": "Primero entiendo tu negocio, tus clientes y la acción que quieres que hagan en la web.",
+    "step2_title": "Defino una estructura que convence",
+    "step2_desc": "Ordeno el contenido, propongo el diseño y preparo una experiencia pensada para generar confianza.",
+    "step3_title": "Construyo una web profesional",
+    "step3_desc": "Desarrollo un sitio rápido, responsive, editable y preparado para SEO desde el inicio.",
+    "step4_title": "La dejo online y lista para usar",
+    "step4_desc": "Configuro hosting, dominio, formularios y analítica básica. Sales con una web real, no con archivos sueltos."
+  },
+  "cta_section": {
+    "title": "Hablemos de la web que puede vender por ti",
+    "desc": "Cuéntame qué necesitas y te respondo en menos de 24 horas con el siguiente paso claro.",
+    "cta": "Quiero mi web"
+  },
+  "footer": {
+    "tagline": "Webs completas para negocios que quieren vender mejor.",
+    "nav_title": "Páginas",
+    "contact_title": "Contacto",
+    "rights": "Todos los derechos reservados",
+    "social_linkedin": "LinkedIn",
+    "social_upwork": "Upwork",
+    "social_workana": "Workana"
+  },
+  "projects_page": {
+    "section_label": "Casos y demos",
+    "section_title": "Mira el tipo de resultado que puedo construir para tu negocio",
+    "section_desc": "Cada proyecto parte de un problema concreto: vender, presentar una marca, captar clientes o administrar contenido sin depender de nadie.",
+    "filter_category": "Categoría",
+    "filter_service": "Tipo de servicio",
+    "all": "Todos",
+    "category_cliente": "Cliente",
+    "category_demo": "Demo / Personal",
+    "empty_title": "No hay proyectos con esos filtros",
+    "empty_desc": "Probá con otra combinación de categoría o servicio."
+  },
+  "project_detail": {
+    "back": "← Todos los proyectos",
+    "problem": "Problema",
+    "solution": "Solución",
+    "technologies": "Tecnologías",
+    "live_site": "Ver sitio en vivo"
+  },
+  "about": {
+    "section_title": "Sobre mí",
+    "intro_title": "Soy Matheo Flores y construyo webs completas para negocios que quieren vender mejor",
+    "intro_desc_1": "Trabajo como desarrollador full-stack, pero mi punto de partida no es el código: es entender qué necesita lograr tu negocio y qué debe sentir una persona al llegar a tu web.",
+    "intro_desc_2": "Desde Quito trabajo con clientes locales y remotos. Me encargo de la estrategia, el diseño, el desarrollo, el SEO inicial, el hosting y el lanzamiento para que no tengas que coordinar varias personas.",
+    "approach_title": "Mi forma de trabajar",
+    "approach_desc": "No vendo plantillas maquilladas. Construyo una web a medida, con mensajes claros, diseño profesional y una base técnica que pueda crecer contigo.",
+    "stack_title": "Mi stack",
+    "stack_desc": "Las herramientas con las que construyo cada día"
+  },
+  "contact": {
+    "section_label": "Contacto",
+    "section_title": "Cuéntame qué web necesitas y te digo cómo avanzar",
+    "section_desc": "No necesitas llegar con todo definido. Escríbeme la idea, el tipo de negocio y el plazo; te respondo en menos de 24 horas con una recomendación clara.",
+    "form_name": "Nombre",
+    "form_email": "Correo electrónico",
+    "form_service": "Tipo de proyecto",
+    "form_timeline": "Plazo",
+    "form_message": "Cuéntame qué quieres lograr con tu web",
+    "timeline_urgent": "Urgente",
+    "timeline_month": "1 mes",
+    "timeline_no_rush": "Sin apuro",
+    "timeline_exploring": "Explorando opciones",
+    "submit": "Enviar mensaje",
+    "sending": "Enviando...",
+    "required": "Este campo es obligatorio",
+    "invalid_email": "Correo electrónico no válido",
+    "or_find_me": "O encontráme en",
+    "avatar_alt": "Foto de Matheo Flores",
+    "error_sending": "Error al enviar. Intentalo de nuevo."
+  },
+  "thank_you": {
+    "title": "¡Mensaje enviado!",
+    "desc": "Gracias por contarme tu idea. Reviso cada mensaje personalmente y te respondo en menos de 24 horas con una ruta clara para avanzar.",
+    "back": "Volver al inicio",
+    "see_projects": "Ver proyectos"
+  },
+  "login": {
+    "section_title": "Acceso restringido",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Ingresar",
+    "forgot": "¿Olvidaste tu contraseña?",
+    "error_required": "Campo requerido"
+  },
+  "forgot": {
+    "title": "¿En serio?",
+    "desc": "Esta área es solo para Matheo. Si no sos Matheo, no hay nada que ver acá. 😉",
+    "back": "Volver al inicio"
+  }
+}
