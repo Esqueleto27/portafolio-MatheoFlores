@@ -2,12 +2,8 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import { routing } from "@/i18n/routing";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { RevealObserver } from "@/components/RevealObserver";
+import { SetLang } from "@/components/SetLang";
 
 export async function generateMetadata({
   params,
@@ -52,9 +48,6 @@ export async function generateMetadata({
   };
 }
 
-/* Runs before hydration: reads localStorage and sets data-theme to prevent flash */
-const themeScript = `try{var t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}`;
-
 export default async function LocaleLayout({
   children,
   params,
@@ -71,28 +64,9 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html
-      lang={locale}
-      suppressHydrationWarning
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
-      <body
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <NextIntlClientProvider messages={messages}>
-          <Navbar />
-          <main style={{ flex: 1, paddingTop: "80px" }}>{children}</main>
-          <Footer />
-          <RevealObserver />
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages}>
+      <SetLang locale={locale} />
+      {children}
+    </NextIntlClientProvider>
   );
 }

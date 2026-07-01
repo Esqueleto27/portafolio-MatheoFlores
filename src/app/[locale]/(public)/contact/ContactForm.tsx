@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
-import { GlassPill } from "@/components/ui/Badge";
 import type { Service } from "@/lib/mock-data";
 
 const timelineOptions = ["urgent", "month", "no_rush", "exploring"] as const;
@@ -21,10 +20,46 @@ const contactSchema = z.object({
 
 type FormData = z.infer<typeof contactSchema>;
 
+function LinkedInIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  );
+}
+
+function UpworkIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18.561 13.158c-1.102 0-2.135-.467-3.074-1.227l.228-1.076.008-.042c.207-1.143.849-3.06 2.839-3.06 1.492 0 2.703 1.212 2.703 2.703-.001 1.489-1.212 2.702-2.704 2.702zm0-8.14c-2.539 0-4.51 1.649-5.31 4.366-1.22-1.834-2.148-4.036-2.687-5.892H7.828v7.112c-.002 1.406-1.141 2.546-2.547 2.546-1.405 0-2.543-1.14-2.545-2.546V3.492H0v7.112c0 2.914 2.37 5.303 5.281 5.303 2.913 0 5.283-2.389 5.283-5.303v-1.19c.529 1.107 1.182 2.229 1.974 3.221l-1.673 7.873h2.797l1.213-5.71c1.063.679 2.285 1.109 3.686 1.109 3 0 5.439-2.452 5.439-5.45 0-3-2.439-5.439-5.439-5.439z" />
+    </svg>
+  );
+}
+
+function WorkanaIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 60 60" fill="currentColor" aria-hidden="true">
+      <path d="M5 12 L15 48 L30 20 L45 48 L55 12" fill="none" stroke="currentColor" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function FreelancerIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <circle cx="12" cy="12" r="12" fill="none" />
+      <text x="12" y="17" textAnchor="middle" fontSize="15" fontWeight="700" fontFamily="Arial, sans-serif">
+        F
+      </text>
+    </svg>
+  );
+}
+
 const SOCIAL_LINKS = [
-  { href: "https://linkedin.com", label_key: "social_linkedin" as const },
-  { href: "https://upwork.com", label_key: "social_upwork" as const },
-  { href: "https://workana.com", label_key: "social_workana" as const },
+  { href: "https://www.linkedin.com/in/matheo-flores-281160278/", label_key: "social_linkedin" as const, Icon: LinkedInIcon },
+  { href: "https://www.upwork.com/freelancers/~018e88181a81bc2eec", label_key: "social_upwork" as const, Icon: UpworkIcon },
+  { href: "https://www.workana.com/freelancer/884b69b4188d8850b4253fc9e835a958", label_key: "social_workana" as const, Icon: WorkanaIcon },
+  { href: "https://www.freelancer.com/u/Esqueleto27", label_key: "social_freelancer" as const, Icon: FreelancerIcon },
 ];
 
 export function ContactForm({ services }: { services: Service[] }) {
@@ -124,82 +159,61 @@ export function ContactForm({ services }: { services: Service[] }) {
             {t("section_desc")}
           </p>
 
-          {/* Avatar with glow */}
+          {/* Avatar */}
           <div
             data-reveal
             style={{
-              position: "relative",
-              width: "clamp(180px, 22vw, 260px)",
+              width: "clamp(160px, 20vw, 220px)",
               aspectRatio: "1",
-              borderRadius: "24px",
-              marginBottom: "40px",
+              borderRadius: "50%",
+              marginBottom: "36px",
               transitionDelay: "0.26s",
+              overflow: "hidden",
+              border: "2px solid var(--hair)",
+              flexShrink: 0,
             }}
           >
-            <div
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                inset: "-20%",
-                background:
-                  "radial-gradient(46% 52% at 50% 46%, rgb(37 99 235 / calc(var(--glow) * 0.85)), transparent 60%)",
-                filter: "blur(44px)",
-                pointerEvents: "none",
-              }}
-            />
-            <div
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/matheo-avatar.jpg"
+              alt={t("avatar_alt")}
               style={{
                 width: "100%",
                 height: "100%",
-                borderRadius: "24px",
-                background: "var(--mockup)",
-                backgroundImage:
-                  "repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 13px)",
-                border: "1px solid var(--hair)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
+                objectFit: "cover",
+                display: "block",
               }}
-            >
-              <span
-                style={{
-                  fontSize: "12px",
-                  fontFamily: "var(--font-geist-mono)",
-                  color: "var(--muted)",
-                }}
-              >
-                [ {t("avatar_alt")} ]
-              </span>
-            </div>
+            />
           </div>
 
           {/* Social links */}
-          <div data-reveal style={{ transitionDelay: "0.34s" }}>
-            <GlassPill
-              style={{
-                fontSize: "13px",
-                color: "var(--muted)",
-                marginBottom: "12px",
-              }}
-            >
-              {t("or_find_me")}
-            </GlassPill>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              {SOCIAL_LINKS.map(({ href, label_key }) => (
-                <Button
-                  key={label_key}
-                  as="a"
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="secondary"
-                  size="compact"
-                >
-                  {footer(label_key)}
-                </Button>
-              ))}
-            </div>
+          <div data-reveal style={{ transitionDelay: "0.34s", display: "flex", gap: "16px", flexWrap: "wrap" }}>
+            {SOCIAL_LINKS.map(({ href, label_key, Icon }) => (
+              <a
+                key={label_key}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={footer(label_key)}
+                title={footer(label_key)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "52px",
+                  height: "52px",
+                  borderRadius: "14px",
+                  border: "1px solid var(--hair)",
+                  background: "var(--fill)",
+                  color: "var(--soft)",
+                  transition: "border-color 0.2s, color 0.2s, transform 0.15s",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--accent)"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--accent)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.transform = ""; (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--hair)"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--soft)"; }}
+              >
+                <Icon />
+              </a>
+            ))}
           </div>
         </div>
 

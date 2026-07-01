@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { createServiceAction } from "@/lib/admin-actions";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export default function NewService() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function NewService() {
     description_es: "",
     description_en: "",
     order: 6,
+    image_url: "",
   });
 
   function handleChange(
@@ -29,7 +31,7 @@ export default function NewService() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await createServiceAction(form);
+    await createServiceAction({ ...form, image_url: form.image_url || undefined });
     router.push("/admin/services");
   }
 
@@ -80,6 +82,13 @@ export default function NewService() {
 
         <Field label="Orden">
           <input type="number" name="order" value={form.order} onChange={handleChange} style={{ ...inputStyle, width: "100px" }} />
+        </Field>
+
+        <Field label="Imagen del servicio (opcional)">
+          <ImageUpload
+            currentUrl={form.image_url || undefined}
+            onUploaded={(url) => setForm((prev) => ({ ...prev, image_url: url }))}
+          />
         </Field>
 
         <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>

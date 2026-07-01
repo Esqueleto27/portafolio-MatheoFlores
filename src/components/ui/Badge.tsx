@@ -12,10 +12,10 @@ export function TechChip({
     <span
       className={className}
       style={{
-        fontSize: "11px",
+        fontSize: "13px",
         fontWeight: 500,
         color: "var(--muted)",
-        padding: "3px 9px",
+        padding: "4px 11px",
         borderRadius: "6px",
         background: "var(--fill2)",
         border: "1px solid var(--hair)",
@@ -43,19 +43,19 @@ export function ServicePill({
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: "5px",
-        padding: "5px 11px",
+        gap: "6px",
+        padding: "6px 13px",
         borderRadius: "999px",
         background: "rgb(37 99 235 / 0.1)",
         border: "1px solid rgb(37 99 235 / 0.32)",
-        fontSize: "11.5px",
+        fontSize: "13px",
         color: "var(--soft)",
       }}
     >
       <span
         style={{
-          width: "5px",
-          height: "5px",
+          width: "6px",
+          height: "6px",
           borderRadius: "50%",
           background: "var(--accent)",
           flexShrink: 0,
@@ -82,13 +82,13 @@ export function GlassPill({
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: "6px",
-        padding: "7px 13px",
+        gap: "7px",
+        padding: "8px 16px",
         borderRadius: "999px",
         background: "var(--fill2)",
         border: "1px solid var(--hair)",
         backdropFilter: "blur(8px)",
-        fontSize: "13px",
+        fontSize: "15px",
         color: "var(--soft)",
         ...style,
       }}
@@ -104,8 +104,8 @@ export function AvailableBadge({ label }: { label: string }) {
     <GlassPill>
       <span
         style={{
-          width: "8px",
-          height: "8px",
+          width: "9px",
+          height: "9px",
           borderRadius: "50%",
           background: "var(--available-green)",
           boxShadow: "0 0 6px var(--available-glow)",

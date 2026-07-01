@@ -9,6 +9,7 @@ export interface Service {
   description_es: string;
   description_en: string;
   order: number;
+  image_url?: string;
 }
 
 export interface Project {
@@ -25,6 +26,7 @@ export interface Project {
   solution_en: string;
   technologies: string[];
   live_url?: string;
+  image_url?: string;
 }
 
 /* ── Services (requirements.md §2) ─────────────────────────────── */

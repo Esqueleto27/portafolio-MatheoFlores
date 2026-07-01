@@ -61,7 +61,8 @@
     "rights": "Todos los derechos reservados",
     "social_linkedin": "LinkedIn",
     "social_upwork": "Upwork",
-    "social_workana": "Workana"
+    "social_workana": "Workana",
+    "social_freelancer": "Freelancer"
   },
   "projects_page": {
     "section_label": "Casos y demos",
@@ -84,9 +85,9 @@
   },
   "about": {
     "section_title": "Sobre mí",
-    "intro_title": "Soy Matheo Flores y construyo webs completas para negocios que quieren vender mejor",
-    "intro_desc_1": "Trabajo como desarrollador full-stack, pero mi punto de partida no es el código: es entender qué necesita lograr tu negocio y qué debe sentir una persona al llegar a tu web.",
-    "intro_desc_2": "Desde Quito trabajo con clientes locales y remotos. Me encargo de la estrategia, el diseño, el desarrollo, el SEO inicial, el hosting y el lanzamiento para que no tengas que coordinar varias personas.",
+    "intro_title": "Soy Matheo Flores, me apasiona la tecnología y construyo webs completas para negocios, empresas y personas",
+    "intro_desc_1": "Desde siempre me ha llamado la atención la tecnología: entender cómo funciona, crear cosas desde cero con código y ver una idea convertirse en un producto real. Esa curiosidad fue lo que me llevó a dedicarme a desarrollar páginas web para negocios, empresas y personas que necesitan una presencia digital sólida.",
+    "intro_desc_2": "Soy originario de Quito, Ecuador, pero estoy abierto a trabajar de forma remota con clientes de cualquier parte del mundo. Uso tecnologías modernas como Next.js, TypeScript, PostgreSQL y Supabase para construir productos rápidos, seguros y que crecen junto a tu negocio.",
     "approach_title": "Mi forma de trabajar",
     "approach_desc": "No vendo plantillas maquilladas. Construyo una web a medida, con mensajes claros, diseño profesional y una base técnica que pueda crecer contigo.",
     "stack_title": "Mi stack",

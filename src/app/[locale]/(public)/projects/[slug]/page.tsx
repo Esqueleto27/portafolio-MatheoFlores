@@ -106,7 +106,7 @@ function ProjectDetailContent({
           {title}
         </h1>
 
-        {/* Preview image placeholder */}
+        {/* Preview image */}
         <div
           data-reveal
           style={{
@@ -114,25 +114,44 @@ function ProjectDetailContent({
             aspectRatio: "16/9",
             borderRadius: "18px",
             background: "var(--mockup)",
-            backgroundImage:
-              "repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 13px)",
+            backgroundImage: project.image_url
+              ? "none"
+              : "repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 13px)",
             border: "1px solid var(--hair)",
             marginBottom: "56px",
+            overflow: "hidden",
+            position: "relative",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             transitionDelay: "0.18s",
           }}
         >
-          <span
-            style={{
-              fontSize: "12px",
-              fontFamily: "var(--font-geist-mono)",
-              color: "var(--muted)",
-            }}
-          >
-            [ screenshot ]
-          </span>
+          {project.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={project.image_url}
+              alt={title}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+                position: "absolute",
+                inset: 0,
+              }}
+            />
+          ) : (
+            <span
+              style={{
+                fontSize: "12px",
+                fontFamily: "var(--font-geist-mono)",
+                color: "var(--muted)",
+              }}
+            >
+              [ screenshot ]
+            </span>
+          )}
         </div>
 
         {/* Problem + Solution grid */}

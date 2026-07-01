@@ -61,7 +61,8 @@
     "rights": "All rights reserved",
     "social_linkedin": "LinkedIn",
     "social_upwork": "Upwork",
-    "social_workana": "Workana"
+    "social_workana": "Workana",
+    "social_freelancer": "Freelancer"
   },
   "projects_page": {
     "section_label": "Cases and demos",
@@ -84,9 +85,9 @@
   },
   "about": {
     "section_title": "About me",
-    "intro_title": "I'm Matheo Flores and I build complete websites for businesses that want to sell better",
-    "intro_desc_1": "I work as a full-stack developer, but my starting point is not code: it is understanding what your business needs to achieve and what a person should feel when they land on your website.",
-    "intro_desc_2": "From Quito, I work with local and remote clients. I handle strategy, design, development, initial SEO, hosting and launch so you do not have to coordinate several people.",
+    "intro_title": "I'm Matheo Flores, I'm passionate about technology, and I build complete websites for businesses, companies and individuals",
+    "intro_desc_1": "Technology has always fascinated me: understanding how it works, building things from scratch with code, and watching an idea turn into a real product. That curiosity is what led me to dedicate myself to building websites for businesses, companies and people who need a solid digital presence.",
+    "intro_desc_2": "I'm originally from Quito, Ecuador, but I'm open to working remotely with clients anywhere in the world. I use modern technologies like Next.js, TypeScript, PostgreSQL and Supabase to build products that are fast, secure and built to grow with your business.",
     "approach_title": "How I work",
     "approach_desc": "I do not sell dressed-up templates. I build a custom website with clear messaging, professional design and a technical foundation that can grow with you.",
     "stack_title": "My stack",

@@ -5,6 +5,7 @@ import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { updateServiceAction } from "@/lib/admin-actions";
 import type { Service } from "@/lib/mock-data";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export function EditServiceForm({ service }: { service: Service }) {
   const router = useRouter();
@@ -15,6 +16,7 @@ export function EditServiceForm({ service }: { service: Service }) {
     description_es: service.description_es,
     description_en: service.description_en,
     order: service.order,
+    image_url: service.image_url ?? "",
   });
 
   function handleChange(
@@ -35,6 +37,7 @@ export function EditServiceForm({ service }: { service: Service }) {
       description_es: form.description_es,
       description_en: form.description_en,
       order: form.order,
+      image_url: form.image_url || undefined,
     });
     router.push("/admin/services");
   }
@@ -77,6 +80,13 @@ export function EditServiceForm({ service }: { service: Service }) {
 
         <Field label="Orden">
           <input type="number" name="order" value={form.order} onChange={handleChange} style={{ ...inputStyle, width: "100px" }} />
+        </Field>
+
+        <Field label="Imagen del servicio (opcional)">
+          <ImageUpload
+            currentUrl={form.image_url || undefined}
+            onUploaded={(url) => setForm((prev) => ({ ...prev, image_url: url }))}
+          />
         </Field>
 
         <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>

@@ -9,6 +9,10 @@ export function ThemeToggle({ className }: { className?: string }) {
     const stored = localStorage.getItem("theme");
     const dark = stored !== "light";
     setIsDark(dark);
+    if (stored === "light") {
+      document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax";
+      document.documentElement.setAttribute("data-theme", "light");
+    }
   }, []);
 
   function toggle() {
@@ -16,8 +20,10 @@ export function ThemeToggle({ className }: { className?: string }) {
     setIsDark(!isDark);
     localStorage.setItem("theme", next);
     if (next === "light") {
+      document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax";
       document.documentElement.setAttribute("data-theme", "light");
     } else {
+      document.cookie = "theme=dark; path=/; max-age=31536000; SameSite=Lax";
       document.documentElement.removeAttribute("data-theme");
     }
   }
