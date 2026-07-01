@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { fadeInUp } from "@/components/animations";
 
 const ICONS = [
@@ -28,7 +28,7 @@ const ICONS = [
   </svg>,
 ];
 
-const CARD_VARIANTS = [
+const CARD_VARIANTS: Variants[] = [
   { hidden: { opacity: 0, x: -36, y: 24 }, visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1] } } },
   { hidden: { opacity: 0, x: 36, y: 24 }, visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.1 } } },
   { hidden: { opacity: 0, x: -36, y: 24 }, visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.18 } } },
