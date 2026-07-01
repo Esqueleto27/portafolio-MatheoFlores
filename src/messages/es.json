@@ -3,7 +3,9 @@
     "projects": "Proyectos",
     "about": "Sobre mí",
     "contact": "Contacto",
-    "cta": "Cotizar web"
+    "cta": "Cotizar web",
+    "menu_open": "Abrir menú",
+    "menu_close": "Cerrar menú"
   },
   "hero": {
     "available": "Disponible para trabajo remoto",

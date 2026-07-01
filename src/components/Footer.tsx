@@ -70,6 +70,7 @@ export function Footer() {
       }}
     >
       <motion.div
+        className="footer-grid"
         variants={staggerContainer(0.12, 0.05)}
         initial="hidden"
         whileInView="visible"

@@ -95,6 +95,7 @@ export function HowIWorkSection() {
 
         {/* 2×2 grid */}
         <motion.div
+          className="grid-cols-2-mobile"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}

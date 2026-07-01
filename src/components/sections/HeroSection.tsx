@@ -87,6 +87,7 @@ export function HeroSection() {
 
       {/* Content grid */}
       <div
+        className="hero-grid"
         style={{
           width: "100%",
           maxWidth: "1180px",
@@ -183,6 +184,7 @@ export function HeroSection() {
 
         {/* Right — photo */}
         <motion.div
+          className="hero-visual"
           initial={{ opacity: 0, x: 60, scale: 0.88 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ type: "spring", stiffness: 90, damping: 22, delay: 0.2 }}

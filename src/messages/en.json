@@ -3,7 +3,9 @@
     "projects": "Projects",
     "about": "About",
     "contact": "Contact",
-    "cta": "Quote website"
+    "cta": "Quote website",
+    "menu_open": "Open menu",
+    "menu_close": "Close menu"
   },
   "hero": {
     "available": "Available for remote work",

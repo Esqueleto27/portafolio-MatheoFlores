@@ -285,3 +285,15 @@ body {
     min-height: 300px !important;
   }
 }
+
+/* ===== RESPONSIVE GRIDS (mobile) ===== */
+@media (max-width: 640px) {
+  .grid-cols-2-mobile {
+    grid-template-columns: 1fr !important;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+}
