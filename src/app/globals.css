@@ -300,8 +300,7 @@ body {
 
 /* ===== NAVBAR (explicit single breakpoint — avoids the sm/md gap where
    desktop links + locale pill + CTA + hamburger all show at once) ===== */
-.navbar-desktop-links,
-.navbar-desktop-locale {
+.navbar-desktop-links {
   display: flex;
 }
 .navbar-desktop-cta {
@@ -314,7 +313,6 @@ body {
 
 @media (max-width: 860px) {
   .navbar-desktop-links,
-  .navbar-desktop-locale,
   .navbar-desktop-cta {
     display: none !important;
   }

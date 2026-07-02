@@ -166,16 +166,17 @@ export function Navbar() {
               flexShrink: 0,
             }}
           >
-            {/* Locale switcher pill — hidden on mobile, moved into the menu */}
+            {/* Locale switcher pill — always visible */}
             <div
-              className="navbar-desktop-locale"
               style={{
+                display: "flex",
                 alignItems: "center",
                 gap: "2px",
                 padding: "4px 5px",
                 borderRadius: "999px",
                 border: "1px solid var(--hair)",
                 background: "var(--fill)",
+                flexShrink: 0,
               }}
             >
               {(["es", "en"] as const).map((loc) => {
@@ -292,45 +293,6 @@ export function Navbar() {
                     </Link>
                   );
                 })}
-
-                {/* Locale switcher */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    marginTop: "6px",
-                    padding: "4px 5px",
-                    borderRadius: "999px",
-                    border: "1px solid var(--hair)",
-                    background: "var(--fill)",
-                    width: "fit-content",
-                  }}
-                >
-                  {(["es", "en"] as const).map((loc) => {
-                    const active = locale === loc;
-                    return (
-                      <button
-                        key={loc}
-                        onClick={() => switchLocale(loc)}
-                        style={{
-                          fontSize: "13px",
-                          fontWeight: active ? 600 : 500,
-                          padding: "5px 12px",
-                          borderRadius: "999px",
-                          border: "none",
-                          background: active ? "var(--fill2)" : "transparent",
-                          color: active ? "var(--text)" : "var(--muted)",
-                          cursor: "pointer",
-                          letterSpacing: "0.04em",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {loc}
-                      </button>
-                    );
-                  })}
-                </div>
 
                 {/* CTA */}
                 <Link
