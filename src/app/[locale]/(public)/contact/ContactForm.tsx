@@ -69,7 +69,7 @@ export function ContactForm({ services }: { services: Service[] }) {
           gap: "clamp(32px, 5vw, 72px)",
           alignItems: "start",
         }}
-        className="grid-cols-1 md:grid-cols-2"
+        className="grid-cols-2-mobile"
       >
         {/* Left: Avatar + info */}
         <div>

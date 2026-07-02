@@ -26,7 +26,7 @@ export function FeaturesList({
       >
         {title}
       </h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "20px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))", gap: "20px" }}>
         {features.map((feature, i) => (
           <div key={i}>
             <p
