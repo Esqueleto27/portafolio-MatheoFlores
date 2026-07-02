@@ -122,11 +122,10 @@ export function Navbar() {
           {/* Center links — hidden on mobile */}
           <div
             style={{
-              display: "flex",
               alignItems: "center",
               gap: "2px",
             }}
-            className="hidden md:flex"
+            className="navbar-desktop-links"
           >
             {NAV_LINKS.map(({ key, href }) => {
               const isActive = pathname === href;
@@ -169,7 +168,7 @@ export function Navbar() {
           >
             {/* Locale switcher pill — hidden on mobile, moved into the menu */}
             <div
-              className="hidden sm:flex"
+              className="navbar-desktop-locale"
               style={{
                 alignItems: "center",
                 gap: "2px",
@@ -211,7 +210,7 @@ export function Navbar() {
             />
 
             {/* CTA button */}
-            <Link href="/contact" className="btn-primary compact hidden sm:inline-flex">
+            <Link href="/contact" className="btn-primary compact navbar-desktop-cta">
               {t("cta")}
             </Link>
 
@@ -221,9 +220,8 @@ export function Navbar() {
               onClick={() => setMenuOpen((v) => !v)}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? t("menu_close") : t("menu_open")}
-              className="md:hidden"
+              className="navbar-hamburger"
               style={{
-                display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 width: "36px",
@@ -263,7 +261,7 @@ export function Navbar() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
-              className="md:hidden"
+              className="navbar-mobile-panel"
               style={{ borderTop: "1px solid var(--hair)" }}
             >
               <div
