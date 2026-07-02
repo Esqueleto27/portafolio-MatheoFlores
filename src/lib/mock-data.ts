@@ -19,14 +19,6 @@ export interface Feature {
   benefit_en: string;
 }
 
-export interface Screenshot {
-  url: string;
-  kind: "before" | "after";
-  device?: "desktop" | "mobile";
-  label_es?: string;
-  label_en?: string;
-}
-
 export interface Project {
   id: string;
   slug: string;
@@ -48,13 +40,13 @@ export interface Project {
   results_es?: string;
   results_en?: string;
   features?: Feature[];
-  screenshots?: Screenshot[];
   technologies: string[];
   live_url?: string;
   github_url?: string;
   show_code?: boolean;
   video_url?: string;
   image_url?: string;
+  mobile_image_url?: string;
 }
 
 /* ── Services (requirements.md §2) ─────────────────────────────── */
@@ -165,7 +157,6 @@ export const PROJECTS: Project[] = [
         benefit_en: "the owner updates stock for each piece himself, without needing a developer.",
       },
     ],
-    screenshots: [],
     technologies: ["Next.js", "Supabase", "Stripe", "TypeScript"],
     live_url: undefined,
   },
@@ -221,7 +212,6 @@ export const PROJECTS: Project[] = [
         benefit_en: "customers decide to visit before arriving, seeing real photos and reviews.",
       },
     ],
-    screenshots: [],
     technologies: ["Next.js", "Tailwind CSS", "TypeScript"],
     live_url: undefined,
   },
@@ -277,7 +267,6 @@ export const PROJECTS: Project[] = [
         benefit_en: "an interested client can hire her without leaving the site.",
       },
     ],
-    screenshots: [],
     technologies: ["Next.js", "Framer Motion", "Supabase Storage"],
     live_url: undefined,
   },
@@ -333,7 +322,6 @@ export const PROJECTS: Project[] = [
         benefit_en: "pays instantly without leaving the site or messaging on WhatsApp to arrange payment.",
       },
     ],
-    screenshots: [],
     technologies: ["Next.js", "Tailwind CSS", "Stripe"],
     live_url: undefined,
   },
@@ -389,7 +377,6 @@ export const PROJECTS: Project[] = [
         benefit_en: "duplicate supplier orders from human error no longer happen.",
       },
     ],
-    screenshots: [],
     technologies: ["React", "Node.js", "PostgreSQL", "Tailwind CSS"],
     live_url: undefined,
   },
@@ -445,7 +432,6 @@ export const PROJECTS: Project[] = [
         benefit_en: "the agency shows up on Google when someone searches for properties in their area.",
       },
     ],
-    screenshots: [],
     technologies: ["Next.js", "Tailwind CSS", "TypeScript", "Supabase"],
     live_url: "https://mg-propiedades.example.com",
   },
@@ -501,7 +487,6 @@ export const PROJECTS: Project[] = [
         benefit_en: "buys a ticket instantly, no bank transfers or manual coordination.",
       },
     ],
-    screenshots: [],
     technologies: ["Next.js", "Stripe", "Tailwind CSS", "TypeScript"],
     live_url: undefined,
   },

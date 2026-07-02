@@ -4,9 +4,11 @@ import { type ReactNode, type CSSProperties } from "react";
 export function TechChip({
   children,
   className = "",
+  style,
 }: {
   children: ReactNode;
   className?: string;
+  style?: CSSProperties;
 }) {
   return (
     <span
@@ -22,6 +24,7 @@ export function TechChip({
         fontFamily: "var(--font-geist-mono)",
         display: "inline-flex",
         alignItems: "center",
+        ...style,
       }}
     >
       {children}

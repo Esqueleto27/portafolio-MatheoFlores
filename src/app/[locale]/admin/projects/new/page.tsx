@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
-import { SERVICES, type Feature, type Screenshot } from "@/lib/mock-data";
+import { SERVICES, type Feature } from "@/lib/mock-data";
 import { createProjectAction } from "@/lib/admin-actions";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { FeaturesEditor } from "@/components/admin/FeaturesEditor";
-import { ScreenshotsEditor } from "@/components/admin/ScreenshotsEditor";
 import {
   Section,
   Field,
@@ -36,8 +35,6 @@ export default function NewProject() {
     problem_en: "",
     solution_es: "",
     solution_en: "",
-    challenges_es: "",
-    challenges_en: "",
     results_es: "",
     results_en: "",
     live_url: "",
@@ -45,12 +42,12 @@ export default function NewProject() {
     show_code: true,
     video_url: "",
     image_url: "",
+    mobile_image_url: "",
   });
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
   const [features, setFeatures] = useState<Feature[]>([]);
-  const [screenshots, setScreenshots] = useState<Screenshot[]>([]);
 
   function toSlug(str: string) {
     return str
@@ -108,18 +105,16 @@ export default function NewProject() {
       problem_en: form.problem_en,
       solution_es: form.solution_es,
       solution_en: form.solution_en,
-      challenges_es: form.challenges_es || undefined,
-      challenges_en: form.challenges_en || undefined,
       results_es: form.results_es || undefined,
       results_en: form.results_en || undefined,
       features,
-      screenshots,
       technologies: tags,
       live_url: form.live_url || undefined,
       github_url: form.github_url || undefined,
       show_code: form.show_code,
       video_url: form.video_url || undefined,
       image_url: form.image_url || undefined,
+      mobile_image_url: form.mobile_image_url || undefined,
     });
     router.push("/admin/projects");
   }
@@ -145,16 +140,9 @@ export default function NewProject() {
 
       <form onSubmit={handleSubmit}>
         {/* ── Configuración ── */}
-        <Section label="Configuración">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "auto 1fr auto",
-              gap: "20px",
-              alignItems: "end",
-            }}
-          >
-            <Field label="Categoría *">
+        <Section label="Configuración" hint="Estos tres campos definen dónde y cómo aparece el proyecto en el sitio.">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+            <Field label="Categoría *" hint="Demo: proyecto de práctica. Cliente: trabajo real para alguien.">
               <SegmentedControl
                 options={[
                   { value: "demo", label: "Demo" },
@@ -165,31 +153,31 @@ export default function NewProject() {
               />
             </Field>
 
-            <Field label="Servicio *" hint="¿Qué servicio ofreciste en este proyecto?">
-              <select
-                name="service_id"
-                value={form.service_id}
-                onChange={handleChange}
-                style={inputStyle}
-                required
-              >
-                <option value="">Seleccionar servicio…</option>
-                {SERVICES.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name_es}
-                  </option>
-                ))}
-              </select>
-            </Field>
-
-            <Field label="Destacado" hint="Aparece en la home">
+            <Field label="Destacado" hint="Si está activado, este proyecto aparece en la página de inicio.">
               <Toggle
                 checked={form.featured}
                 onChange={(v) => setForm((p) => ({ ...p, featured: v }))}
-                label="Mostrar en Home"
+                label={form.featured ? "Sí, mostrar en Home" : "No mostrar en Home"}
               />
             </Field>
           </div>
+
+          <Field label="Servicio *" hint="¿Qué servicio ofreciste en este proyecto?">
+            <select
+              name="service_id"
+              value={form.service_id}
+              onChange={handleChange}
+              style={inputStyle}
+              required
+            >
+              <option value="">Seleccionar servicio…</option>
+              {SERVICES.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name_es}
+                </option>
+              ))}
+            </select>
+          </Field>
         </Section>
 
         {/* ── Nombre ── */}
@@ -219,7 +207,7 @@ export default function NewProject() {
         </Section>
 
         {/* ── Descripción ── */}
-        <Section label="Descripción">
+        <Section label="Descripción" hint="Línea corta debajo del título, en la ficha del proyecto.">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             <Field label="Español" hint="Resumen de una línea, arriba de todo en la ficha">
               <input
@@ -243,7 +231,7 @@ export default function NewProject() {
         </Section>
 
         {/* ── Objetivo ── */}
-        <Section label="Objetivo">
+        <Section label="Objetivo" hint="Se muestra junto con el Problema, dentro de la sección “El reto”.">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             <Field label="Español" hint="Se muestra junto al Problema, como el reto a resolver">
               <textarea
@@ -266,7 +254,7 @@ export default function NewProject() {
         </Section>
 
         {/* ── Problema ── */}
-        <Section label="Problema">
+        <Section label="Problema" hint="También forma parte de “El reto”, debajo del Objetivo.">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             <Field label="Español *" hint="¿Qué problema tenía el cliente?">
               <textarea
@@ -292,7 +280,7 @@ export default function NewProject() {
         </Section>
 
         {/* ── Solución ── */}
-        <Section label="Solución">
+        <Section label="Solución" hint="Se muestra en la ficha justo debajo de “El reto”.">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             <Field label="Español *" hint="¿Qué construiste para resolverlo?">
               <textarea
@@ -317,31 +305,8 @@ export default function NewProject() {
           </div>
         </Section>
 
-        {/* ── Retos encontrados ── */}
-        <Section label="Retos encontrados">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-            <Field label="Español" hint="¿Qué decisión técnica o de criterio fue difícil?">
-              <textarea
-                name="challenges_es"
-                value={form.challenges_es}
-                onChange={handleChange}
-                style={textAreaStyle}
-                placeholder="El reto fue sincronizar el inventario en tiempo real sin vender piezas ya agotadas."
-              />
-            </Field>
-            <Field label="English">
-              <textarea
-                name="challenges_en"
-                value={form.challenges_en}
-                onChange={handleChange}
-                style={textAreaStyle}
-              />
-            </Field>
-          </div>
-        </Section>
-
         {/* ── Resultados ── */}
-        <Section label="Resultados">
+        <Section label="Resultados" hint="El resultado concreto, se muestra en su propia sección destacada.">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             <Field label="Español" hint="El resultado concreto para el cliente">
               <textarea
@@ -364,12 +329,15 @@ export default function NewProject() {
         </Section>
 
         {/* ── Funcionalidades principales ── */}
-        <Section label="Funcionalidades principales">
+        <Section
+          label="Funcionalidades principales"
+          hint="Se muestran en el orden en que las agregas aquí. Solo puedes agregar o eliminar tarjetas."
+        >
           <FeaturesEditor features={features} onChange={setFeatures} />
         </Section>
 
         {/* ── Técnico ── */}
-        <Section label="Técnico">
+        <Section label="Técnico" hint="Slug, enlaces del proyecto y tecnologías usadas.">
           <div
             style={{
               display: "grid",
@@ -471,21 +439,25 @@ export default function NewProject() {
         </Section>
 
         {/* ── Imagen ── */}
-        <Section label="Imagen del proyecto">
+        <Section
+          label="Imagen del proyecto"
+          hint="La captura de escritorio se muestra arriba de todo, dentro de un marco tipo navegador."
+        >
           <ImageUpload
             currentUrl={form.image_url || undefined}
             onUploaded={(url) => setForm((p) => ({ ...p, image_url: url }))}
           />
         </Section>
 
-        {/* ── Capturas de pantalla ── */}
-        <Section label="Capturas de pantalla">
-          <p style={{ fontSize: "12px", color: "var(--muted)", marginBottom: "16px", lineHeight: 1.5 }}>
-            Marca cada captura como &quot;Antes&quot; (WhatsApp, Excel, cuaderno) o &quot;Después&quot; (el
-            producto terminado). Para mostrar el diseño responsive, agrega una captura Desktop y otra
-            Mobile de la misma vista.
-          </p>
-          <ScreenshotsEditor screenshots={screenshots} onChange={setScreenshots} />
+        {/* ── Vista en móvil ── */}
+        <Section
+          label="Vista en móvil"
+          hint="Opcional. Sube una captura de cómo se ve el sitio en el celular — se muestra dentro de un marco de teléfono."
+        >
+          <ImageUpload
+            currentUrl={form.mobile_image_url || undefined}
+            onUploaded={(url) => setForm((p) => ({ ...p, mobile_image_url: url }))}
+          />
         </Section>
 
         {/* Actions */}

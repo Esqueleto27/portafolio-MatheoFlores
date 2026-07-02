@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { ServicePill } from "@/components/ui/Badge";
 import { getProjectBySlug, getServiceName } from "@/lib/data";
 import type { Project, Locale } from "@/lib/mock-data";
+import { BrowserFrame, PhoneFrame } from "@/components/project-detail/DeviceFrames";
 import { DescriptionHeader } from "@/components/project-detail/DescriptionHeader";
 import { ChallengeSolutionBlock } from "@/components/project-detail/ChallengeSolutionBlock";
 import { ResultsSection } from "@/components/project-detail/ResultsSection";
@@ -115,26 +116,7 @@ function ProjectDetailContent({
         </h1>
 
         {/* Preview image */}
-        <div
-          data-reveal
-          style={{
-            width: "100%",
-            aspectRatio: "16/9",
-            borderRadius: "18px",
-            background: "var(--mockup)",
-            backgroundImage: project.image_url
-              ? "none"
-              : "repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 13px)",
-            border: "1px solid var(--hair)",
-            marginBottom: "56px",
-            overflow: "hidden",
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transitionDelay: "0.18s",
-          }}
-        >
+        <BrowserFrame transitionDelay={0.18}>
           {project.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -160,7 +142,35 @@ function ProjectDetailContent({
               [ screenshot ]
             </span>
           )}
-        </div>
+        </BrowserFrame>
+
+        {/* Mobile preview */}
+        {project.mobile_image_url && (
+          <div data-reveal style={{ marginBottom: "56px", transitionDelay: "0.2s" }}>
+            <h3
+              style={{
+                fontSize: "12px",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--muted)",
+                fontFamily: "var(--font-geist-mono)",
+                marginBottom: "16px",
+                textAlign: "center",
+              }}
+            >
+              {t("mobile_preview_title")}
+            </h3>
+            <PhoneFrame>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={project.mobile_image_url}
+                alt={title}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </PhoneFrame>
+          </div>
+        )}
 
         {/* Description */}
         <DescriptionHeader description={description} transitionDelay={0.22} />
