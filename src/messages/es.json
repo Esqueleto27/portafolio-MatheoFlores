@@ -133,6 +133,11 @@
     "back": "Volver al inicio",
     "see_projects": "Ver proyectos"
   },
+  "not_found": {
+    "title": "Página no encontrada",
+    "desc": "La página que buscás no existe o cambió de dirección.",
+    "back": "Volver al inicio"
+  },
   "login": {
     "section_title": "Acceso restringido",
     "email": "Correo electrónico",

@@ -133,6 +133,11 @@
     "back": "Back to home",
     "see_projects": "See projects"
   },
+  "not_found": {
+    "title": "Page not found",
+    "desc": "The page you're looking for doesn't exist or has moved.",
+    "back": "Back to home"
+  },
   "login": {
     "section_title": "Restricted access",
     "email": "Email",
