@@ -1,4 +1,5 @@
 import { getSupabase } from "./supabase/client";
+import { getAdminSupabase } from "./supabase/admin";
 import {
   PROJECTS as MOCK_PROJECTS,
   SERVICES as MOCK_SERVICES,
@@ -196,7 +197,7 @@ export async function deleteService(id: string): Promise<boolean> {
 }
 
 export async function getMessages(): Promise<ContactMessage[]> {
-  const supabase = await getSupabase();
+  const supabase = getAdminSupabase();
   if (supabase) {
     const { data } = await supabase
       .from("mensajes_contacto")
