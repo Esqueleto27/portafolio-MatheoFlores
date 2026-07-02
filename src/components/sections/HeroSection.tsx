@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { AvailableBadge } from "@/components/ui/Badge";
 import { Link } from "@/i18n/navigation";
 import { wordReveal, staggerContainer } from "@/components/animations";
 
@@ -101,14 +100,6 @@ export function HeroSection() {
       >
         {/* Left — text */}
         <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.05 }}
-          >
-            <AvailableBadge label={t("available")} />
-          </motion.div>
-
           {/* Name */}
           <div>
             <AnimatedTitle text={t("name")} />

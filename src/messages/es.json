@@ -8,10 +8,9 @@
     "menu_close": "Cerrar menú"
   },
   "hero": {
-    "available": "Disponible para trabajo remoto",
     "name": "Matheo Flores",
     "role": "Full Stack Developer",
-    "subtitle": "Construyo aplicaciones web modernas con Next.js, TypeScript y PostgreSQL.",
+    "subtitle": "Construyo páginas web con tecnología moderna y criterios de seguridad, para negocios y personas.",
     "description": "Transformo ideas en productos digitales listos para producción.",
     "cta_primary": "Contáctame",
     "cta_secondary": "Ver proyectos"
