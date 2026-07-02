@@ -15,10 +15,10 @@ function AnimatedTitle({ text }: { text: string }) {
       initial="hidden"
       animate="visible"
       style={{
-        fontSize: "clamp(72px, 9vw, 124px)",
+        fontSize: "clamp(42px, 11vw, 124px)",
         fontWeight: 800,
-        lineHeight: 0.92,
-        letterSpacing: "-0.05em",
+        lineHeight: 0.98,
+        letterSpacing: "-0.04em",
         color: "var(--text)",
         margin: 0,
         perspective: "600px",

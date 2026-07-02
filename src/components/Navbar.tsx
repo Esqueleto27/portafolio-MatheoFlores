@@ -76,8 +76,9 @@ export function Navbar() {
             justifyContent: "space-between",
             width: "100%",
             height: "52px",
-            padding: "0 18px",
+            padding: "0 clamp(12px, 4vw, 18px)",
             flexShrink: 0,
+            gap: "8px",
           }}
         >
           {/* Logo */}
@@ -88,7 +89,8 @@ export function Navbar() {
               alignItems: "center",
               gap: "8px",
               textDecoration: "none",
-              flexShrink: 0,
+              minWidth: 0,
+              overflow: "hidden",
             }}
           >
             <span
@@ -103,11 +105,14 @@ export function Navbar() {
             />
             <span
               style={{
-                fontSize: "14px",
+                fontSize: "clamp(12px, 3.4vw, 14px)",
                 fontWeight: 600,
-                letterSpacing: "0.13em",
+                letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 color: "var(--text)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
               Matheo Flores
