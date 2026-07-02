@@ -8,8 +8,6 @@ import { getProjectBySlug, getServiceName } from "@/lib/data";
 import type { Project, Locale } from "@/lib/mock-data";
 import { DescriptionHeader } from "@/components/project-detail/DescriptionHeader";
 import { ChallengeSolutionBlock } from "@/components/project-detail/ChallengeSolutionBlock";
-import { ScreenshotsGallery } from "@/components/project-detail/ScreenshotsGallery";
-import { ChallengesSection } from "@/components/project-detail/ChallengesSection";
 import { ResultsSection } from "@/components/project-detail/ResultsSection";
 import { FeaturesList } from "@/components/project-detail/FeaturesList";
 import { TechStrip } from "@/components/project-detail/TechStrip";
@@ -64,7 +62,6 @@ function ProjectDetailContent({
   const objective = locale === "en" ? project.objective_en : project.objective_es;
   const problem = locale === "en" ? project.problem_en : project.problem_es;
   const solution = locale === "en" ? project.solution_en : project.solution_es;
-  const challenges = locale === "en" ? project.challenges_en : project.challenges_es;
   const results = locale === "en" ? project.results_en : project.results_es;
 
   return (
@@ -178,41 +175,31 @@ function ProjectDetailContent({
           transitionDelay={0.26}
         />
 
-        {/* Screenshots */}
-        <ScreenshotsGallery
-          screenshots={project.screenshots ?? []}
-          title={t("screenshots_title")}
-          beforeLabel={t("screenshots_before")}
-          afterLabel={t("screenshots_after")}
-          transitionDelay={0.32}
-        />
-
-        {/* Challenges */}
-        <ChallengesSection title={t("challenges")} content={challenges} transitionDelay={0.38} />
-
         {/* Results */}
-        <ResultsSection title={t("results")} content={results} transitionDelay={0.42} />
+        <ResultsSection title={t("results")} content={results} transitionDelay={0.32} />
 
         {/* Features */}
         <FeaturesList
           features={project.features}
           title={t("features_title")}
           locale={locale}
-          transitionDelay={0.46}
+          transitionDelay={0.36}
         />
 
         {/* Technologies */}
-        <TechStrip technologies={project.technologies} title={t("technologies")} transitionDelay={0.5} />
+        <TechStrip technologies={project.technologies} title={t("technologies")} transitionDelay={0.4} />
 
         {/* Links */}
         <LinksSection
           liveUrl={project.live_url}
           githubUrl={project.github_url}
+          showCode={project.show_code}
           videoUrl={project.video_url}
           liveLabel={t("live_site")}
           githubLabel={t("github_link")}
+          codeUnavailableLabel={t("code_unavailable")}
           videoLabel={t("video_link")}
-          transitionDelay={0.54}
+          transitionDelay={0.44}
         />
       </div>
     </section>

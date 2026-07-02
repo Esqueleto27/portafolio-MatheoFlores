@@ -42,6 +42,7 @@ export default function NewProject() {
     results_en: "",
     live_url: "",
     github_url: "",
+    show_code: true,
     video_url: "",
     image_url: "",
   });
@@ -116,6 +117,7 @@ export default function NewProject() {
       technologies: tags,
       live_url: form.live_url || undefined,
       github_url: form.github_url || undefined,
+      show_code: form.show_code,
       video_url: form.video_url || undefined,
       image_url: form.image_url || undefined,
     });
@@ -444,6 +446,17 @@ export default function NewProject() {
               />
             </Field>
           </div>
+
+          <Field
+            label="Mostrar código"
+            hint="Si lo apagas, en la ficha se muestra “Código no disponible por ahora” en vez del enlace"
+          >
+            <Toggle
+              checked={form.show_code}
+              onChange={(v) => setForm((p) => ({ ...p, show_code: v }))}
+              label={form.show_code ? "Sí, mostrar enlace" : "No mostrar código"}
+            />
+          </Field>
 
           <Field label="Tecnologías" hint="Escribe una tecnología y presiona Enter o coma para agregar">
             <TagInput

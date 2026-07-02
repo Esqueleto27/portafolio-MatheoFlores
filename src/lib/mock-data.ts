@@ -52,6 +52,7 @@ export interface Project {
   technologies: string[];
   live_url?: string;
   github_url?: string;
+  show_code?: boolean;
   video_url?: string;
   image_url?: string;
 }
