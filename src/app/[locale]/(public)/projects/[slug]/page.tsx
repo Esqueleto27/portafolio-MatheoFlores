@@ -6,10 +6,9 @@ import { Link } from "@/i18n/navigation";
 import { ServicePill } from "@/components/ui/Badge";
 import { getProjectBySlug, getServiceName } from "@/lib/data";
 import type { Project, Locale } from "@/lib/mock-data";
+import { BrowserFrame, PhoneFrame } from "@/components/project-detail/DeviceFrames";
 import { DescriptionHeader } from "@/components/project-detail/DescriptionHeader";
 import { ChallengeSolutionBlock } from "@/components/project-detail/ChallengeSolutionBlock";
-import { ScreenshotsGallery } from "@/components/project-detail/ScreenshotsGallery";
-import { ChallengesSection } from "@/components/project-detail/ChallengesSection";
 import { ResultsSection } from "@/components/project-detail/ResultsSection";
 import { FeaturesList } from "@/components/project-detail/FeaturesList";
 import { TechStrip } from "@/components/project-detail/TechStrip";
@@ -64,7 +63,6 @@ function ProjectDetailContent({
   const objective = locale === "en" ? project.objective_en : project.objective_es;
   const problem = locale === "en" ? project.problem_en : project.problem_es;
   const solution = locale === "en" ? project.solution_en : project.solution_es;
-  const challenges = locale === "en" ? project.challenges_en : project.challenges_es;
   const results = locale === "en" ? project.results_en : project.results_es;
 
   return (
@@ -118,26 +116,7 @@ function ProjectDetailContent({
         </h1>
 
         {/* Preview image */}
-        <div
-          data-reveal
-          style={{
-            width: "100%",
-            aspectRatio: "16/9",
-            borderRadius: "18px",
-            background: "var(--mockup)",
-            backgroundImage: project.image_url
-              ? "none"
-              : "repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 13px)",
-            border: "1px solid var(--hair)",
-            marginBottom: "56px",
-            overflow: "hidden",
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transitionDelay: "0.18s",
-          }}
-        >
+        <BrowserFrame transitionDelay={0.18}>
           {project.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -163,7 +142,35 @@ function ProjectDetailContent({
               [ screenshot ]
             </span>
           )}
-        </div>
+        </BrowserFrame>
+
+        {/* Mobile preview */}
+        {project.mobile_image_url && (
+          <div data-reveal style={{ marginBottom: "56px", transitionDelay: "0.2s" }}>
+            <h3
+              style={{
+                fontSize: "12px",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--muted)",
+                fontFamily: "var(--font-geist-mono)",
+                marginBottom: "16px",
+                textAlign: "center",
+              }}
+            >
+              {t("mobile_preview_title")}
+            </h3>
+            <PhoneFrame>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={project.mobile_image_url}
+                alt={title}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </PhoneFrame>
+          </div>
+        )}
 
         {/* Description */}
         <DescriptionHeader description={description} transitionDelay={0.22} />
@@ -178,41 +185,31 @@ function ProjectDetailContent({
           transitionDelay={0.26}
         />
 
-        {/* Screenshots */}
-        <ScreenshotsGallery
-          screenshots={project.screenshots ?? []}
-          title={t("screenshots_title")}
-          beforeLabel={t("screenshots_before")}
-          afterLabel={t("screenshots_after")}
-          transitionDelay={0.32}
-        />
-
-        {/* Challenges */}
-        <ChallengesSection title={t("challenges")} content={challenges} transitionDelay={0.38} />
-
         {/* Results */}
-        <ResultsSection title={t("results")} content={results} transitionDelay={0.42} />
+        <ResultsSection title={t("results")} content={results} transitionDelay={0.32} />
 
         {/* Features */}
         <FeaturesList
           features={project.features}
           title={t("features_title")}
           locale={locale}
-          transitionDelay={0.46}
+          transitionDelay={0.36}
         />
 
         {/* Technologies */}
-        <TechStrip technologies={project.technologies} title={t("technologies")} transitionDelay={0.5} />
+        <TechStrip technologies={project.technologies} title={t("technologies")} transitionDelay={0.4} />
 
         {/* Links */}
         <LinksSection
           liveUrl={project.live_url}
           githubUrl={project.github_url}
+          showCode={project.show_code}
           videoUrl={project.video_url}
           liveLabel={t("live_site")}
           githubLabel={t("github_link")}
+          codeUnavailableLabel={t("code_unavailable")}
           videoLabel={t("video_link")}
-          transitionDelay={0.54}
+          transitionDelay={0.44}
         />
       </div>
     </section>

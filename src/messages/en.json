@@ -85,16 +85,21 @@
     "challenges": "Challenges",
     "results": "Results",
     "features_title": "Key features",
-    "screenshots_title": "Screenshots",
-    "screenshots_before": "Before",
-    "screenshots_after": "After",
+    "mobile_preview_title": "Mobile preview",
     "technologies": "Technologies",
     "live_site": "View live site",
     "github_link": "View code",
+    "code_unavailable": "Code not available for now",
     "video_link": "Watch video"
   },
   "about": {
     "section_title": "About me",
+    "avatar_alt": "Matheo Flores photo",
+    "name": "Matheo Flores",
+    "role": "Full-Stack Web Developer",
+    "location": "Quito, Ecuador",
+    "availability": "Available for remote work",
+    "find_me_title": "Find me on",
     "intro_title": "I'm Matheo Flores, I'm passionate about technology, and I build complete websites for businesses, companies and individuals",
     "intro_desc_1": "Technology has always fascinated me: understanding how it works, building things from scratch with code, and watching an idea turn into a real product. That curiosity is what led me to dedicate myself to building websites for businesses, companies and people who need a solid digital presence.",
     "intro_desc_2": "I'm originally from Quito, Ecuador, but I'm open to working remotely with clients anywhere in the world. I use modern technologies like Next.js, TypeScript, PostgreSQL and Supabase to build products that are fast, secure and built to grow with your business.",
@@ -120,8 +125,6 @@
     "sending": "Sending...",
     "required": "This field is required",
     "invalid_email": "Invalid email",
-    "or_find_me": "Or find me on",
-    "avatar_alt": "Matheo Flores photo",
     "error_sending": "Error sending. Please try again."
   },
   "thank_you": {

@@ -15,14 +15,6 @@ export function FeaturesEditor({ features, onChange }: FeaturesEditorProps) {
     onChange(features.map((f, i) => (i === index ? { ...f, ...updates } : f)));
   }
 
-  function move(index: number, dir: -1 | 1) {
-    const target = index + dir;
-    if (target < 0 || target >= features.length) return;
-    const next = [...features];
-    [next[index], next[target]] = [next[target], next[index]];
-    onChange(next);
-  }
-
   function remove(index: number) {
     onChange(features.filter((_, i) => i !== index));
   }
@@ -76,18 +68,7 @@ export function FeaturesEditor({ features, onChange }: FeaturesEditorProps) {
             </Field>
           </div>
 
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-            <button type="button" onClick={() => move(i, -1)} disabled={i === 0} style={rowButtonStyle}>
-              ↑ Subir
-            </button>
-            <button
-              type="button"
-              onClick={() => move(i, 1)}
-              disabled={i === features.length - 1}
-              style={rowButtonStyle}
-            >
-              ↓ Bajar
-            </button>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button
               type="button"
               onClick={() => remove(i)}
