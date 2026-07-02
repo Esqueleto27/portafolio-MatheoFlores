@@ -24,6 +24,8 @@ export interface Project {
   slug: string;
   category: "cliente" | "demo";
   service_id: string;
+  custom_tag_es?: string;
+  custom_tag_en?: string;
   featured: boolean;
   business_es: string;
   business_en: string;

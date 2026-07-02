@@ -5,6 +5,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { AdminGuard } from "@/components/AdminGuard";
 import { getSession, signOut } from "@/lib/auth";
 import { useRouter } from "@/i18n/navigation";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV = [
   {
@@ -364,29 +365,46 @@ export default function AdminLayout({
                 </span>
               )}
             </div>
-            <Link
-              href="/"
-              style={{
-                fontSize: "12px",
-                color: "var(--muted)",
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-                transition: "color 0.15s",
-              }}
-            >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M6 1L1 6l5 5M1 6h10"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Ver sitio
-            </Link>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <ThemeToggle
+                className="admin-theme-toggle"
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "8px",
+                  border: "1px solid var(--hair)",
+                  background: "var(--fill)",
+                  color: "var(--muted)",
+                  cursor: "pointer",
+                }}
+              />
+              <Link
+                href="/"
+                style={{
+                  fontSize: "12px",
+                  color: "var(--muted)",
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  transition: "color 0.15s",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path
+                    d="M6 1L1 6l5 5M1 6h10"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Ver sitio
+              </Link>
+            </div>
           </header>
 
           {/* Page content */}

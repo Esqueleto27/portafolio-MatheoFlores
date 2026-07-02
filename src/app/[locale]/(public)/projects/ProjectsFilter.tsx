@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProjectCard } from "@/components/ProjectCard";
+import { Select } from "@/components/ui/Select";
 import { type Locale } from "@/lib/mock-data";
 import type { Service, Project } from "@/lib/mock-data";
 import { fadeInUp, staggerContainer } from "@/components/animations";
@@ -133,30 +134,25 @@ export function ProjectsFilter({ locale, services, projects }: Props) {
             ))}
           </div>
 
-          <select
-            value={serviceFilter}
-            onChange={(e) => setServiceFilter(e.target.value)}
-            style={{
-              fontSize: "13px",
-              fontWeight: 500,
-              padding: "7px 14px",
-              borderRadius: "10px",
-              border: "1px solid var(--hair)",
-              background: "var(--fill)",
-              color: "var(--text)",
-              cursor: "pointer",
-              fontFamily: "var(--font-geist-sans)",
-              outline: "none",
-              colorScheme: "inherit",
-            }}
-          >
-            <option value="all">{t("all")} — {t("filter_service")}</option>
-            {services.map((s) => (
-              <option key={s.id} value={s.id}>
-                {locale === "en" ? s.name_en : s.name_es}
-              </option>
-            ))}
-          </select>
+          <div style={{ width: "240px", maxWidth: "100%" }}>
+            <Select
+              value={serviceFilter}
+              onChange={setServiceFilter}
+              style={{
+                fontSize: "13px",
+                fontWeight: 500,
+                padding: "7px 14px",
+                borderRadius: "10px",
+              }}
+              options={[
+                { value: "all", label: `${t("all")} — ${t("filter_service")}` },
+                ...services.map((s) => ({
+                  value: s.id,
+                  label: locale === "en" ? s.name_en : s.name_es,
+                })),
+              ]}
+            />
+          </div>
         </motion.div>
 
         {/* Grid or empty state */}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 import { SERVICES, type Feature } from "@/lib/mock-data";
 import { createProjectAction } from "@/lib/admin-actions";
 import { ImageUpload } from "@/components/admin/ImageUpload";
@@ -11,6 +12,7 @@ import {
   Section,
   Field,
   SegmentedControl,
+  SubHeading,
   Toggle,
   TagInput,
   inputStyle,
@@ -27,6 +29,8 @@ export default function NewProject() {
     featured: false,
     business_es: "",
     business_en: "",
+    custom_tag_es: "",
+    custom_tag_en: "",
     description_es: "",
     description_en: "",
     objective_es: "",
@@ -90,10 +94,16 @@ export default function NewProject() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.service_id) {
+      alert("Selecciona un servicio.");
+      return;
+    }
     await createProjectAction({
       slug: form.slug,
       category: form.category,
       service_id: form.service_id,
+      custom_tag_es: form.custom_tag_es || undefined,
+      custom_tag_en: form.custom_tag_en || undefined,
       featured: form.featured,
       business_es: form.business_es,
       business_en: form.business_en,
@@ -140,7 +150,7 @@ export default function NewProject() {
 
       <form onSubmit={handleSubmit}>
         {/* ── Configuración ── */}
-        <Section label="Configuración" hint="Estos tres campos definen dónde y cómo aparece el proyecto en el sitio.">
+        <Section label="Configuración" hint="Dónde y cómo aparece el proyecto en el sitio, más sus datos técnicos.">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
             <Field label="Categoría *" hint="Demo: proyecto de práctica. Cliente: trabajo real para alguien.">
               <SegmentedControl
@@ -163,20 +173,138 @@ export default function NewProject() {
           </div>
 
           <Field label="Servicio *" hint="¿Qué servicio ofreciste en este proyecto?">
-            <select
+            <Select
               name="service_id"
               value={form.service_id}
-              onChange={handleChange}
-              style={inputStyle}
-              required
+              onChange={(v) => setForm((p) => ({ ...p, service_id: v }))}
+              placeholder="Seleccionar servicio…"
+              options={SERVICES.map((s) => ({ value: s.id, label: s.name_es }))}
+            />
+          </Field>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+            <Field
+              label="Etiqueta personalizada (opcional)"
+              hint='Si la llenas, reemplaza la etiqueta de arriba en la tarjeta y la ficha (ej. "Bootcamp"). No afecta el selector de servicios del formulario de contacto.'
             >
-              <option value="">Seleccionar servicio…</option>
-              {SERVICES.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name_es}
-                </option>
-              ))}
-            </select>
+              <input
+                name="custom_tag_es"
+                value={form.custom_tag_es}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="Bootcamp"
+              />
+            </Field>
+            <Field label="Custom tag (English, optional)" hint="Same text but in English, if it needs to differ.">
+              <input
+                name="custom_tag_en"
+                value={form.custom_tag_en}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="Bootcamp"
+              />
+            </Field>
+          </div>
+
+          <SubHeading>Detalles técnicos</SubHeading>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            <Field label="Slug *" hint="URL del proyecto — se genera solo desde el nombre">
+              <div style={{ position: "relative" }}>
+                <span
+                  style={{
+                    position: "absolute",
+                    left: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    fontSize: "13px",
+                    color: "var(--muted)",
+                    fontFamily: "var(--font-geist-mono)",
+                    pointerEvents: "none",
+                  }}
+                >
+                  /proyectos/
+                </span>
+                <input
+                  name="slug"
+                  value={form.slug}
+                  onChange={(e) => {
+                    setSlugEdited(true);
+                    setForm((p) => ({ ...p, slug: e.target.value }));
+                  }}
+                  style={{ ...inputStyle, paddingLeft: "86px", fontFamily: "var(--font-geist-mono)", fontSize: "13px" }}
+                  placeholder="restaurante-la-ronda"
+                  required
+                />
+              </div>
+            </Field>
+
+            <Field label="URL en vivo" hint="Si el sitio ya está publicado (opcional)">
+              <input
+                name="live_url"
+                value={form.live_url}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="https://restaurante.com"
+              />
+            </Field>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            <Field label="GitHub" hint="Enlace al repositorio (opcional, se muestra discreto)">
+              <input
+                name="github_url"
+                value={form.github_url}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="https://github.com/usuario/repo"
+              />
+            </Field>
+            <Field label="Video" hint="Demo en video (opcional)">
+              <input
+                name="video_url"
+                value={form.video_url}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="https://youtube.com/..."
+              />
+            </Field>
+          </div>
+
+          <Field
+            label="Mostrar código"
+            hint="Si lo apagas, en la ficha se muestra “Código no disponible por ahora” en vez del enlace"
+          >
+            <Toggle
+              checked={form.show_code}
+              onChange={(v) => setForm((p) => ({ ...p, show_code: v }))}
+              label={form.show_code ? "Sí, mostrar enlace" : "No mostrar código"}
+            />
+          </Field>
+
+          <Field label="Tecnologías" hint="Escribe una tecnología y presiona Enter o coma para agregar">
+            <TagInput
+              tags={tags}
+              input={tagInput}
+              onInput={setTagInput}
+              onKeyDown={handleTagKey}
+              onRemove={(t) => setTags((p) => p.filter((x) => x !== t))}
+              onBlur={() => tagInput.trim() && addTag(tagInput)}
+            />
           </Field>
         </Section>
 
@@ -317,7 +445,7 @@ export default function NewProject() {
                 placeholder="Redujeron los errores de inventario en un 90%."
               />
             </Field>
-            <Field label="English">
+            <Field label="English" hint="The concrete result for the client">
               <textarea
                 name="results_en"
                 value={form.results_en}
@@ -334,108 +462,6 @@ export default function NewProject() {
           hint="Se muestran en el orden en que las agregas aquí. Solo puedes agregar o eliminar tarjetas."
         >
           <FeaturesEditor features={features} onChange={setFeatures} />
-        </Section>
-
-        {/* ── Técnico ── */}
-        <Section label="Técnico" hint="Slug, enlaces del proyecto y tecnologías usadas.">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginBottom: "20px",
-            }}
-          >
-            <Field label="Slug *" hint="URL del proyecto — se genera solo desde el nombre">
-              <div style={{ position: "relative" }}>
-                <span
-                  style={{
-                    position: "absolute",
-                    left: "12px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    fontSize: "13px",
-                    color: "var(--muted)",
-                    fontFamily: "var(--font-geist-mono)",
-                    pointerEvents: "none",
-                  }}
-                >
-                  /proyectos/
-                </span>
-                <input
-                  name="slug"
-                  value={form.slug}
-                  onChange={(e) => {
-                    setSlugEdited(true);
-                    setForm((p) => ({ ...p, slug: e.target.value }));
-                  }}
-                  style={{ ...inputStyle, paddingLeft: "86px", fontFamily: "var(--font-geist-mono)", fontSize: "13px" }}
-                  placeholder="restaurante-la-ronda"
-                  required
-                />
-              </div>
-            </Field>
-
-            <Field label="URL en vivo" hint="Si el sitio ya está publicado (opcional)">
-              <input
-                name="live_url"
-                value={form.live_url}
-                onChange={handleChange}
-                style={inputStyle}
-                placeholder="https://restaurante.com"
-              />
-            </Field>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginBottom: "20px",
-            }}
-          >
-            <Field label="GitHub" hint="Enlace al repositorio (opcional, se muestra discreto)">
-              <input
-                name="github_url"
-                value={form.github_url}
-                onChange={handleChange}
-                style={inputStyle}
-                placeholder="https://github.com/usuario/repo"
-              />
-            </Field>
-            <Field label="Video" hint="Demo en video (opcional)">
-              <input
-                name="video_url"
-                value={form.video_url}
-                onChange={handleChange}
-                style={inputStyle}
-                placeholder="https://youtube.com/..."
-              />
-            </Field>
-          </div>
-
-          <Field
-            label="Mostrar código"
-            hint="Si lo apagas, en la ficha se muestra “Código no disponible por ahora” en vez del enlace"
-          >
-            <Toggle
-              checked={form.show_code}
-              onChange={(v) => setForm((p) => ({ ...p, show_code: v }))}
-              label={form.show_code ? "Sí, mostrar enlace" : "No mostrar código"}
-            />
-          </Field>
-
-          <Field label="Tecnologías" hint="Escribe una tecnología y presiona Enter o coma para agregar">
-            <TagInput
-              tags={tags}
-              input={tagInput}
-              onInput={setTagInput}
-              onKeyDown={handleTagKey}
-              onRemove={(t) => setTags((p) => p.filter((x) => x !== t))}
-              onBlur={() => tagInput.trim() && addTag(tagInput)}
-            />
-          </Field>
         </Section>
 
         {/* ── Imagen ── */}

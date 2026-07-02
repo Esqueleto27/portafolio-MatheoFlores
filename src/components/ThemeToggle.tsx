@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
@@ -33,6 +39,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       onClick={toggle}
       aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
       className={className}
+      style={style}
     >
       {isDark ? (
         <svg

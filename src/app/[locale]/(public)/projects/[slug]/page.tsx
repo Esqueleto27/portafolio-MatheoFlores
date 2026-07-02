@@ -41,7 +41,8 @@ export default async function ProjectDetail({
 
   if (!project) notFound();
 
-  const serviceName = await getServiceName(project.service_id, locale);
+  const customTag = locale === "en" ? project.custom_tag_en : project.custom_tag_es;
+  const serviceName = customTag || (await getServiceName(project.service_id, locale));
 
   return (
     <ProjectDetailContent project={project} locale={locale} serviceName={serviceName} />

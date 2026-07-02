@@ -11,7 +11,8 @@ interface ProjectCardProps {
 export function ProjectCard({ project, locale, viewCaseLabel }: ProjectCardProps) {
   const title = locale === "en" ? project.business_en : project.business_es;
   const tagline = locale === "en" ? project.solution_en : project.solution_es;
-  const serviceName = getServiceName(project.service_id, locale);
+  const customTag = locale === "en" ? project.custom_tag_en : project.custom_tag_es;
+  const serviceName = customTag || getServiceName(project.service_id, locale);
   const categoryLabel =
     project.category === "demo"
       ? "Demo"

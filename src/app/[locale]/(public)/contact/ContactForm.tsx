@@ -2,10 +2,11 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 import type { Service } from "@/lib/mock-data";
 
 const timelineOptions = ["urgent", "month", "no_rush", "exploring"] as const;
@@ -27,6 +28,7 @@ export function ContactForm({ services }: { services: Service[] }) {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
@@ -192,17 +194,21 @@ export function ContactForm({ services }: { services: Service[] }) {
               >
                 {t("form_service")}
               </label>
-              <select
-                {...register("service_id")}
-                style={selectStyle(errors.service_id)}
-              >
-                <option value="">—</option>
-                {services.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {locale === "en" ? s.name_en : s.name_es}
-                  </option>
-                ))}
-              </select>
+              <Controller
+                name="service_id"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={!!errors.service_id}
+                    options={services.map((s) => ({
+                      value: s.id,
+                      label: locale === "en" ? s.name_en : s.name_es,
+                    }))}
+                  />
+                )}
+              />
               {errors.service_id && (
                 <span style={errorStyle}>{t("required")}</span>
               )}
@@ -221,17 +227,21 @@ export function ContactForm({ services }: { services: Service[] }) {
               >
                 {t("form_timeline")}
               </label>
-              <select
-                {...register("timeline")}
-                style={selectStyle(errors.timeline)}
-              >
-                <option value="">—</option>
-                {timelineOptions.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {t(`timeline_${opt}`)}
-                  </option>
-                ))}
-              </select>
+              <Controller
+                name="timeline"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={!!errors.timeline}
+                    options={timelineOptions.map((opt) => ({
+                      value: opt,
+                      label: t(`timeline_${opt}`),
+                    }))}
+                  />
+                )}
+              />
               {errors.timeline && (
                 <span style={errorStyle}>{t("required")}</span>
               )}
@@ -294,13 +304,6 @@ function inputStyle(error?: object) {
     outline: "none",
     transition: "border-color 0.2s",
     boxSizing: "border-box" as const,
-  };
-}
-
-function selectStyle(error?: object) {
-  return {
-    ...inputStyle(error),
-    cursor: "pointer",
   };
 }
 

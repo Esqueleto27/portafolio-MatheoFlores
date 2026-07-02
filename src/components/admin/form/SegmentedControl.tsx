@@ -23,6 +23,7 @@ export function SegmentedControl({
           type="button"
           onClick={() => onChange(opt.value)}
           style={{
+            flex: 1,
             padding: "9px 18px",
             fontSize: "13px",
             fontWeight: value === opt.value ? 600 : 400,
@@ -30,6 +31,7 @@ export function SegmentedControl({
             color: value === opt.value ? "#fff" : "var(--muted)",
             border: "none",
             cursor: "pointer",
+            textAlign: "center",
             transition: "background 0.15s, color 0.15s",
           }}
         >
