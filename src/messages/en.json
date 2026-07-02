@@ -79,10 +79,19 @@
   },
   "project_detail": {
     "back": "← All projects",
+    "objective_and_problem": "The challenge",
     "problem": "Problem",
     "solution": "Solution",
+    "challenges": "Challenges",
+    "results": "Results",
+    "features_title": "Key features",
+    "screenshots_title": "Screenshots",
+    "screenshots_before": "Before",
+    "screenshots_after": "After",
     "technologies": "Technologies",
-    "live_site": "View live site"
+    "live_site": "View live site",
+    "github_link": "View code",
+    "video_link": "Watch video"
   },
   "about": {
     "section_title": "About me",

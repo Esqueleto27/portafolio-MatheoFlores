@@ -3,10 +3,17 @@ import { notFound } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { TechChip, ServicePill } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { ServicePill } from "@/components/ui/Badge";
 import { getProjectBySlug, getServiceName } from "@/lib/data";
 import type { Project, Locale } from "@/lib/mock-data";
+import { DescriptionHeader } from "@/components/project-detail/DescriptionHeader";
+import { ChallengeSolutionBlock } from "@/components/project-detail/ChallengeSolutionBlock";
+import { ScreenshotsGallery } from "@/components/project-detail/ScreenshotsGallery";
+import { ChallengesSection } from "@/components/project-detail/ChallengesSection";
+import { ResultsSection } from "@/components/project-detail/ResultsSection";
+import { FeaturesList } from "@/components/project-detail/FeaturesList";
+import { TechStrip } from "@/components/project-detail/TechStrip";
+import { LinksSection } from "@/components/project-detail/LinksSection";
 
 export async function generateMetadata({
   params,
@@ -53,8 +60,12 @@ function ProjectDetailContent({
 }) {
   const t = useTranslations("project_detail");
   const title = locale === "en" ? project.business_en : project.business_es;
+  const description = locale === "en" ? project.description_en : project.description_es;
+  const objective = locale === "en" ? project.objective_en : project.objective_es;
   const problem = locale === "en" ? project.problem_en : project.problem_es;
   const solution = locale === "en" ? project.solution_en : project.solution_es;
+  const challenges = locale === "en" ? project.challenges_en : project.challenges_es;
+  const results = locale === "en" ? project.results_en : project.results_es;
 
   return (
     <section
@@ -154,105 +165,55 @@ function ProjectDetailContent({
           )}
         </div>
 
-        {/* Problem + Solution grid */}
-        <div
-          data-reveal
-          style={{
-            display: "grid",
-            gridTemplateColumns: "200px 1fr",
-            gap: "34px",
-            marginBottom: "48px",
-            transitionDelay: "0.26s",
-          }}
-          className="grid-cols-[200px_1fr] max-md:grid-cols-1 max-md:gap-16px"
-        >
-          <h2
-            style={{
-              fontSize: "clamp(18px, 2vw, 22px)",
-              fontWeight: 600,
-              letterSpacing: "-0.02em",
-              color: "var(--accent)",
-              margin: 0,
-            }}
-          >
-            {t("problem")}
-          </h2>
-          <p
-            style={{
-              fontSize: "17px",
-              color: "var(--muted)",
-              lineHeight: 1.7,
-              margin: 0,
-            }}
-          >
-            {problem}
-          </p>
+        {/* Description */}
+        <DescriptionHeader description={description} transitionDelay={0.22} />
 
-          <h2
-            style={{
-              fontSize: "clamp(18px, 2vw, 22px)",
-              fontWeight: 600,
-              letterSpacing: "-0.02em",
-              color: "var(--accent)",
-              margin: 0,
-            }}
-          >
-            {t("solution")}
-          </h2>
-          <p
-            style={{
-              fontSize: "17px",
-              color: "var(--soft)",
-              lineHeight: 1.7,
-              margin: 0,
-            }}
-          >
-            {solution}
-          </p>
-        </div>
+        {/* Objective + Problem, then Solution */}
+        <ChallengeSolutionBlock
+          objective={objective}
+          problem={problem}
+          solution={solution}
+          objectiveLabel={t("objective_and_problem")}
+          solutionLabel={t("solution")}
+          transitionDelay={0.26}
+        />
+
+        {/* Screenshots */}
+        <ScreenshotsGallery
+          screenshots={project.screenshots ?? []}
+          title={t("screenshots_title")}
+          beforeLabel={t("screenshots_before")}
+          afterLabel={t("screenshots_after")}
+          transitionDelay={0.32}
+        />
+
+        {/* Challenges */}
+        <ChallengesSection title={t("challenges")} content={challenges} transitionDelay={0.38} />
+
+        {/* Results */}
+        <ResultsSection title={t("results")} content={results} transitionDelay={0.42} />
+
+        {/* Features */}
+        <FeaturesList
+          features={project.features}
+          title={t("features_title")}
+          locale={locale}
+          transitionDelay={0.46}
+        />
 
         {/* Technologies */}
-        <div
-          data-reveal
-          style={{
-            marginBottom: "40px",
-            transitionDelay: "0.34s",
-          }}
-        >
-          <h3
-            style={{
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--accent-2)",
-              fontFamily: "var(--font-geist-mono)",
-              marginBottom: "12px",
-            }}
-          >
-            {t("technologies")}
-          </h3>
-          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-            {project.technologies.map((tech) => (
-              <TechChip key={tech}>{tech}</TechChip>
-            ))}
-          </div>
-        </div>
+        <TechStrip technologies={project.technologies} title={t("technologies")} transitionDelay={0.5} />
 
-        {/* Live site link */}
-        {project.live_url && (
-          <div data-reveal style={{ transitionDelay: "0.4s" }}>
-            <Button
-              as="a"
-              href={project.live_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="secondary"
-            >
-              {t("live_site")} ↗
-            </Button>
-          </div>
-        )}
+        {/* Links */}
+        <LinksSection
+          liveUrl={project.live_url}
+          githubUrl={project.github_url}
+          videoUrl={project.video_url}
+          liveLabel={t("live_site")}
+          githubLabel={t("github_link")}
+          videoLabel={t("video_link")}
+          transitionDelay={0.54}
+        />
       </div>
     </section>
   );

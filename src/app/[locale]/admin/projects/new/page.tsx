@@ -3,9 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
-import { SERVICES } from "@/lib/mock-data";
+import { SERVICES, type Feature, type Screenshot } from "@/lib/mock-data";
 import { createProjectAction } from "@/lib/admin-actions";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { FeaturesEditor } from "@/components/admin/FeaturesEditor";
+import { ScreenshotsEditor } from "@/components/admin/ScreenshotsEditor";
+import {
+  Section,
+  Field,
+  SegmentedControl,
+  Toggle,
+  TagInput,
+  inputStyle,
+  textAreaStyle,
+} from "@/components/admin/form";
 
 export default function NewProject() {
   const router = useRouter();
@@ -17,16 +28,28 @@ export default function NewProject() {
     featured: false,
     business_es: "",
     business_en: "",
+    description_es: "",
+    description_en: "",
+    objective_es: "",
+    objective_en: "",
     problem_es: "",
     problem_en: "",
     solution_es: "",
     solution_en: "",
+    challenges_es: "",
+    challenges_en: "",
+    results_es: "",
+    results_en: "",
     live_url: "",
+    github_url: "",
+    video_url: "",
     image_url: "",
   });
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
+  const [features, setFeatures] = useState<Feature[]>([]);
+  const [screenshots, setScreenshots] = useState<Screenshot[]>([]);
 
   function toSlug(str: string) {
     return str
@@ -76,12 +99,24 @@ export default function NewProject() {
       featured: form.featured,
       business_es: form.business_es,
       business_en: form.business_en,
+      description_es: form.description_es || undefined,
+      description_en: form.description_en || undefined,
+      objective_es: form.objective_es || undefined,
+      objective_en: form.objective_en || undefined,
       problem_es: form.problem_es,
       problem_en: form.problem_en,
       solution_es: form.solution_es,
       solution_en: form.solution_en,
+      challenges_es: form.challenges_es || undefined,
+      challenges_en: form.challenges_en || undefined,
+      results_es: form.results_es || undefined,
+      results_en: form.results_en || undefined,
+      features,
+      screenshots,
       technologies: tags,
       live_url: form.live_url || undefined,
+      github_url: form.github_url || undefined,
+      video_url: form.video_url || undefined,
       image_url: form.image_url || undefined,
     });
     router.push("/admin/projects");
@@ -181,6 +216,53 @@ export default function NewProject() {
           </div>
         </Section>
 
+        {/* ── Descripción ── */}
+        <Section label="Descripción">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <Field label="Español" hint="Resumen de una línea, arriba de todo en la ficha">
+              <input
+                name="description_es"
+                value={form.description_es}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="Tienda online para un taller artesanal en Quito."
+              />
+            </Field>
+            <Field label="English" hint="One-line summary, shown at the top of the page">
+              <input
+                name="description_en"
+                value={form.description_en}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="Online store for an artisan workshop in Quito."
+              />
+            </Field>
+          </div>
+        </Section>
+
+        {/* ── Objetivo ── */}
+        <Section label="Objetivo">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <Field label="Español" hint="Se muestra junto al Problema, como el reto a resolver">
+              <textarea
+                name="objective_es"
+                value={form.objective_es}
+                onChange={handleChange}
+                style={textAreaStyle}
+                placeholder="Que el taller pudiera vender fuera de Instagram."
+              />
+            </Field>
+            <Field label="English" hint="Shown together with Problem, as the challenge to solve">
+              <textarea
+                name="objective_en"
+                value={form.objective_en}
+                onChange={handleChange}
+                style={textAreaStyle}
+              />
+            </Field>
+          </div>
+        </Section>
+
         {/* ── Problema ── */}
         <Section label="Problema">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
@@ -231,6 +313,57 @@ export default function NewProject() {
               />
             </Field>
           </div>
+        </Section>
+
+        {/* ── Retos encontrados ── */}
+        <Section label="Retos encontrados">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <Field label="Español" hint="¿Qué decisión técnica o de criterio fue difícil?">
+              <textarea
+                name="challenges_es"
+                value={form.challenges_es}
+                onChange={handleChange}
+                style={textAreaStyle}
+                placeholder="El reto fue sincronizar el inventario en tiempo real sin vender piezas ya agotadas."
+              />
+            </Field>
+            <Field label="English">
+              <textarea
+                name="challenges_en"
+                value={form.challenges_en}
+                onChange={handleChange}
+                style={textAreaStyle}
+              />
+            </Field>
+          </div>
+        </Section>
+
+        {/* ── Resultados ── */}
+        <Section label="Resultados">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <Field label="Español" hint="El resultado concreto para el cliente">
+              <textarea
+                name="results_es"
+                value={form.results_es}
+                onChange={handleChange}
+                style={textAreaStyle}
+                placeholder="Redujeron los errores de inventario en un 90%."
+              />
+            </Field>
+            <Field label="English">
+              <textarea
+                name="results_en"
+                value={form.results_en}
+                onChange={handleChange}
+                style={textAreaStyle}
+              />
+            </Field>
+          </div>
+        </Section>
+
+        {/* ── Funcionalidades principales ── */}
+        <Section label="Funcionalidades principales">
+          <FeaturesEditor features={features} onChange={setFeatures} />
         </Section>
 
         {/* ── Técnico ── */}
@@ -284,6 +417,34 @@ export default function NewProject() {
             </Field>
           </div>
 
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            <Field label="GitHub" hint="Enlace al repositorio (opcional, se muestra discreto)">
+              <input
+                name="github_url"
+                value={form.github_url}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="https://github.com/usuario/repo"
+              />
+            </Field>
+            <Field label="Video" hint="Demo en video (opcional)">
+              <input
+                name="video_url"
+                value={form.video_url}
+                onChange={handleChange}
+                style={inputStyle}
+                placeholder="https://youtube.com/..."
+              />
+            </Field>
+          </div>
+
           <Field label="Tecnologías" hint="Escribe una tecnología y presiona Enter o coma para agregar">
             <TagInput
               tags={tags}
@@ -304,6 +465,16 @@ export default function NewProject() {
           />
         </Section>
 
+        {/* ── Capturas de pantalla ── */}
+        <Section label="Capturas de pantalla">
+          <p style={{ fontSize: "12px", color: "var(--muted)", marginBottom: "16px", lineHeight: 1.5 }}>
+            Marca cada captura como &quot;Antes&quot; (WhatsApp, Excel, cuaderno) o &quot;Después&quot; (el
+            producto terminado). Para mostrar el diseño responsive, agrega una captura Desktop y otra
+            Mobile de la misma vista.
+          </p>
+          <ScreenshotsEditor screenshots={screenshots} onChange={setScreenshots} />
+        </Section>
+
         {/* Actions */}
         <div style={{ display: "flex", gap: "10px", paddingTop: "28px" }}>
           <Button type="submit" variant="primary">
@@ -322,273 +493,3 @@ export default function NewProject() {
   );
 }
 
-/* ─── Sub-components ─── */
-
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        padding: "28px 0",
-        borderBottom: "1px solid var(--hair)",
-      }}
-    >
-      <p
-        style={{
-          fontSize: "11px",
-          fontWeight: 600,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "var(--muted)",
-          fontFamily: "var(--font-geist-mono)",
-          marginBottom: "18px",
-        }}
-      >
-        {label}
-      </p>
-      {children}
-    </div>
-  );
-}
-
-function Field({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label
-        style={{
-          fontSize: "13px",
-          fontWeight: 500,
-          color: "var(--soft)",
-          display: "block",
-          marginBottom: hint ? "3px" : "7px",
-        }}
-      >
-        {label}
-      </label>
-      {hint && (
-        <p
-          style={{
-            fontSize: "11px",
-            color: "var(--muted)",
-            marginBottom: "7px",
-            lineHeight: 1.4,
-          }}
-        >
-          {hint}
-        </p>
-      )}
-      {children}
-    </div>
-  );
-}
-
-function SegmentedControl({
-  options,
-  value,
-  onChange,
-}: {
-  options: { value: string; label: string }[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        border: "1px solid var(--hair)",
-        borderRadius: "8px",
-        overflow: "hidden",
-        background: "var(--fill)",
-      }}
-    >
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onChange(opt.value)}
-          style={{
-            padding: "9px 18px",
-            fontSize: "13px",
-            fontWeight: value === opt.value ? 600 : 400,
-            background: value === opt.value ? "var(--accent)" : "transparent",
-            color: value === opt.value ? "#fff" : "var(--muted)",
-            border: "none",
-            cursor: "pointer",
-            transition: "background 0.15s, color 0.15s",
-          }}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function Toggle({
-  checked,
-  onChange,
-  label,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  label: string;
-}) {
-  return (
-    <label
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-        cursor: "pointer",
-        paddingTop: "4px",
-      }}
-    >
-      <div
-        role="switch"
-        aria-checked={checked}
-        onClick={() => onChange(!checked)}
-        style={{
-          width: "38px",
-          height: "22px",
-          borderRadius: "11px",
-          background: checked ? "var(--accent)" : "var(--fill2)",
-          border: "1px solid var(--hair)",
-          position: "relative",
-          cursor: "pointer",
-          transition: "background 0.2s",
-          flexShrink: 0,
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: "2px",
-            left: checked ? "17px" : "2px",
-            width: "16px",
-            height: "16px",
-            borderRadius: "50%",
-            background: "#fff",
-            transition: "left 0.2s",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-          }}
-        />
-      </div>
-      <span style={{ fontSize: "13px", color: "var(--soft)" }}>{label}</span>
-    </label>
-  );
-}
-
-function TagInput({
-  tags,
-  input,
-  onInput,
-  onKeyDown,
-  onRemove,
-  onBlur,
-}: {
-  tags: string[];
-  input: string;
-  onInput: (v: string) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onRemove: (tag: string) => void;
-  onBlur: () => void;
-}) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "6px",
-        padding: "8px 10px",
-        background: "var(--fill)",
-        border: "1px solid var(--hair)",
-        borderRadius: "8px",
-        minHeight: "44px",
-        alignItems: "center",
-        cursor: "text",
-      }}
-    >
-      {tags.map((tag) => (
-        <span
-          key={tag}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "4px",
-            padding: "3px 8px 3px 9px",
-            borderRadius: "5px",
-            background: "var(--fill2)",
-            border: "1px solid var(--hair)",
-            fontSize: "12px",
-            color: "var(--soft)",
-            fontFamily: "var(--font-geist-mono)",
-          }}
-        >
-          {tag}
-          <button
-            type="button"
-            onClick={() => onRemove(tag)}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "var(--muted)",
-              padding: "0",
-              lineHeight: 1,
-              fontSize: "15px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            ×
-          </button>
-        </span>
-      ))}
-      <input
-        value={input}
-        onChange={(e) => onInput(e.target.value)}
-        onKeyDown={onKeyDown}
-        onBlur={onBlur}
-        placeholder={tags.length === 0 ? "Next.js, Supabase, TypeScript… (Enter para agregar)" : "Agregar más…"}
-        style={{
-          flex: 1,
-          minWidth: "160px",
-          background: "none",
-          border: "none",
-          outline: "none",
-          fontSize: "13px",
-          color: "var(--text)",
-          fontFamily: "var(--font-geist-sans)",
-          padding: "2px 0",
-        }}
-      />
-    </div>
-  );
-}
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "10px 12px",
-  fontSize: "14px",
-  fontFamily: "var(--font-geist-sans)",
-  color: "var(--text)",
-  background: "var(--fill)",
-  border: "1px solid var(--hair)",
-  borderRadius: "8px",
-  outline: "none",
-  boxSizing: "border-box",
-};
-
-const textAreaStyle: React.CSSProperties = {
-  ...inputStyle,
-  minHeight: "90px",
-  resize: "vertical",
-  lineHeight: 1.5,
-};
