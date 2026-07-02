@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { fadeInUp } from "@/components/animations";
+import { SocialLinks } from "@/components/SocialLinks";
 
 const STACK_ITEMS = [
   "Next.js", "React", "TypeScript", "Node.js", "PostgreSQL",
@@ -35,35 +36,125 @@ export function AboutClient() {
           {t("section_title")}
         </motion.p>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1], delay: 0.08 }}
+        {/* Profile hero: photo + quick facts | name + bio */}
+        <div
+          className="grid-cols-2-mobile"
           style={{
-            fontSize: "clamp(38px, 5vw, 68px)",
-            fontWeight: 600,
-            letterSpacing: "-0.035em",
-            color: "var(--text)",
-            lineHeight: 1.05,
-            marginBottom: "32px",
+            display: "grid",
+            gridTemplateColumns: "220px 1fr",
+            gap: "clamp(28px, 5vw, 56px)",
+            alignItems: "start",
+            marginBottom: "56px",
           }}
         >
-          {t("intro_title")}
-        </motion.h1>
+          {/* Photo + quick facts */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1], delay: 0.06 }}
+          >
+            <div
+              style={{
+                width: "100%",
+                maxWidth: "220px",
+                aspectRatio: "1",
+                borderRadius: "20px",
+                overflow: "hidden",
+                border: "2px solid var(--hair)",
+                marginBottom: "20px",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/matheo-avatar.jpg"
+                alt={t("avatar_alt")}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1], delay: 0.18 }}
-          style={{ maxWidth: "720px" }}
-        >
-          <p style={{ fontSize: "20px", color: "var(--soft)", lineHeight: 1.7, marginBottom: "20px" }}>
-            {t("intro_desc_1")}
-          </p>
-          <p style={{ fontSize: "20px", color: "var(--muted)", lineHeight: 1.7, marginBottom: "56px" }}>
-            {t("intro_desc_2")}
-          </p>
-        </motion.div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "20px" }}>
+              <span style={{ fontSize: "15px", color: "var(--soft)" }}>{t("location")}</span>
+              <span style={{ fontSize: "15px", color: "var(--muted)" }}>{t("availability")}</span>
+            </div>
+
+            <p
+              style={{
+                fontSize: "12px",
+                fontWeight: 500,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: "var(--muted)",
+                fontFamily: "var(--font-geist-mono)",
+                marginBottom: "10px",
+              }}
+            >
+              {t("find_me_title")}
+            </p>
+            <SocialLinks size={44} />
+          </motion.div>
+
+          {/* Name + role + bio */}
+          <div>
+            <motion.h1
+              initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1], delay: 0.08 }}
+              style={{
+                fontSize: "clamp(32px, 4.2vw, 52px)",
+                fontWeight: 600,
+                letterSpacing: "-0.03em",
+                color: "var(--text)",
+                lineHeight: 1.08,
+                marginBottom: "8px",
+              }}
+            >
+              {t("name")}
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.14 }}
+              style={{
+                fontSize: "clamp(16px, 1.8vw, 19px)",
+                fontWeight: 500,
+                color: "var(--accent)",
+                marginBottom: "24px",
+              }}
+            >
+              {t("role")}
+            </motion.p>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1], delay: 0.2 }}
+              style={{
+                fontSize: "clamp(20px, 2.6vw, 28px)",
+                fontWeight: 600,
+                letterSpacing: "-0.02em",
+                color: "var(--text)",
+                lineHeight: 1.3,
+                marginBottom: "24px",
+              }}
+            >
+              {t("intro_title")}
+            </motion.h2>
+
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1], delay: 0.26 }}
+            >
+              <p style={{ fontSize: "18px", color: "var(--soft)", lineHeight: 1.7, marginBottom: "18px" }}>
+                {t("intro_desc_1")}
+              </p>
+              <p style={{ fontSize: "18px", color: "var(--muted)", lineHeight: 1.7 }}>
+                {t("intro_desc_2")}
+              </p>
+            </motion.div>
+          </div>
+        </div>
 
         {/* Approach card */}
         <motion.div

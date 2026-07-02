@@ -94,6 +94,12 @@
   },
   "about": {
     "section_title": "Sobre mí",
+    "avatar_alt": "Foto de Matheo Flores",
+    "name": "Matheo Flores",
+    "role": "Desarrollador Web Full-Stack",
+    "location": "Quito, Ecuador",
+    "availability": "Disponible para trabajo remoto",
+    "find_me_title": "Encontráme en",
     "intro_title": "Soy Matheo Flores, me apasiona la tecnología y construyo webs completas para negocios, empresas y personas",
     "intro_desc_1": "Desde siempre me ha llamado la atención la tecnología: entender cómo funciona, crear cosas desde cero con código y ver una idea convertirse en un producto real. Esa curiosidad fue lo que me llevó a dedicarme a desarrollar páginas web para negocios, empresas y personas que necesitan una presencia digital sólida.",
     "intro_desc_2": "Soy originario de Quito, Ecuador, pero estoy abierto a trabajar de forma remota con clientes de cualquier parte del mundo. Uso tecnologías modernas como Next.js, TypeScript, PostgreSQL y Supabase para construir productos rápidos, seguros y que crecen junto a tu negocio.",
@@ -119,8 +125,6 @@
     "sending": "Enviando...",
     "required": "Este campo es obligatorio",
     "invalid_email": "Correo electrónico no válido",
-    "or_find_me": "O encontráme en",
-    "avatar_alt": "Foto de Matheo Flores",
     "error_sending": "Error al enviar. Intentalo de nuevo."
   },
   "thank_you": {
