@@ -211,13 +211,17 @@ export async function getMessages(): Promise<ContactMessage[]> {
 export async function createMessage(
   msg: Omit<ContactMessage, "id" | "created_at" | "status">
 ): Promise<ContactMessage | null> {
-  const supabase = await getSupabase();
+  const supabase = getAdminSupabase();
   if (supabase) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("mensajes_contacto")
       .insert({ ...msg, status: "pendiente" })
       .select()
       .single();
+    if (error) {
+      console.error("[createMessage]", error);
+      throw new Error(error.message);
+    }
     return data;
   }
   const entry: ContactMessage = {
