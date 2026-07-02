@@ -79,10 +79,19 @@
   },
   "project_detail": {
     "back": "← Todos los proyectos",
+    "objective_and_problem": "El reto",
     "problem": "Problema",
     "solution": "Solución",
+    "challenges": "Retos encontrados",
+    "results": "Resultados",
+    "features_title": "Funcionalidades principales",
+    "screenshots_title": "Capturas de pantalla",
+    "screenshots_before": "Antes",
+    "screenshots_after": "Después",
     "technologies": "Tecnologías",
-    "live_site": "Ver sitio en vivo"
+    "live_site": "Ver sitio en vivo",
+    "github_link": "Ver código",
+    "video_link": "Ver video"
   },
   "about": {
     "section_title": "Sobre mí",
