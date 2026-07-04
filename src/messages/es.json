@@ -152,7 +152,8 @@
     "password": "Contraseña",
     "submit": "Ingresar",
     "forgot": "¿Olvidaste tu contraseña?",
-    "error_required": "Campo requerido"
+    "error_required": "Campo requerido",
+    "error_invalid": "No se pudo iniciar sesión. Verificá el correo y la contraseña."
   },
   "forgot": {
     "title": "¿En serio?",

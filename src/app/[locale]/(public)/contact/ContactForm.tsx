@@ -29,6 +29,7 @@ export function ContactForm({ services }: { services: Service[] }) {
       service_id: "",
       timeline: "",
       message: "",
+      website: "",
     },
   });
 
@@ -274,6 +275,29 @@ export function ContactForm({ services }: { services: Service[] }) {
               {errors.message && (
                 <span style={errorStyle}>{t("required")}</span>
               )}
+            </div>
+
+            {/* Honeypot — visually removed and skipped by keyboard/screen
+                readers; humans never fill it, bots that do get dropped
+                server-side. */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                left: "-9999px",
+                width: "1px",
+                height: "1px",
+                overflow: "hidden",
+              }}
+            >
+              <label htmlFor="contact-website">Website</label>
+              <input
+                id="contact-website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                {...register("website")}
+              />
             </div>
 
             {submitError && (

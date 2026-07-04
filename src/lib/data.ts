@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { getSupabase } from "./supabase/client";
 import { getAdminSupabase } from "./supabase/admin";
+import { requireAdmin } from "./supabase/server";
 import type { Project, Service } from "./types";
 
 export interface ContactMessage {
@@ -112,6 +113,9 @@ export const getServiceName = unstable_cache(
 );
 
 export async function getMessages(): Promise<ContactMessage[]> {
+  // Reads private contact data with the service-role key — the auth check
+  // lives at the data source, not only in middleware/layouts.
+  await requireAdmin();
   const supabase = getAdminSupabase();
   if (!supabase) return [];
   const { data } = await supabase

@@ -152,7 +152,8 @@
     "password": "Password",
     "submit": "Sign in",
     "forgot": "Forgot your password?",
-    "error_required": "Required field"
+    "error_required": "Required field",
+    "error_invalid": "Could not sign in. Check your email and password."
   },
   "forgot": {
     "title": "Really?",

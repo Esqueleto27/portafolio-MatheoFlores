@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function ForgotPage() {
   const t = useTranslations("forgot");

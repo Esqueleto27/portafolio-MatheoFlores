@@ -41,6 +41,14 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Must exceed the 5 MB image limit enforced in uploadImageAction
+      // (plus multipart overhead), or valid uploads die at the framework
+      // layer before our own validation ever runs.
+      bodySizeLimit: "6mb",
+    },
+  },
   images: {
     remotePatterns: [
       {

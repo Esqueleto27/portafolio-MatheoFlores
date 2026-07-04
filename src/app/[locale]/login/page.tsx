@@ -23,7 +23,9 @@ export default function LoginPage() {
 
     const result = await signIn(email, password);
     if (result.error) {
-      setError(result.error);
+      // Supabase errors come back in English ("Invalid login credentials") —
+      // show a translated generic message instead of the raw text.
+      setError(t("error_invalid"));
       setLoading(false);
     } else {
       router.replace("/admin");

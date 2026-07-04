@@ -18,11 +18,6 @@ export function Navbar() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
   // Lock body scroll while the mobile menu is open
   useEffect(() => {
     if (!menuOpen) return;
@@ -33,7 +28,15 @@ export function Navbar() {
     };
   }, [menuOpen]);
 
+  // The mobile menu closes on every navigation trigger (link clicks and
+  // the locale switch) instead of reacting to pathname changes in an
+  // effect, which caused a cascading re-render on every route change.
+  function closeMenu() {
+    setMenuOpen(false);
+  }
+
   function switchLocale(next: "es" | "en") {
+    closeMenu();
     router.replace(pathname, { locale: next });
   }
 
@@ -47,6 +50,7 @@ export function Navbar() {
           {/* Logo */}
           <Link
             href="/"
+            onClick={closeMenu}
             className="flex items-center gap-2 no-underline min-w-0 overflow-hidden"
           >
             <span className="w-[9px] h-[9px] rounded-full bg-accent shadow-[0_0_8px_var(--accent)] shrink-0" />
@@ -142,6 +146,7 @@ export function Navbar() {
                   <Link
                     key={key}
                     href={href}
+                    onClick={closeMenu}
                     className={`text-base font-medium px-2.5 py-3 rounded-[10px] no-underline ${
                       isActive ? "text-accent-2 bg-fill" : "text-soft bg-transparent"
                     }`}
@@ -152,7 +157,7 @@ export function Navbar() {
               })}
 
               {/* CTA */}
-              <Link href="/contact" className="btn-primary mt-3 w-full">
+              <Link href="/contact" onClick={closeMenu} className="btn-primary mt-3 w-full">
                 {t("cta")}
               </Link>
             </div>

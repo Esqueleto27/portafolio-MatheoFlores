@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getProjects } from "@/lib/data";
-
-const BASE = "https://matheoflores.dev";
+import { SITE_URL as BASE } from "@/lib/seo";
 const LOCALES = ["es", "en"] as const;
 
 const STATIC_PATHS = ["/", "/projects", "/about", "/contact"];

@@ -27,6 +27,12 @@ export async function POST(request: Request) {
       );
     }
 
+    // Honeypot filled → bot. Pretend everything went fine so it doesn't
+    // learn the field is a trap, but store nothing and send nothing.
+    if (parsed.data.website) {
+      return NextResponse.json({ success: true });
+    }
+
     const services = await getServices();
     if (!services.some((s) => s.id === parsed.data.service_id)) {
       return NextResponse.json(
@@ -35,26 +41,35 @@ export async function POST(request: Request) {
       );
     }
 
-    await createMessage(parsed.data);
+    const { name, email, service_id, timeline, message } = parsed.data;
+    const messageData = { name, email, service_id, timeline, message };
+    await createMessage(messageData);
 
-    const apiKey = process.env.RESEND_API_KEY;
-    if (apiKey) {
-      const { Resend } = await import("resend");
-      const resend = new Resend(apiKey);
-      const from = process.env.RESEND_FROM ?? "Portafolio <noreply@matheoflores.dev>";
-      await resend.emails.send({
-        from,
-        to: "matheofloresloor@gmail.com",
-        subject: `Nuevo mensaje de ${parsed.data.name}`,
-        text: [
-          `Nombre: ${parsed.data.name}`,
-          `Email: ${parsed.data.email}`,
-          `Servicio: ${parsed.data.service_id}`,
-          `Plazo: ${parsed.data.timeline}`,
-          "",
-          parsed.data.message,
-        ].join("\n"),
-      });
+    // The message is already stored (visible in the admin panel) — a
+    // notification failure must not surface as an error to the visitor,
+    // or they'll retry and create duplicates.
+    try {
+      const apiKey = process.env.RESEND_API_KEY;
+      if (apiKey) {
+        const { Resend } = await import("resend");
+        const resend = new Resend(apiKey);
+        const from = process.env.RESEND_FROM ?? "Portafolio <noreply@matheoflores.dev>";
+        await resend.emails.send({
+          from,
+          to: "matheofloresloor@gmail.com",
+          subject: `Nuevo mensaje de ${messageData.name}`,
+          text: [
+            `Nombre: ${messageData.name}`,
+            `Email: ${messageData.email}`,
+            `Servicio: ${messageData.service_id}`,
+            `Plazo: ${messageData.timeline}`,
+            "",
+            messageData.message,
+          ].join("\n"),
+        });
+      }
+    } catch (emailError) {
+      console.error("[contact] email notification failed:", emailError);
     }
 
     return NextResponse.json({ success: true });

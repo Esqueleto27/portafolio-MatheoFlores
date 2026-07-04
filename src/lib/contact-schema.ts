@@ -17,6 +17,9 @@ export const contactSchema = z.object({
     .min(1, "required")
     .refine((v) => (TIMELINE_OPTIONS as readonly string[]).includes(v), "required"),
   message: z.string().min(1, "required").max(5000, "required").trim(),
+  // Honeypot — hidden in the UI, so humans leave it empty. Bots that
+  // auto-fill every field get a fake success in the API route.
+  website: z.string().max(200).optional(),
 });
 
 export type ContactFormData = z.infer<typeof contactSchema>;

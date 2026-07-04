@@ -1,6 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+// Theme state lives outside React (localStorage + the data-theme attribute
+// set by the root layout's init script), so it's read via
+// useSyncExternalStore instead of a setState-in-effect after mount.
+const THEME_EVENT = "mf-theme-change";
+
+function subscribe(callback: () => void) {
+  window.addEventListener(THEME_EVENT, callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener(THEME_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getIsDark() {
+  return localStorage.getItem("theme") !== "light";
+}
+
+// Server render assumes dark — the same default as the root layout.
+function getServerIsDark() {
+  return true;
+}
 
 export function ThemeToggle({
   className,
@@ -9,21 +32,17 @@ export function ThemeToggle({
   className?: string;
   style?: React.CSSProperties;
 }) {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    setIsDark(localStorage.getItem("theme") !== "light");
-  }, []);
+  const isDark = useSyncExternalStore(subscribe, getIsDark, getServerIsDark);
 
   function toggle() {
     const next = isDark ? "light" : "dark";
-    setIsDark(!isDark);
     localStorage.setItem("theme", next);
     if (next === "light") {
       document.documentElement.setAttribute("data-theme", "light");
     } else {
       document.documentElement.removeAttribute("data-theme");
     }
+    window.dispatchEvent(new Event(THEME_EVENT));
   }
 
   return (

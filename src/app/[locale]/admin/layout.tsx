@@ -1,6 +1,12 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { getServerUser } from "@/lib/supabase/server";
+import { isAdminEmail } from "@/lib/admin-email";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({
   children,
@@ -12,7 +18,9 @@ export default async function AdminLayout({
   const { locale } = await params;
   const user = await getServerUser();
 
-  if (!user) {
+  // Same check as the proxy middleware — being signed in is not enough,
+  // only ADMIN_EMAIL may see the panel. Kept here as defense in depth.
+  if (!isAdminEmail(user?.email)) {
     redirect(`/${locale}/login`);
   }
 

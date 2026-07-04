@@ -1,18 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeMotionPreference(callback: () => void) {
+  const mq = window.matchMedia(REDUCED_MOTION_QUERY);
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+
+function getEnabled() {
+  return !window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
+// Disabled on the server — purely decorative, so appearing after hydration
+// is fine and avoids animating for reduced-motion users on first paint.
+function getServerEnabled() {
+  return false;
+}
 
 export function CursorGlow() {
   const glowRef = useRef<HTMLDivElement>(null);
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setEnabled(!mq.matches);
-    const onChange = () => setEnabled(!mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
+  const enabled = useSyncExternalStore(
+    subscribeMotionPreference,
+    getEnabled,
+    getServerEnabled
+  );
 
   useEffect(() => {
     if (!enabled) return;

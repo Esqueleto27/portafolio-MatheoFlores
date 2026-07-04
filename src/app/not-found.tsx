@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function RootNotFound() {
   return (
     <section
@@ -33,13 +35,13 @@ export default function RootNotFound() {
         >
           Página no encontrada
         </h1>
-        <a
+        <Link
           href="/"
           className="btn-primary"
           style={{ display: "inline-flex" }}
         >
           Volver al inicio
-        </a>
+        </Link>
       </div>
     </section>
   );
