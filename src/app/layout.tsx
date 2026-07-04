@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { Analytics } from "@vercel/analytics/next";
 import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export default function RootLayout({
         style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
