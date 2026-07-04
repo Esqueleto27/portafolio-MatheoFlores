@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/Button";
 import { reorderServiceAction } from "@/lib/admin-actions";
-import type { Service } from "@/lib/mock-data";
+import type { Service } from "@/lib/types";
 
 export function ServicesTable({ initial }: { initial: Service[] }) {
   const [services, setServices] = useState(initial);
@@ -82,7 +82,7 @@ export function ServicesTable({ initial }: { initial: Service[] }) {
               <td style={{ padding: "10px 16px" }}>{s.name_en}</td>
               <td style={{ padding: "10px 16px" }}>
                 {s.image_url
-                  ? <img src={s.image_url} alt="" style={{ width: "48px", height: "32px", objectFit: "cover", borderRadius: "4px", border: "1px solid var(--hair)" }} />
+                  ? <Image src={s.image_url} alt="" width={48} height={32} style={{ width: "48px", height: "32px", objectFit: "cover", borderRadius: "4px", border: "1px solid var(--hair)" }} />
                   : <span style={{ fontSize: "12px", color: "var(--hair)" }}>—</span>
                 }
               </td>

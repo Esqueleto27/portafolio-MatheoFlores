@@ -1,0 +1,26 @@
+# Matheo Flores — Full-Stack Web Developer
+
+> Matheo Flores is a full-stack web developer based in Quito, Ecuador,
+> working remotely with clients worldwide. He designs, builds and launches
+> complete websites for businesses that want to look professional, appear
+> on Google and turn visits into customers.
+
+## What he does
+
+- Complete websites end to end: domain, design, code, SEO and launch
+- Full-stack development: frontend, backend, database and deployment
+- Site rebuilds and redesigns for businesses with outdated websites
+- Stack: Next.js, React, TypeScript, Supabase, Tailwind CSS
+
+## Availability
+
+- Based in Quito, Ecuador (GMT-5)
+- Works remotely with clients globally (Spanish and English)
+
+## Links
+
+- Website: https://matheoflores.dev
+- Projects: https://matheoflores.dev/es/projects
+- Contact: https://matheoflores.dev/es/contact
+- LinkedIn: https://www.linkedin.com/in/matheo-flores-281160278/
+- Upwork: https://www.upwork.com/freelancers/~018e88181a81bc2eec

@@ -1,18 +1,32 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getLocale } from "next-intl/server";
+import { getLocale, setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ServicePill } from "@/components/ui/Badge";
-import { getProjectBySlug, getServiceName } from "@/lib/data";
-import type { Project, Locale } from "@/lib/mock-data";
+import { getProjectBySlug, getServiceName, getProjects } from "@/lib/data";
+import type { Project, Locale } from "@/lib/types";
+import { routing } from "@/i18n/routing";
 import { BrowserFrame, PhoneFrame } from "@/components/project-detail/DeviceFrames";
+import { BeforeAfterSlider } from "@/components/project-detail/BeforeAfterSlider";
 import { DescriptionHeader } from "@/components/project-detail/DescriptionHeader";
 import { ChallengeSolutionBlock } from "@/components/project-detail/ChallengeSolutionBlock";
 import { ResultsSection } from "@/components/project-detail/ResultsSection";
 import { FeaturesList } from "@/components/project-detail/FeaturesList";
 import { TechStrip } from "@/components/project-detail/TechStrip";
 import { LinksSection } from "@/components/project-detail/LinksSection";
+import { DemoNotice } from "@/components/project-detail/DemoNotice";
+import { buildAlternates, SITE_URL } from "@/lib/seo";
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const projects = await getProjects();
+  return routing.locales.flatMap((locale) =>
+    projects.map((project) => ({ locale, slug: project.slug }))
+  );
+}
 
 export async function generateMetadata({
   params,
@@ -20,31 +34,53 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const project = await getProjectBySlug(slug);
   if (!project) return {};
+  const loc = locale === "en" ? "en" : "es";
   const title = locale === "en" ? project.business_en : project.business_es;
   const description = locale === "en" ? project.problem_en : project.problem_es;
   return {
     title,
     description: description?.slice(0, 160) ?? undefined,
+    alternates: buildAlternates(loc, `/projects/${slug}`),
   };
 }
 
 export default async function ProjectDetail({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { locale: paramLocale, slug } = await params;
+  setRequestLocale(paramLocale);
   const locale = (await getLocale()) as Locale;
   const project = await getProjectBySlug(slug);
 
   if (!project) notFound();
 
-  const serviceName = await getServiceName(project.service_id, locale);
+  const customTag = locale === "en" ? project.custom_tag_en : project.custom_tag_es;
+  const serviceName = customTag || (await getServiceName(project.service_id, locale));
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: locale === "en" ? project.business_en : project.business_es,
+    description: locale === "en" ? project.problem_en : project.problem_es,
+    url: `${SITE_URL}/${locale}/projects/${project.slug}`,
+    ...(project.image_url ? { image: project.image_url } : {}),
+    creator: { "@type": "Person", name: "Matheo Flores", url: SITE_URL },
+    keywords: project.technologies.join(", "),
+  };
 
   return (
-    <ProjectDetailContent project={project} locale={locale} serviceName={serviceName} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProjectDetailContent project={project} locale={locale} serviceName={serviceName} />
+    </>
   );
 }
 
@@ -117,19 +153,23 @@ function ProjectDetailContent({
 
         {/* Preview image */}
         <BrowserFrame transitionDelay={0.18}>
-          {project.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={project.image_url}
+          {project.before_image_url && project.image_url ? (
+            <BeforeAfterSlider
+              beforeUrl={project.before_image_url}
+              afterUrl={project.image_url}
+              beforeLabel={t("before")}
+              afterLabel={t("after")}
               alt={title}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-                position: "absolute",
-                inset: 0,
-              }}
+              eager
+            />
+          ) : project.image_url || project.before_image_url ? (
+            <Image
+              src={(project.image_url || project.before_image_url)!}
+              alt={title}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 1080px"
+              style={{ objectFit: "cover" }}
             />
           ) : (
             <span
@@ -145,7 +185,7 @@ function ProjectDetailContent({
         </BrowserFrame>
 
         {/* Mobile preview */}
-        {project.mobile_image_url && (
+        {(project.mobile_image_url || project.before_mobile_image_url) && (
           <div data-reveal style={{ marginBottom: "56px", transitionDelay: "0.2s" }}>
             <h3
               style={{
@@ -162,12 +202,24 @@ function ProjectDetailContent({
               {t("mobile_preview_title")}
             </h3>
             <PhoneFrame>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={project.mobile_image_url}
-                alt={title}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              />
+              {project.before_mobile_image_url && project.mobile_image_url ? (
+                <BeforeAfterSlider
+                  beforeUrl={project.before_mobile_image_url}
+                  afterUrl={project.mobile_image_url}
+                  beforeLabel={t("before")}
+                  afterLabel={t("after")}
+                  alt={title}
+                />
+              ) : (
+                <Image
+                  src={(project.mobile_image_url || project.before_mobile_image_url)!}
+                  alt={title}
+                  fill
+                  loading="lazy"
+                  sizes="260px"
+                  style={{ objectFit: "cover" }}
+                />
+              )}
             </PhoneFrame>
           </div>
         )}
@@ -198,6 +250,15 @@ function ProjectDetailContent({
 
         {/* Technologies */}
         <TechStrip technologies={project.technologies} title={t("technologies")} transitionDelay={0.4} />
+
+        {/* Demo disclaimer — only for demo projects, right before the live link */}
+        {project.category === "demo" && (
+          <DemoNotice
+            title={t("demo_notice_title")}
+            description={t("demo_notice_desc")}
+            transitionDelay={0.42}
+          />
+        )}
 
         {/* Links */}
         <LinksSection

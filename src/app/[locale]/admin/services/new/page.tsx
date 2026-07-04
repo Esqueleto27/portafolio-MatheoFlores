@@ -31,7 +31,7 @@ export default function NewService() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await createServiceAction({ ...form, image_url: form.image_url || undefined });
+    await createServiceAction({ ...form, image_url: form.image_url || null });
     router.push("/admin/services");
   }
 
@@ -88,6 +88,7 @@ export default function NewService() {
           <ImageUpload
             currentUrl={form.image_url || undefined}
             onUploaded={(url) => setForm((prev) => ({ ...prev, image_url: url }))}
+            onRemove={() => setForm((prev) => ({ ...prev, image_url: "" }))}
           />
         </Field>
 

@@ -1,34 +1,7 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
-import { createMessage } from "@/lib/data";
-
-const VALID_SERVICE_IDS = ["ecommerce", "seo-web", "portfolio", "landing", "custom"] as const;
-const VALID_TIMELINES = ["urgent", "month", "no_rush", "exploring"] as const;
-
-const contactSchema = z.object({
-  name: z.string().min(1).max(100).trim(),
-  email: z.string().email().max(200).trim(),
-  service_id: z.enum(VALID_SERVICE_IDS),
-  timeline: z.enum(VALID_TIMELINES),
-  message: z.string().min(1).max(5000).trim(),
-});
-
-// In-memory rate limiter: max 3 requests per 15 min per IP
-const rateMap = new Map<string, { count: number; resetAt: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const windowMs = 15 * 60 * 1000;
-  const limit = 3;
-  const entry = rateMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + windowMs });
-    return false;
-  }
-  if (entry.count >= limit) return true;
-  entry.count++;
-  return false;
-}
+import { createMessage, getServices } from "@/lib/data";
+import { isRateLimited } from "@/lib/rate-limit";
+import { contactSchema } from "@/lib/contact-schema";
 
 export async function POST(request: Request) {
   try {
@@ -37,7 +10,7 @@ export async function POST(request: Request) {
       request.headers.get("x-real-ip") ??
       "unknown";
 
-    if (isRateLimited(ip)) {
+    if (await isRateLimited(ip)) {
       return NextResponse.json(
         { error: "Demasiados intentos. Esperá 15 minutos." },
         { status: 429 }
@@ -54,26 +27,49 @@ export async function POST(request: Request) {
       );
     }
 
-    await createMessage(parsed.data);
+    // Honeypot filled → bot. Pretend everything went fine so it doesn't
+    // learn the field is a trap, but store nothing and send nothing.
+    if (parsed.data.website) {
+      return NextResponse.json({ success: true });
+    }
 
-    const apiKey = process.env.RESEND_API_KEY;
-    if (apiKey) {
-      const { Resend } = await import("resend");
-      const resend = new Resend(apiKey);
-      const from = process.env.RESEND_FROM ?? "Portafolio <noreply@matheoflores.dev>";
-      await resend.emails.send({
-        from,
-        to: "matheofloresloor@gmail.com",
-        subject: `Nuevo mensaje de ${parsed.data.name}`,
-        text: [
-          `Nombre: ${parsed.data.name}`,
-          `Email: ${parsed.data.email}`,
-          `Servicio: ${parsed.data.service_id}`,
-          `Plazo: ${parsed.data.timeline}`,
-          "",
-          parsed.data.message,
-        ].join("\n"),
-      });
+    const services = await getServices();
+    if (!services.some((s) => s.id === parsed.data.service_id)) {
+      return NextResponse.json(
+        { error: "Datos inválidos", details: { service_id: "unknown" } },
+        { status: 400 }
+      );
+    }
+
+    const { name, email, service_id, timeline, message } = parsed.data;
+    const messageData = { name, email, service_id, timeline, message };
+    await createMessage(messageData);
+
+    // The message is already stored (visible in the admin panel) — a
+    // notification failure must not surface as an error to the visitor,
+    // or they'll retry and create duplicates.
+    try {
+      const apiKey = process.env.RESEND_API_KEY;
+      if (apiKey) {
+        const { Resend } = await import("resend");
+        const resend = new Resend(apiKey);
+        const from = process.env.RESEND_FROM ?? "Portafolio <noreply@matheoflores.dev>";
+        await resend.emails.send({
+          from,
+          to: "matheofloresloor@gmail.com",
+          subject: `Nuevo mensaje de ${messageData.name}`,
+          text: [
+            `Nombre: ${messageData.name}`,
+            `Email: ${messageData.email}`,
+            `Servicio: ${messageData.service_id}`,
+            `Plazo: ${messageData.timeline}`,
+            "",
+            messageData.message,
+          ].join("\n"),
+        });
+      }
+    } catch (emailError) {
+      console.error("[contact] email notification failed:", emailError);
     }
 
     return NextResponse.json({ success: true });

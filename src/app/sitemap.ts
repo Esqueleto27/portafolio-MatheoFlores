@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getProjects } from "@/lib/data";
-
-const BASE = "https://matheoflores.dev";
+import { SITE_URL as BASE } from "@/lib/seo";
 const LOCALES = ["es", "en"] as const;
 
 const STATIC_PATHS = ["/", "/projects", "/about", "/contact"];
@@ -21,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projectEntries: MetadataRoute.Sitemap = projects.flatMap((project) =>
     LOCALES.map((locale) => ({
       url: `${BASE}/${locale}/projects/${project.slug}`,
-      lastModified: new Date(),
+      lastModified: project.created_at ? new Date(project.created_at) : new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     }))

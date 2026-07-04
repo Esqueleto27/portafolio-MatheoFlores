@@ -1,8 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { fadeInUp } from "@/components/animations";
 import { SocialLinks } from "@/components/SocialLinks";
 
 const STACK_ITEMS = [
@@ -19,10 +17,7 @@ export function AboutClient() {
     <section style={{ padding: "60px clamp(20px, 6vw, 72px) 100px" }}>
       <div style={{ maxWidth: "min(1080px, 100%)", margin: "0 auto", width: "100%" }}>
 
-        <motion.p
-          variants={fadeInUp}
-          initial="hidden"
-          animate="visible"
+        <p
           style={{
             fontSize: "13px",
             fontWeight: 500,
@@ -31,10 +26,11 @@ export function AboutClient() {
             color: "var(--accent-2)",
             fontFamily: "var(--font-geist-mono)",
             marginBottom: "12px",
+            animation: "mf-fade-up 0.6s cubic-bezier(0.25, 0.4, 0.25, 1) both",
           }}
         >
           {t("section_title")}
-        </motion.p>
+        </p>
 
         {/* Profile hero: photo + quick facts | name + bio */}
         <div
@@ -48,10 +44,10 @@ export function AboutClient() {
           }}
         >
           {/* Photo + quick facts */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1], delay: 0.06 }}
+          <div
+            style={{
+              animation: "mf-scale-up 0.75s cubic-bezier(0.25, 0.4, 0.25, 1) 0.06s both",
+            }}
           >
             <div
               style={{
@@ -66,7 +62,7 @@ export function AboutClient() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/matheo-avatar.jpg"
+                src="/images/matheo-avatar.webp"
                 alt={t("avatar_alt")}
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
               />
@@ -91,14 +87,11 @@ export function AboutClient() {
               {t("find_me_title")}
             </p>
             <SocialLinks size={44} />
-          </motion.div>
+          </div>
 
           {/* Name + role + bio */}
           <div>
-            <motion.h1
-              initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1], delay: 0.08 }}
+            <h1
               style={{
                 fontSize: "clamp(32px, 4.2vw, 52px)",
                 fontWeight: 600,
@@ -106,29 +99,25 @@ export function AboutClient() {
                 color: "var(--text)",
                 lineHeight: 1.08,
                 marginBottom: "8px",
+                animation: "mf-blur-up 0.8s cubic-bezier(0.25, 0.4, 0.25, 1) 0.08s both",
               }}
             >
               {t("name")}
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.14 }}
+            <p
               style={{
                 fontSize: "clamp(16px, 1.8vw, 19px)",
                 fontWeight: 500,
                 color: "var(--accent)",
                 marginBottom: "24px",
+                animation: "mf-fade-up 0.7s cubic-bezier(0.25, 0.4, 0.25, 1) 0.14s both",
               }}
             >
               {t("role")}
-            </motion.p>
+            </p>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1], delay: 0.2 }}
+            <h2
               style={{
                 fontSize: "clamp(20px, 2.6vw, 28px)",
                 fontWeight: 600,
@@ -136,15 +125,16 @@ export function AboutClient() {
                 color: "var(--text)",
                 lineHeight: 1.3,
                 marginBottom: "24px",
+                animation: "mf-fade-up 0.75s cubic-bezier(0.25, 0.4, 0.25, 1) 0.2s both",
               }}
             >
               {t("intro_title")}
-            </motion.h2>
+            </h2>
 
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1], delay: 0.26 }}
+            <div
+              style={{
+                animation: "mf-fade-up 0.75s cubic-bezier(0.25, 0.4, 0.25, 1) 0.26s both",
+              }}
             >
               <p style={{ fontSize: "18px", color: "var(--soft)", lineHeight: 1.7, marginBottom: "18px" }}>
                 {t("intro_desc_1")}
@@ -152,16 +142,13 @@ export function AboutClient() {
               <p style={{ fontSize: "18px", color: "var(--muted)", lineHeight: 1.7 }}>
                 {t("intro_desc_2")}
               </p>
-            </motion.div>
+            </div>
           </div>
         </div>
 
         {/* Approach card */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 24 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1], delay: 0.28 }}
-          whileHover={{ boxShadow: "0 20px 60px rgba(37, 99, 235, 0.14)", borderColor: "rgba(37, 99, 235, 0.3)" }}
+        <div
+          className="approach-card-hover"
           style={{
             padding: "32px",
             borderRadius: "18px",
@@ -171,12 +158,11 @@ export function AboutClient() {
             position: "relative",
             overflow: "hidden",
             cursor: "default",
+            animation: "mf-scale-up 0.75s cubic-bezier(0.25, 0.4, 0.25, 1) 0.28s both",
           }}
         >
-          <motion.div
+          <div
             aria-hidden="true"
-            animate={{ opacity: [0.4, 0.8, 0.4] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             style={{
               position: "absolute",
               top: "-40%",
@@ -186,6 +172,7 @@ export function AboutClient() {
               borderRadius: "50%",
               background: "radial-gradient(circle, rgb(37 99 235 / 0.08) 0%, transparent 70%)",
               pointerEvents: "none",
+              animation: "mf-glow-fade-soft 4s ease-in-out infinite",
             }}
           />
           <h2
@@ -203,15 +190,10 @@ export function AboutClient() {
           <p style={{ fontSize: "19px", color: "var(--muted)", lineHeight: 1.65, margin: 0, position: "relative" }}>
             {t("approach_desc")}
           </p>
-        </motion.div>
+        </div>
 
         {/* Stack marquee */}
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.75, ease: [0.25, 0.4, 0.25, 1] }}
-        >
+        <div data-reveal>
           <h2
             style={{
               fontSize: "clamp(20px, 2.5vw, 26px)",
@@ -245,9 +227,9 @@ export function AboutClient() {
               }}
             >
               {[...STACK_ITEMS, ...STACK_ITEMS].map((item, i) => (
-                <motion.span
+                <span
                   key={`${item}-${i}`}
-                  whileHover={{ scale: 1.08, y: -3 }}
+                  className="marquee-item-hover"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -274,11 +256,11 @@ export function AboutClient() {
                     }}
                   />
                   {item}
-                </motion.span>
+                </span>
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

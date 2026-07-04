@@ -3,7 +3,7 @@
 import { useRouter, Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { deleteProjectAction } from "@/lib/admin-actions";
-import type { Project } from "@/lib/mock-data";
+import type { Project } from "@/lib/types";
 
 export function DeleteProjectClient({ project }: { project: Project }) {
   const router = useRouter();

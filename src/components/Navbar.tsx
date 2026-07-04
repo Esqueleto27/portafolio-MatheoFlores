@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter, Link } from "@/i18n/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -19,11 +18,6 @@ export function Navbar() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
   // Lock body scroll while the mobile menu is open
   useEffect(() => {
     if (!menuOpen) return;
@@ -34,123 +28,48 @@ export function Navbar() {
     };
   }, [menuOpen]);
 
+  // The mobile menu closes on every navigation trigger (link clicks and
+  // the locale switch) instead of reacting to pathname changes in an
+  // effect, which caused a cascading re-render on every route change.
+  function closeMenu() {
+    setMenuOpen(false);
+  }
+
   function switchLocale(next: "es" | "en") {
+    closeMenu();
     router.replace(pathname, { locale: next });
   }
 
   return (
-    <header
-      style={{
-        position: "fixed",
-        top: "14px",
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        display: "flex",
-        justifyContent: "center",
-        padding: "0 clamp(12px, 3vw, 24px)",
-        pointerEvents: "none",
-      }}
-    >
+    <header className="fixed top-[14px] left-0 right-0 z-[100] flex justify-center px-[clamp(12px,3vw,24px)] pointer-events-none">
       <nav
         aria-label={locale === "es" ? "Navegación principal" : "Main navigation"}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          maxWidth: "1140px",
-          borderRadius: "14px",
-          border: "1px solid var(--hair)",
-          background: "var(--nav)",
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-          boxShadow: "0 12px 40px rgba(0,0,0,0.22)",
-          pointerEvents: "all",
-          overflow: "hidden",
-        }}
+        className="flex flex-col w-full max-w-[1140px] rounded-[14px] border border-hair bg-[var(--nav)] backdrop-blur-[18px] shadow-[0_12px_40px_rgba(0,0,0,0.22)] pointer-events-auto overflow-hidden"
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-            height: "52px",
-            padding: "0 clamp(12px, 4vw, 18px)",
-            flexShrink: 0,
-            gap: "8px",
-          }}
-        >
+        <div className="flex items-center justify-between w-full h-[52px] px-[clamp(12px,4vw,18px)] shrink-0 gap-2">
           {/* Logo */}
           <Link
             href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              textDecoration: "none",
-              minWidth: 0,
-              overflow: "hidden",
-            }}
+            onClick={closeMenu}
+            className="flex items-center gap-2 no-underline min-w-0 overflow-hidden"
           >
-            <span
-              style={{
-                width: "9px",
-                height: "9px",
-                borderRadius: "50%",
-                background: "var(--accent)",
-                boxShadow: "0 0 8px var(--accent)",
-                flexShrink: 0,
-              }}
-            />
-            <span
-              style={{
-                fontSize: "clamp(12px, 3.4vw, 14px)",
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "var(--text)",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <span className="w-[9px] h-[9px] rounded-full bg-accent shadow-[0_0_8px_var(--accent)] shrink-0" />
+            <span className="text-[clamp(12px,3.4vw,14px)] font-semibold tracking-[0.1em] uppercase text-text overflow-hidden text-ellipsis whitespace-nowrap">
               Matheo Flores
             </span>
           </Link>
 
           {/* Center links — hidden on mobile */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "2px",
-            }}
-            className="hidden md:flex"
-          >
+          <div className="items-center gap-0.5 navbar-desktop-links">
             {NAV_LINKS.map(({ key, href }) => {
               const isActive = pathname === href;
               return (
                 <Link
                   key={key}
                   href={href}
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    padding: "8px 13px",
-                    borderRadius: "8px",
-                    color: isActive ? "var(--accent-2)" : "var(--soft)",
-                    textDecoration: "none",
-                    transition: "color 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive)
-                      (e.target as HTMLElement).style.color = "var(--text)";
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive)
-                      (e.target as HTMLElement).style.color = "var(--soft)";
-                  }}
+                  className={`text-sm font-medium px-[13px] py-2 rounded-lg no-underline transition-colors ${
+                    isActive ? "text-accent-2" : "text-soft hover:text-text focus-visible:text-text"
+                  }`}
                 >
                   {t(key)}
                 </Link>
@@ -159,45 +78,20 @@ export function Navbar() {
           </div>
 
           {/* Right controls */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              flexShrink: 0,
-            }}
-          >
-            {/* Locale switcher pill — hidden on mobile, moved into the menu */}
-            <div
-              className="hidden sm:flex"
-              style={{
-                alignItems: "center",
-                gap: "2px",
-                padding: "4px 5px",
-                borderRadius: "999px",
-                border: "1px solid var(--hair)",
-                background: "var(--fill)",
-              }}
-            >
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Locale switcher pill — always visible */}
+            <div className="flex items-center gap-0.5 py-1 px-[5px] rounded-full border border-hair bg-fill shrink-0">
               {(["es", "en"] as const).map((loc) => {
                 const active = locale === loc;
                 return (
                   <button
                     key={loc}
                     onClick={() => switchLocale(loc)}
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: active ? 600 : 500,
-                      padding: "3px 8px",
-                      borderRadius: "999px",
-                      border: "none",
-                      background: active ? "var(--fill2)" : "transparent",
-                      color: active ? "var(--text)" : "var(--muted)",
-                      cursor: "pointer",
-                      transition: "color 0.2s, background 0.2s",
-                      letterSpacing: "0.04em",
-                      textTransform: "uppercase",
-                    }}
+                    className={`text-xs px-2 py-[3px] rounded-full border-none cursor-pointer transition-colors tracking-[0.04em] uppercase ${
+                      active
+                        ? "font-semibold text-text bg-fill2"
+                        : "font-medium text-muted bg-transparent hover:text-text"
+                    }`}
                   >
                     {loc}
                   </button>
@@ -206,12 +100,10 @@ export function Navbar() {
             </div>
 
             {/* Theme toggle */}
-            <ThemeToggle
-              className="h-8 w-8 flex items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--fill)] text-[var(--muted)] hover:text-[var(--text)] transition-colors cursor-pointer"
-            />
+            <ThemeToggle className="h-8 w-8 flex items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--fill)] text-[var(--muted)] hover:text-[var(--text)] transition-colors cursor-pointer" />
 
             {/* CTA button */}
-            <Link href="/contact" className="btn-primary compact hidden sm:inline-flex">
+            <Link href="/contact" className="btn-primary compact navbar-desktop-cta">
               {t("cta")}
             </Link>
 
@@ -221,20 +113,7 @@ export function Navbar() {
               onClick={() => setMenuOpen((v) => !v)}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? t("menu_close") : t("menu_open")}
-              className="md:hidden"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "36px",
-                height: "36px",
-                borderRadius: "8px",
-                border: "1px solid var(--hair)",
-                background: "var(--fill)",
-                color: "var(--text)",
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
+              className="navbar-hamburger items-center justify-center w-9 h-9 rounded-lg border border-hair bg-fill text-text cursor-pointer shrink-0"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 {menuOpen ? (
@@ -254,98 +133,36 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Mobile menu panel */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              key="mobile-menu"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
-              className="md:hidden"
-              style={{ borderTop: "1px solid var(--hair)" }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
-                  padding: "14px 18px 18px",
-                }}
-              >
-                {NAV_LINKS.map(({ key, href }) => {
-                  const isActive = pathname === href;
-                  return (
-                    <Link
-                      key={key}
-                      href={href}
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 500,
-                        padding: "12px 10px",
-                        borderRadius: "10px",
-                        color: isActive ? "var(--accent-2)" : "var(--soft)",
-                        background: isActive ? "var(--fill)" : "transparent",
-                        textDecoration: "none",
-                      }}
-                    >
-                      {t(key)}
-                    </Link>
-                  );
-                })}
+        {/* Mobile menu panel — grid-rows 0fr/1fr trick animates to auto height */}
+        <div
+          className={`grid navbar-mobile-panel ${menuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+          style={{ transition: "grid-template-rows 0.25s cubic-bezier(0.25,0.4,0.25,1)" }}
+        >
+          <div className="overflow-hidden border-t border-hair">
+            <div className="flex flex-col gap-1 px-[18px] pt-3.5 pb-[18px]">
+              {NAV_LINKS.map(({ key, href }) => {
+                const isActive = pathname === href;
+                return (
+                  <Link
+                    key={key}
+                    href={href}
+                    onClick={closeMenu}
+                    className={`text-base font-medium px-2.5 py-3 rounded-[10px] no-underline ${
+                      isActive ? "text-accent-2 bg-fill" : "text-soft bg-transparent"
+                    }`}
+                  >
+                    {t(key)}
+                  </Link>
+                );
+              })}
 
-                {/* Locale switcher */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    marginTop: "6px",
-                    padding: "4px 5px",
-                    borderRadius: "999px",
-                    border: "1px solid var(--hair)",
-                    background: "var(--fill)",
-                    width: "fit-content",
-                  }}
-                >
-                  {(["es", "en"] as const).map((loc) => {
-                    const active = locale === loc;
-                    return (
-                      <button
-                        key={loc}
-                        onClick={() => switchLocale(loc)}
-                        style={{
-                          fontSize: "13px",
-                          fontWeight: active ? 600 : 500,
-                          padding: "5px 12px",
-                          borderRadius: "999px",
-                          border: "none",
-                          background: active ? "var(--fill2)" : "transparent",
-                          color: active ? "var(--text)" : "var(--muted)",
-                          cursor: "pointer",
-                          letterSpacing: "0.04em",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {loc}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* CTA */}
-                <Link
-                  href="/contact"
-                  className="btn-primary"
-                  style={{ marginTop: "12px", width: "100%" }}
-                >
-                  {t("cta")}
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              {/* CTA */}
+              <Link href="/contact" onClick={closeMenu} className="btn-primary mt-3 w-full">
+                {t("cta")}
+              </Link>
+            </div>
+          </div>
+        </div>
       </nav>
     </header>
   );

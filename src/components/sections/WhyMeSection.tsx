@@ -1,8 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { fadeInUp, slideLeft, slideRight, staggerContainer } from "@/components/animations";
 
 const ICONS = [
   <svg key="1" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -36,11 +34,8 @@ export function WhyMeSection() {
   return (
     <section style={{ padding: "80px clamp(20px, 6vw, 72px)" }}>
       <div style={{ maxWidth: "1180px", margin: "0 auto" }}>
-        <motion.p
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+        <p
+          data-reveal
           style={{
             fontSize: "13px",
             fontWeight: 500,
@@ -52,30 +47,23 @@ export function WhyMeSection() {
           }}
         >
           {t("section_label")}
-        </motion.p>
+        </p>
 
-        <motion.h2
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ delay: 0.08 }}
+        <h2
+          data-reveal
           style={{
             fontSize: "clamp(34px, 4.2vw, 54px)",
             fontWeight: 600,
             letterSpacing: "-0.03em",
             color: "var(--text)",
             marginBottom: "48px",
+            transitionDelay: "0.08s",
           }}
         >
           {t("section_title")}
-        </motion.h2>
+        </h2>
 
-        <motion.div
-          variants={staggerContainer(0.1, 0.05)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+        <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
@@ -83,15 +71,10 @@ export function WhyMeSection() {
           }}
         >
           {items.map((item, i) => (
-            <motion.div
+            <div
               key={item.num}
-              variants={i % 2 === 0 ? slideLeft : slideRight}
-              whileHover={{
-                y: -6,
-                boxShadow: "0 16px 48px rgba(37, 99, 235, 0.16)",
-                borderColor: "rgba(37, 99, 235, 0.4)",
-              }}
-              transition={{ type: "spring", stiffness: 200, damping: 22 }}
+              data-reveal
+              className="whyme-card-hover"
               style={{
                 padding: "28px 24px",
                 borderRadius: "16px",
@@ -103,6 +86,7 @@ export function WhyMeSection() {
                 cursor: "default",
                 position: "relative",
                 overflow: "hidden",
+                transitionDelay: `${i * 0.1}s`,
               }}
             >
               {/* Subtle corner accent */}
@@ -120,9 +104,8 @@ export function WhyMeSection() {
                 }}
               />
 
-              <motion.div
-                whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
-                transition={{ duration: 0.5 }}
+              <div
+                className="whyme-icon"
                 style={{
                   width: "42px",
                   height: "42px",
@@ -137,7 +120,7 @@ export function WhyMeSection() {
                 }}
               >
                 {item.icon}
-              </motion.div>
+              </div>
 
               <h3
                 style={{
@@ -160,9 +143,9 @@ export function WhyMeSection() {
               >
                 {item.desc}
               </p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

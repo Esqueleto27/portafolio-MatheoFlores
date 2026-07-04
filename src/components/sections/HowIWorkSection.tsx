@@ -1,8 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { motion, type Variants } from "framer-motion";
-import { fadeInUp } from "@/components/animations";
 
 const ICONS = [
   <svg key="1" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -28,13 +26,6 @@ const ICONS = [
   </svg>,
 ];
 
-const CARD_VARIANTS: Variants[] = [
-  { hidden: { opacity: 0, x: -36, y: 24 }, visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1] } } },
-  { hidden: { opacity: 0, x: 36, y: 24 }, visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.1 } } },
-  { hidden: { opacity: 0, x: -36, y: 24 }, visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.18 } } },
-  { hidden: { opacity: 0, x: 36, y: 24 }, visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.26 } } },
-];
-
 export function HowIWorkSection() {
   const t = useTranslations("how_i_work");
 
@@ -57,11 +48,8 @@ export function HowIWorkSection() {
 
         {/* Header */}
         <div style={{ marginBottom: "56px" }}>
-          <motion.p
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
+          <p
+            data-reveal
             style={{
               fontSize: "13px",
               fontWeight: 500,
@@ -73,32 +61,26 @@ export function HowIWorkSection() {
             }}
           >
             {t("section_label")}
-          </motion.p>
+          </p>
 
-          <motion.h2
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ delay: 0.08 }}
+          <h2
+            data-reveal
             style={{
               fontSize: "clamp(34px, 4.2vw, 54px)",
               fontWeight: 600,
               letterSpacing: "-0.03em",
               color: "var(--text)",
               margin: 0,
+              transitionDelay: "0.08s",
             }}
           >
             {t("section_title")}
-          </motion.h2>
+          </h2>
         </div>
 
         {/* 2×2 grid */}
-        <motion.div
+        <div
           className="grid-cols-2-mobile"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
@@ -106,15 +88,10 @@ export function HowIWorkSection() {
           }}
         >
           {steps.map((step, i) => (
-            <motion.div
+            <div
               key={step.num}
-              variants={CARD_VARIANTS[i]}
-              whileHover={{
-                y: -7,
-                boxShadow: "0 28px 72px rgba(37,99,235,0.16)",
-                borderColor: "rgba(37,99,235,0.32)",
-              }}
-              transition={{ type: "spring", stiffness: 200, damping: 24 }}
+              data-reveal
+              className="how-card-hover"
               style={{
                 padding: "36px 36px 36px 40px",
                 borderRadius: "20px",
@@ -126,6 +103,7 @@ export function HowIWorkSection() {
                 display: "flex",
                 flexDirection: "column",
                 gap: "0",
+                transitionDelay: `${i * 0.08 + (i % 2 === 1 ? 0.1 : 0)}s`,
               }}
             >
               {/* Giant bg number */}
@@ -190,9 +168,8 @@ export function HowIWorkSection() {
                   position: "relative",
                 }}
               >
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 4 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                <div
+                  className="how-icon"
                   style={{
                     width: "48px",
                     height: "48px",
@@ -207,7 +184,7 @@ export function HowIWorkSection() {
                   }}
                 >
                   {step.icon}
-                </motion.div>
+                </div>
 
                 <span
                   style={{
@@ -249,9 +226,9 @@ export function HowIWorkSection() {
               >
                 {step.desc}
               </p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

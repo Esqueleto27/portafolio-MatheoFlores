@@ -1,31 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
-export function ThemeToggle({ className }: { className?: string }) {
-  const [isDark, setIsDark] = useState(true);
+// Theme state lives outside React (localStorage + the data-theme attribute
+// set by the root layout's init script), so it's read via
+// useSyncExternalStore instead of a setState-in-effect after mount.
+const THEME_EVENT = "mf-theme-change";
 
-  useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    const dark = stored !== "light";
-    setIsDark(dark);
-    if (stored === "light") {
-      document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax";
-      document.documentElement.setAttribute("data-theme", "light");
-    }
-  }, []);
+function subscribe(callback: () => void) {
+  window.addEventListener(THEME_EVENT, callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener(THEME_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getIsDark() {
+  return localStorage.getItem("theme") !== "light";
+}
+
+// Server render assumes dark — the same default as the root layout.
+function getServerIsDark() {
+  return true;
+}
+
+export function ThemeToggle({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const isDark = useSyncExternalStore(subscribe, getIsDark, getServerIsDark);
 
   function toggle() {
     const next = isDark ? "light" : "dark";
-    setIsDark(!isDark);
     localStorage.setItem("theme", next);
     if (next === "light") {
-      document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax";
       document.documentElement.setAttribute("data-theme", "light");
     } else {
-      document.cookie = "theme=dark; path=/; max-age=31536000; SameSite=Lax";
       document.documentElement.removeAttribute("data-theme");
     }
+    window.dispatchEvent(new Event(THEME_EVENT));
   }
 
   return (
@@ -33,6 +50,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       onClick={toggle}
       aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
       className={className}
+      style={style}
     >
       {isDark ? (
         <svg

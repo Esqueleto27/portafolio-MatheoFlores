@@ -69,6 +69,46 @@ export function ServicePill({
   );
 }
 
+/* ── Demo pill (amber accent, flags demo/non-client projects) ──── */
+export function DemoPill({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <span
+      className={className}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "6px 13px",
+        borderRadius: "999px",
+        background: "rgb(245 158 11 / 0.12)",
+        border: "1px solid rgb(245 158 11 / 0.5)",
+        fontSize: "13px",
+        fontWeight: 700,
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
+        color: "#f59e0b",
+      }}
+    >
+      <span
+        style={{
+          width: "6px",
+          height: "6px",
+          borderRadius: "50%",
+          background: "#f59e0b",
+          flexShrink: 0,
+        }}
+      />
+      {children}
+    </span>
+  );
+}
+
 /* ── Glass pill (hero area) ─────────────────────────────────────── */
 export function GlassPill({
   children,

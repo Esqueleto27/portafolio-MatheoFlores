@@ -2,10 +2,19 @@
 
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { Search, ShoppingCart, Briefcase, Rocket, MessageCircle, Megaphone } from "lucide-react";
 import { ServicePill } from "@/components/ui/Badge";
-import { fadeInUp, staggerContainer } from "@/components/animations";
-import type { Service, Locale } from "@/lib/mock-data";
+import type { Service, Locale } from "@/lib/types";
+
+// Ícono y nombre técnico por posición de la card (01-06), no por service_id.
+const SERVICE_META = [
+  { icon: Search, techName: "SEO / Presencia" },
+  { icon: ShoppingCart, techName: "E-commerce" },
+  { icon: Briefcase, techName: "Portafolio" },
+  { icon: Rocket, techName: "Landing Page" },
+  { icon: MessageCircle, techName: "Asesoría" },
+  { icon: Megaphone, techName: "Publicidad" },
+];
 
 function TiltCard({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -66,11 +75,8 @@ export function ServicesSection({
       }}
     >
       <div style={{ maxWidth: "1180px", margin: "0 auto" }}>
-        <motion.p
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+        <p
+          data-reveal
           style={{
             fontSize: "13px",
             fontWeight: 500,
@@ -82,45 +88,35 @@ export function ServicesSection({
           }}
         >
           {t("section_label")}
-        </motion.p>
+        </p>
 
-        <motion.h2
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ delay: 0.08 }}
+        <h2
+          data-reveal
           style={{
             fontSize: "clamp(34px, 4.2vw, 54px)",
             fontWeight: 600,
             letterSpacing: "-0.03em",
             color: "var(--text)",
             marginBottom: "14px",
+            transitionDelay: "0.08s",
           }}
         >
           {t("section_title")}
-        </motion.h2>
+        </h2>
 
-        <motion.p
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ delay: 0.14 }}
+        <p
+          data-reveal
           style={{
             fontSize: "19px",
             color: "var(--muted)",
             marginBottom: "52px",
+            transitionDelay: "0.14s",
           }}
         >
           {t("section_desc")}
-        </motion.p>
+        </p>
 
-        <motion.div
-          variants={staggerContainer(0.1, 0.05)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+        <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(min(330px, 100%), 1fr))",
@@ -131,13 +127,15 @@ export function ServicesSection({
             const name = locale === "en" ? service.name_en : service.name_es;
             const desc =
               locale === "en" ? service.description_en : service.description_es;
+            const meta = SERVICE_META[i];
+            const Icon = meta?.icon;
 
             return (
-              <motion.div
+              <div
                 key={service.id}
-                variants={fadeInUp}
-                whileHover={{ boxShadow: "0 20px 60px rgba(37, 99, 235, 0.18)" }}
-                style={{ height: "100%" }}
+                data-reveal
+                className="svc-card-hover"
+                style={{ height: "100%", transitionDelay: `${i * 0.1}s` }}
               >
                 <TiltCard>
                   <div
@@ -168,21 +166,40 @@ export function ServicesSection({
                       }}
                     />
 
-                    {/* Service number */}
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 + 0.3 }}
+                    {/* Service header: icon + number · technical name */}
+                    <div
                       style={{
-                        fontSize: "13px",
-                        fontFamily: "var(--font-geist-mono)",
-                        color: "var(--accent)",
-                        letterSpacing: "0.1em",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
                       }}
                     >
-                      {String(i + 1).padStart(2, "0")}
-                    </motion.span>
+                      {Icon && (
+                        <Icon size={20} strokeWidth={2} color="var(--accent)" />
+                      )}
+                      <span
+                        style={{
+                          fontSize: "13px",
+                          fontFamily: "var(--font-geist-mono)",
+                          color: "var(--accent)",
+                          letterSpacing: "0.1em",
+                        }}
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {meta && (
+                        <span
+                          style={{
+                            fontSize: "13px",
+                            fontFamily: "var(--font-geist-mono)",
+                            color: "var(--muted)",
+                            letterSpacing: "0.1em",
+                          }}
+                        >
+                          · {meta.techName}
+                        </span>
+                      )}
+                    </div>
 
                     <ServicePill>{name}</ServicePill>
                     <p
@@ -228,10 +245,10 @@ export function ServicesSection({
                     </div>
                   </div>
                 </TiltCard>
-              </motion.div>
+              </div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

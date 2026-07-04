@@ -48,7 +48,7 @@ export function SocialLinks({ size = 52 }: { size?: number }) {
   const footer = useTranslations("footer");
 
   return (
-    <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+    <div className="flex gap-3.5 flex-wrap">
       {SOCIAL_LINKS.map(({ href, label_key, Icon }) => (
         <a
           key={label_key}
@@ -57,20 +57,8 @@ export function SocialLinks({ size = 52 }: { size?: number }) {
           rel="noopener noreferrer"
           aria-label={footer(label_key)}
           title={footer(label_key)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: `${size}px`,
-            height: `${size}px`,
-            borderRadius: "14px",
-            border: "1px solid var(--hair)",
-            background: "var(--fill)",
-            color: "var(--soft)",
-            transition: "border-color 0.2s, color 0.2s, transform 0.15s",
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--accent)"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--accent)"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.transform = ""; (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--hair)"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--soft)"; }}
+          style={{ width: `${size}px`, height: `${size}px` }}
+          className="inline-flex items-center justify-center rounded-[14px] border border-hair bg-fill text-soft transition-[border-color,color,transform] duration-200 hover:-translate-y-[3px] hover:border-accent hover:text-accent focus-visible:-translate-y-[3px] focus-visible:border-accent focus-visible:text-accent"
         >
           <Icon />
         </a>

@@ -1,4 +1,4 @@
-import type { Feature, Locale } from "@/lib/mock-data";
+import type { Feature, Locale } from "@/lib/types";
 
 export function FeaturesList({
   features,

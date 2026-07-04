@@ -2,18 +2,13 @@
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
-import { wordReveal, staggerContainer } from "@/components/animations";
 
 function AnimatedTitle({ text }: { text: string }) {
   const words = text.split(" ");
   return (
-    <motion.h1
-      variants={staggerContainer(0.13, 0)}
-      initial="hidden"
-      animate="visible"
+    <h1
       style={{
         fontSize: "clamp(42px, 11vw, 124px)",
         fontWeight: 800,
@@ -25,15 +20,19 @@ function AnimatedTitle({ text }: { text: string }) {
       }}
     >
       {words.map((word, i) => (
-        <motion.span
+        <span
           key={i}
-          variants={wordReveal}
-          style={{ display: "inline-block", marginRight: "0.22em" }}
+          style={{
+            display: "inline-block",
+            marginRight: "0.22em",
+            animation: "mf-word-in 0.52s cubic-bezier(0.25, 0.4, 0.25, 1) both",
+            animationDelay: `${i * 0.13}s`,
+          }}
         >
           {word}
-        </motion.span>
+        </span>
       ))}
-    </motion.h1>
+    </h1>
   );
 }
 
@@ -49,41 +48,14 @@ export function HeroSection() {
         padding: "90px clamp(20px, 6vw, 72px) 60px",
         position: "relative",
         overflow: "hidden",
+        background: `
+          radial-gradient(38% 36% at 22% 50%, rgb(37 99 235 / calc(var(--glow) * 0.14)) 0%, transparent 100%),
+          radial-gradient(48% 40% at 76% 48%, rgb(59 130 246 / calc(var(--glow) * 0.11)) 0%, transparent 100%),
+          radial-gradient(30% 28% at 50% 12%, rgb(37 99 235 / calc(var(--glow) * 0.08)) 0%, transparent 100%),
+          var(--bg)
+        `,
       }}
     >
-      {/* Grid background */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage:
-            "linear-gradient(var(--hair) 1px, transparent 1px), linear-gradient(90deg, var(--hair) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-          maskImage:
-            "radial-gradient(ellipse 75% 65% at 50% 50%, black 20%, transparent 100%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 75% 65% at 50% 50%, black 20%, transparent 100%)",
-          pointerEvents: "none",
-          opacity: 0.45,
-        }}
-      />
-
-      {/* Radial glow */}
-      <motion.div
-        aria-hidden="true"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.6, ease: "easeOut" }}
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(70% 60% at 64% 46%, rgb(37 99 235 / calc(var(--glow) * 0.4)) 0%, transparent 72%)",
-          pointerEvents: "none",
-        }}
-      />
-
       {/* Content grid */}
       <div
         className="hero-grid"
@@ -105,10 +77,7 @@ export function HeroSection() {
             <AnimatedTitle text={t("name")} />
 
             {/* Role — big gradient accent */}
-            <motion.p
-              initial={{ opacity: 0, y: 18, filter: "blur(4px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.42 }}
+            <p
               style={{
                 fontSize: "clamp(22px, 2.6vw, 36px)",
                 fontWeight: 600,
@@ -119,88 +88,74 @@ export function HeroSection() {
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
                 lineHeight: 1.2,
+                animation: "mf-blur-up 0.7s cubic-bezier(0.25, 0.4, 0.25, 1) 0.42s both",
               }}
             >
               {t("role")}
-            </motion.p>
+            </p>
           </div>
 
           {/* Description */}
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1], delay: 0.54 }}
+          <p
             style={{
               fontSize: "clamp(17px, 1.6vw, 20px)",
               color: "var(--muted)",
               lineHeight: 1.65,
               maxWidth: "460px",
               margin: 0,
+              animation: "mf-fade-up 0.7s cubic-bezier(0.25, 0.4, 0.25, 1) 0.54s both",
             }}
           >
             {t("subtitle")}
-          </motion.p>
+          </p>
 
           {/* Buttons */}
-          <motion.div
-            variants={staggerContainer(0.1, 0.72)}
-            initial="hidden"
-            animate="visible"
-            style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}
-          >
+          <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
             {[
               { href: "/contact", variant: "primary" as const, label: t("cta_primary") },
               { href: "/projects", variant: "secondary" as const, label: t("cta_secondary") },
-            ].map(({ href, variant, label }) => (
-              <motion.div
+            ].map(({ href, variant, label }, i) => (
+              <div
                 key={href}
-                variants={{
-                  hidden: { opacity: 0, y: 16 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { type: "spring", stiffness: 220, damping: 20 },
-                  },
+                className="hero-btn-scale"
+                style={{
+                  animation: "mf-fade-up 0.5s cubic-bezier(0.25, 0.4, 0.25, 1) both",
+                  animationDelay: `${0.72 + i * 0.1}s`,
                 }}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
               >
                 <Button as={Link} href={href} variant={variant}>
                   {label}
                 </Button>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {/* Right — photo */}
-        <motion.div
+        <div
           className="hero-visual"
-          initial={{ opacity: 0, x: 60, scale: 0.88 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ type: "spring", stiffness: 90, damping: 22, delay: 0.2 }}
           style={{
             position: "relative",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             minHeight: "560px",
+            animation: "mf-hero-photo-in 0.9s cubic-bezier(0.16, 0.9, 0.3, 1) 0.2s both",
           }}
         >
-          <motion.div
+          <div
             aria-hidden="true"
-            animate={{ opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             style={{
               position: "absolute",
-              width: "120%",
-              height: "116%",
-              left: "-8%",
-              top: "-6%",
+              width: "160%",
+              height: "160%",
+              left: "-30%",
+              top: "-30%",
               background:
-                "radial-gradient(46% 52% at 50% 46%, rgb(37 99 235 / calc(var(--glow) * 0.85)) 0%, rgb(37 99 235 / calc(var(--glow) * 0.32)) 40%, transparent 72%)",
-              filter: "blur(54px)",
+                "radial-gradient(44% 44% at 50% 48%, rgb(37 99 235 / calc(var(--glow) * 1)) 0%, rgb(37 99 235 / calc(var(--glow) * 0.3)) 30%, transparent 68%)",
+              filter: "blur(80px)",
               pointerEvents: "none",
+              animation: "mf-glow-fade 4s ease-in-out infinite",
             }}
           />
 
@@ -209,20 +164,20 @@ export function HeroSection() {
               position: "relative",
               width: "min(100%, 680px)",
               aspectRatio: "1/1",
-              maskImage: "linear-gradient(to bottom, #000 60%, transparent 95%)",
-              WebkitMaskImage: "linear-gradient(to bottom, #000 60%, transparent 95%)",
-              filter: `drop-shadow(0 24px 60px rgb(37 99 235 / calc(var(--glow)*0.45)))`,
+              maskImage: "radial-gradient(ellipse 72% 66% at 50% 48%, #000 42%, transparent 78%)",
+              WebkitMaskImage: "radial-gradient(ellipse 72% 66% at 50% 48%, #000 42%, transparent 78%)",
             }}
           >
             <Image
-              src="/svg-matheo-azul-portafolio.png"
+              src="/svg-matheo-azul-portafolio.webp"
               alt="Matheo Flores"
               fill
               priority
-              style={{ objectFit: "contain", objectPosition: "center", transform: "scale(1.24)" }}
+              sizes="(max-width: 980px) 90vw, 680px"
+              style={{ objectFit: "contain", objectPosition: "center", transform: "scale(1.42) translateY(-14px)" }}
             />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

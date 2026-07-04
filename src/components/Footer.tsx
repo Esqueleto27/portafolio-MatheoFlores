@@ -1,9 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
-import { staggerContainer, fadeInUp } from "@/components/animations";
 
 const NAV_LINKS = [
   { key: "projects" as const, href: "/projects" },
@@ -59,178 +57,82 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <motion.footer
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
-      style={{
-        borderTop: "1px solid var(--hair)",
-        padding: "56px clamp(20px, 6vw, 72px) 40px",
-      }}
+    <footer
+      data-reveal
+      className="border-t border-hair px-[clamp(20px,6vw,72px)] pt-14 pb-10"
     >
-      <motion.div
-        className="footer-grid"
-        variants={staggerContainer(0.12, 0.05)}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-60px" }}
-        style={{
-          maxWidth: "1180px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1.6fr 1fr 1fr",
-          gap: "44px",
-        }}
+      <div
+        className="footer-grid max-w-[1180px] mx-auto grid gap-11"
+        style={{ gridTemplateColumns: "1.6fr 1fr 1fr" }}
       >
         {/* Col 1 — Brand */}
-        <motion.div
-          variants={fadeInUp}
-          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <motion.span
-              animate={{ boxShadow: ["0 0 6px var(--accent)", "0 0 14px var(--accent)", "0 0 6px var(--accent)"] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              style={{
-                width: "9px",
-                height: "9px",
-                borderRadius: "50%",
-                background: "var(--accent)",
-                flexShrink: 0,
-                display: "inline-block",
-              }}
-            />
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
             <span
-              style={{
-                fontSize: "14px",
-                fontWeight: 600,
-                letterSpacing: "0.13em",
-                textTransform: "uppercase",
-                color: "var(--text)",
-              }}
-            >
+              className="w-[9px] h-[9px] rounded-full bg-accent shrink-0 inline-block"
+              style={{ animation: "mf-dot-glow 2.5s ease-in-out infinite" }}
+            />
+            <span className="text-sm font-semibold tracking-[0.13em] uppercase text-text">
               Matheo Flores
             </span>
           </div>
-          <p style={{ fontSize: "16px", color: "var(--muted)", lineHeight: 1.5 }}>
-            {t("tagline")}
-          </p>
-          <div style={{ display: "flex", gap: "16px", marginTop: "4px" }}>
+          <p className="text-base text-muted leading-normal">{t("tagline")}</p>
+          <div className="flex gap-4 mt-1">
             {SOCIAL_LINKS.map(({ key, href, Icon }) => (
-              <motion.a
+              <a
                 key={key}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
                 title={t(key)}
                 aria-label={t(key)}
-                className="link-muted"
-                whileHover={{ y: -3, scale: 1.12 }}
-                whileTap={{ scale: 0.95 }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "8px",
-                  borderRadius: "10px",
-                  border: "1px solid var(--hair)",
-                  background: "var(--fill)",
-                  transition: "border-color 0.2s, background 0.2s",
-                }}
+                className="link-muted footer-social-hover inline-flex items-center justify-center p-2 rounded-[10px] border border-hair bg-fill transition-colors"
               >
                 <Icon />
-              </motion.a>
+              </a>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Col 2 — Nav */}
-        <motion.div
-          variants={fadeInUp}
-          style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-        >
-          <span
-            style={{
-              fontSize: "13px",
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              fontFamily: "var(--font-geist-mono)",
-            }}
-          >
+        <div className="flex flex-col gap-3">
+          <span className="text-[13px] font-medium tracking-[0.08em] uppercase text-muted font-mono">
             {t("nav_title")}
           </span>
           {NAV_LINKS.map(({ key, href }) => (
-            <motion.div key={key} whileHover={{ x: 4 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-              <Link
-                href={href}
-                className="link-muted"
-                style={{ fontSize: "16px", color: "var(--soft)" }}
-              >
+            <div key={key} className="footer-link-x-hover">
+              <Link href={href} className="link-muted text-base text-soft">
                 {tNav(key)}
               </Link>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Col 3 — Contact */}
-        <motion.div
-          variants={fadeInUp}
-          style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-        >
-          <span
-            style={{
-              fontSize: "13px",
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              fontFamily: "var(--font-geist-mono)",
-            }}
-          >
+        <div className="flex flex-col gap-3">
+          <span className="text-[13px] font-medium tracking-[0.08em] uppercase text-muted font-mono">
             {t("contact_title")}
           </span>
-          <motion.a
+          <a
             href="mailto:matheofloresloor@gmail.com"
-            className="link-muted"
-            whileHover={{ x: 4 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            style={{ fontSize: "16px", color: "var(--soft)" }}
+            className="link-muted footer-link-x-hover text-base text-soft"
           >
             matheofloresloor@gmail.com
-          </motion.a>
-          <motion.div whileHover={{ x: 4 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-            <Link href="/contact" className="link-accent" style={{ fontSize: "16px" }}>
+          </a>
+          <div className="footer-link-x-hover">
+            <Link href="/contact" className="link-accent text-base">
               {tNav("cta")} →
             </Link>
-          </motion.div>
-        </motion.div>
-      </motion.div>
+          </div>
+        </div>
+      </div>
 
       {/* Bottom bar */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, delay: 0.4 }}
-        style={{
-          maxWidth: "1180px",
-          margin: "40px auto 0",
-          paddingTop: "24px",
-          borderTop: "1px solid var(--hair)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "16px",
-          flexWrap: "wrap",
-        }}
-      >
-        <span style={{ fontSize: "15px", color: "var(--muted)" }}>
+      <div className="max-w-[1180px] mx-auto mt-10 pt-6 border-t border-hair flex justify-between items-center gap-4 flex-wrap">
+        <span className="text-[15px] text-muted">
           © {year} Matheo Flores. {t("rights")}.
         </span>
-      </motion.div>
-    </motion.footer>
+      </div>
+    </footer>
   );
 }

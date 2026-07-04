@@ -3,7 +3,7 @@
 import { useRouter, Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { deleteServiceAction } from "@/lib/admin-actions";
-import type { Service } from "@/lib/mock-data";
+import type { Service } from "@/lib/types";
 
 export function DeleteServiceClient({ service }: { service: Service }) {
   const router = useRouter();

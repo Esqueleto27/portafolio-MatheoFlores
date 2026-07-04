@@ -149,6 +149,25 @@ body {
   font-size: 14px;
 }
 
+/* ===== SKIP LINK (keyboard-only, hidden until focused) ===== */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 14px;
+  z-index: 200;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 14px;
+}
+
 /* ===== FOCUS VISIBLE (keyboard nav — WCAG 2.4.7) ===== */
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -268,6 +287,266 @@ body {
   }
 }
 
+@keyframes mf-orb-drift-1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, 4%) scale(1.08);
+  }
+}
+
+@keyframes mf-orb-drift-2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-4%, -3%) scale(1.06);
+  }
+}
+
+@keyframes mf-orb-drift-3 {
+  0%,
+  100% {
+    transform: translate(-50%, 0) scale(1);
+  }
+  50% {
+    transform: translate(-50%, 4%) scale(1.1);
+  }
+}
+
+@keyframes mf-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+
+@keyframes mf-ring-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes mf-icon-wiggle {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-8deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(8deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(0deg) scale(1.1);
+  }
+}
+
+@keyframes mf-dot-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 6px var(--accent);
+  }
+  50% {
+    box-shadow: 0 0 14px var(--accent);
+  }
+}
+
+@keyframes mf-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) rotateX(15deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+@keyframes mf-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mf-hero-photo-in {
+  from {
+    opacity: 0;
+    transform: translateX(60px) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes mf-glow-fade {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes mf-glow-fade-soft {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes mf-blur-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes mf-scale-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== HOVER-LIFT CARDS (replaces framer-motion whileHover) ===== */
+.svc-card-hover {
+  transition: box-shadow 0.35s cubic-bezier(0.25, 0.4, 0.25, 1);
+}
+.svc-card-hover:hover {
+  box-shadow: 0 20px 60px rgba(37, 99, 235, 0.18);
+}
+
+.whyme-card-hover {
+  transition: transform 0.35s cubic-bezier(0.25, 0.4, 0.25, 1),
+    box-shadow 0.35s cubic-bezier(0.25, 0.4, 0.25, 1),
+    border-color 0.35s cubic-bezier(0.25, 0.4, 0.25, 1);
+}
+.whyme-card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(37, 99, 235, 0.16);
+  border-color: rgba(37, 99, 235, 0.4);
+}
+.whyme-card-hover:hover .whyme-icon {
+  animation: mf-icon-wiggle 0.5s ease forwards;
+}
+
+.how-card-hover {
+  transition: transform 0.35s cubic-bezier(0.25, 0.4, 0.25, 1),
+    box-shadow 0.35s cubic-bezier(0.25, 0.4, 0.25, 1),
+    border-color 0.35s cubic-bezier(0.25, 0.4, 0.25, 1);
+}
+.how-card-hover:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 28px 72px rgba(37, 99, 235, 0.16);
+  border-color: rgba(37, 99, 235, 0.32);
+}
+.how-card-hover:hover .how-icon {
+  transform: scale(1.1) rotate(4deg);
+}
+.how-icon {
+  transition: transform 0.3s cubic-bezier(0.25, 0.4, 0.25, 1);
+}
+
+.hero-btn-scale {
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.25, 0.4, 0.25, 1);
+}
+.hero-btn-scale:hover {
+  transform: scale(1.04);
+}
+.hero-btn-scale:active {
+  transform: scale(0.97);
+}
+
+.footer-link-x-hover {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.25, 0.4, 0.25, 1);
+}
+.footer-link-x-hover:hover,
+.footer-link-x-hover:focus-visible {
+  transform: translateX(4px);
+}
+
+.footer-social-hover {
+  transition: transform 0.2s cubic-bezier(0.25, 0.4, 0.25, 1);
+}
+.footer-social-hover:hover,
+.footer-social-hover:focus-visible {
+  transform: translateY(-3px) scale(1.12);
+}
+.footer-social-hover:active {
+  transform: scale(0.95);
+}
+
+.filter-btn-tap {
+  transition: transform 0.15s ease;
+}
+.filter-btn-tap:active {
+  transform: scale(0.95);
+}
+
+.approach-card-hover {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.approach-card-hover:hover {
+  box-shadow: 0 20px 60px rgba(37, 99, 235, 0.14);
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+.marquee-item-hover {
+  transition: transform 0.2s ease;
+}
+.marquee-item-hover:hover {
+  transform: scale(1.08) translateY(-3px);
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @media (max-width: 980px) {
   .hero-grid {
     grid-template-columns: 1fr !important;
@@ -295,5 +574,31 @@ body {
   .footer-grid {
     grid-template-columns: 1fr !important;
     gap: 32px !important;
+  }
+}
+
+/* ===== NAVBAR (explicit single breakpoint — avoids the sm/md gap where
+   desktop links + locale pill + CTA + hamburger all show at once) ===== */
+.navbar-desktop-links {
+  display: flex;
+}
+.navbar-desktop-cta {
+  display: inline-flex;
+}
+.navbar-hamburger,
+.navbar-mobile-panel {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .navbar-desktop-links,
+  .navbar-desktop-cta {
+    display: none !important;
+  }
+  .navbar-hamburger {
+    display: flex !important;
+  }
+  .navbar-mobile-panel {
+    display: grid !important;
   }
 }
