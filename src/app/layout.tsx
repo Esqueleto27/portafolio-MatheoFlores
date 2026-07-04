@@ -2,7 +2,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
@@ -35,15 +37,18 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: INIT_SCRIPT }} />
-      </head>
       <body
         suppressHydrationWarning
         style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
       >
+        <Script
+          id="theme-locale-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: INIT_SCRIPT }}
+        />
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

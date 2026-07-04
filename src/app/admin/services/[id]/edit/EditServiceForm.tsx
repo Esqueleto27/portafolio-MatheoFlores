@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { updateServiceAction } from "@/lib/admin-actions";
 import type { Service } from "@/lib/types";
-import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export function EditServiceForm({ service }: { service: Service }) {
   const router = useRouter();
@@ -16,7 +15,6 @@ export function EditServiceForm({ service }: { service: Service }) {
     description_es: service.description_es,
     description_en: service.description_en,
     order: service.order,
-    image_url: service.image_url ?? "",
   });
 
   function handleChange(
@@ -31,14 +29,7 @@ export function EditServiceForm({ service }: { service: Service }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await updateServiceAction(service.id, {
-      name_es: form.name_es,
-      name_en: form.name_en,
-      description_es: form.description_es,
-      description_en: form.description_en,
-      order: form.order,
-      image_url: form.image_url || null,
-    });
+    await updateServiceAction(service.id, form);
     router.push("/admin/services");
   }
 
@@ -80,14 +71,6 @@ export function EditServiceForm({ service }: { service: Service }) {
 
         <Field label="Orden">
           <input type="number" name="order" value={form.order} onChange={handleChange} style={{ ...inputStyle, width: "100px" }} />
-        </Field>
-
-        <Field label="Imagen del servicio (opcional)">
-          <ImageUpload
-            currentUrl={form.image_url || undefined}
-            onUploaded={(url) => setForm((prev) => ({ ...prev, image_url: url }))}
-            onRemove={() => setForm((prev) => ({ ...prev, image_url: "" }))}
-          />
         </Field>
 
         <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>

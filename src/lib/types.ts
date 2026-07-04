@@ -7,7 +7,6 @@ export interface Service {
   description_es: string;
   description_en: string;
   order: number;
-  image_url?: string | null;
 }
 
 export interface Feature {

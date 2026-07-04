@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { reorderServiceAction } from "@/lib/admin-actions";
 import type { Service } from "@/lib/types";
@@ -46,7 +45,6 @@ export function ServicesTable({ initial }: { initial: Service[] }) {
             <th style={{ padding: "12px 16px" }}>Orden</th>
             <th style={{ padding: "12px 16px" }}>Nombre (ES)</th>
             <th style={{ padding: "12px 16px" }}>Nombre (EN)</th>
-            <th style={{ padding: "12px 16px" }}>Imagen</th>
             <th style={{ padding: "12px 16px" }}>Acciones</th>
           </tr>
         </thead>
@@ -80,12 +78,6 @@ export function ServicesTable({ initial }: { initial: Service[] }) {
               </td>
               <td style={{ padding: "10px 16px", fontWeight: 500 }}>{s.name_es}</td>
               <td style={{ padding: "10px 16px" }}>{s.name_en}</td>
-              <td style={{ padding: "10px 16px" }}>
-                {s.image_url
-                  ? <Image src={s.image_url} alt="" width={48} height={32} style={{ width: "48px", height: "32px", objectFit: "cover", borderRadius: "4px", border: "1px solid var(--hair)" }} />
-                  : <span style={{ fontSize: "12px", color: "var(--hair)" }}>—</span>
-                }
-              </td>
               <td style={{ padding: "10px 16px" }}>
                 <div style={{ display: "flex", gap: "6px" }}>
                   <Link href={`/admin/services/${s.id}/edit`} style={{ fontSize: "13px", color: "var(--accent-2)", textDecoration: "none" }}>

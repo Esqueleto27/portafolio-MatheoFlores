@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { Search, ShoppingCart, Briefcase, Rocket, MessageCircle, Megaphone } from "lucide-react";
 import { ServicePill } from "@/components/ui/Badge";
 import type { Service, Locale } from "@/lib/types";
@@ -161,28 +160,18 @@ export function ServicesSection({
                       }}
                     />
 
-                    {/* Service header: icon + number */}
-                    <div
+                    {/* Service header: number only — the icon now anchors
+                        the panel below instead of being duplicated here */}
+                    <span
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
+                        fontSize: "13px",
+                        fontFamily: "var(--font-geist-mono)",
+                        color: "var(--accent)",
+                        letterSpacing: "0.1em",
                       }}
                     >
-                      {Icon && (
-                        <Icon size={20} strokeWidth={2} color="var(--accent)" />
-                      )}
-                      <span
-                        style={{
-                          fontSize: "13px",
-                          fontFamily: "var(--font-geist-mono)",
-                          color: "var(--accent)",
-                          letterSpacing: "0.1em",
-                        }}
-                      >
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                    </div>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
 
                     <ServicePill>{name}</ServicePill>
                     <p
@@ -199,46 +188,24 @@ export function ServicesSection({
                       {desc}
                     </p>
 
-                    {/* Reference image — falls back to a striped placeholder
-                        until an image is uploaded for this service in admin */}
+                    {/* Icon panel — same treatment for every card, so it
+                        never depends on a per-service image being uploaded */}
                     <div
                       style={{
                         height: "120px",
                         borderRadius: "10px",
-                        background: service.image_url ? undefined : "var(--mockup)",
-                        backgroundImage: service.image_url
-                          ? undefined
-                          : "repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 13px)",
+                        background:
+                          "linear-gradient(135deg, rgb(37 99 235 / 0.14), rgb(59 130 246 / 0.05))",
                         border: "1px solid var(--hair)",
                         marginTop: "4px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         position: "relative",
-                        overflow: "hidden",
                         zIndex: 1,
                       }}
                     >
-                      {service.image_url ? (
-                        <Image
-                          src={service.image_url}
-                          alt=""
-                          fill
-                          loading="lazy"
-                          sizes="(max-width: 640px) 100vw, 330px"
-                          style={{ objectFit: "cover" }}
-                        />
-                      ) : (
-                        <span
-                          style={{
-                            fontSize: "11px",
-                            fontFamily: "var(--font-geist-mono)",
-                            color: "var(--muted)",
-                          }}
-                        >
-                          [ referencia ]
-                        </span>
-                      )}
+                      {Icon && <Icon size={38} strokeWidth={1.5} color="var(--accent)" />}
                     </div>
                   </div>
                 </TiltCard>

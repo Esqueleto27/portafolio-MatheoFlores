@@ -145,5 +145,11 @@
     "title": "Página no encontrada",
     "desc": "La página que buscás no existe o cambió de dirección.",
     "back": "Volver al inicio"
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "desc": "Ocurrió un error inesperado. Ya fue registrado — intenta de nuevo en unos momentos.",
+    "retry": "Reintentar",
+    "back": "Volver al inicio"
   }
 }

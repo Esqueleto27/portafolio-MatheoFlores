@@ -145,5 +145,11 @@
     "title": "Page not found",
     "desc": "The page you're looking for doesn't exist or has moved.",
     "back": "Back to home"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "desc": "An unexpected error occurred. It's already been logged — try again in a moment.",
+    "retry": "Try again",
+    "back": "Back to home"
   }
 }
