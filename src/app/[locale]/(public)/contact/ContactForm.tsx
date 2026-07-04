@@ -29,6 +29,7 @@ export function ContactForm({ services }: { services: Service[] }) {
       service_id: "",
       timeline: "",
       message: "",
+      locale: locale === "en" ? "en" : "es",
       website: "",
     },
   });
