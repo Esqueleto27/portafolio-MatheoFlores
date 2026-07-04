@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import { signIn } from "@/lib/auth";
@@ -18,7 +17,6 @@ function timeout(ms: number): Promise<never> {
 // routes — hardcoded strings instead of next-intl, since there's no
 // audience here that needs English.
 export default function LoginPage() {
-  const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -46,7 +44,12 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
-      router.replace("/admin");
+      // Hard navigation, not router.replace: the session was just written to
+      // cookies by the browser client, and a soft (RSC) navigation can race
+      // ahead of that cookie reaching the server — the /admin middleware then
+      // sees no session and bounces back to /login, leaving the button stuck
+      // on "Ingresando…". A full page load guarantees the cookie is sent.
+      window.location.assign("/admin");
     } catch (err) {
       if (err instanceof Error && err.message === "timeout") {
         setError(
