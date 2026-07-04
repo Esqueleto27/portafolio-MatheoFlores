@@ -1,34 +1,7 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
-import { createMessage } from "@/lib/data";
-
-const VALID_SERVICE_IDS = ["ecommerce", "seo-web", "portfolio", "landing", "custom"] as const;
-const VALID_TIMELINES = ["urgent", "month", "no_rush", "exploring"] as const;
-
-const contactSchema = z.object({
-  name: z.string().min(1).max(100).trim(),
-  email: z.string().email().max(200).trim(),
-  service_id: z.enum(VALID_SERVICE_IDS),
-  timeline: z.enum(VALID_TIMELINES),
-  message: z.string().min(1).max(5000).trim(),
-});
-
-// In-memory rate limiter: max 3 requests per 15 min per IP
-const rateMap = new Map<string, { count: number; resetAt: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const windowMs = 15 * 60 * 1000;
-  const limit = 3;
-  const entry = rateMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + windowMs });
-    return false;
-  }
-  if (entry.count >= limit) return true;
-  entry.count++;
-  return false;
-}
+import { createMessage, getServices } from "@/lib/data";
+import { isRateLimited } from "@/lib/rate-limit";
+import { contactSchema } from "@/lib/contact-schema";
 
 export async function POST(request: Request) {
   try {
@@ -37,7 +10,7 @@ export async function POST(request: Request) {
       request.headers.get("x-real-ip") ??
       "unknown";
 
-    if (isRateLimited(ip)) {
+    if (await isRateLimited(ip)) {
       return NextResponse.json(
         { error: "Demasiados intentos. Esperá 15 minutos." },
         { status: 429 }
@@ -50,6 +23,14 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Datos inválidos", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+
+    const services = await getServices();
+    if (!services.some((s) => s.id === parsed.data.service_id)) {
+      return NextResponse.json(
+        { error: "Datos inválidos", details: { service_id: "unknown" } },
         { status: 400 }
       );
     }

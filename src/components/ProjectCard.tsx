@@ -1,24 +1,25 @@
-import { type Project, type Locale, getServiceName } from "@/lib/mock-data";
-import { TechChip, ServicePill } from "@/components/ui/Badge";
+"use client";
+
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { type Project, type Service, type Locale, resolveServiceName } from "@/lib/types";
+import { TechChip, ServicePill, DemoPill } from "@/components/ui/Badge";
 import { Link } from "@/i18n/navigation";
 
 interface ProjectCardProps {
   project: Project;
+  services: Service[];
   locale: Locale;
   viewCaseLabel: string;
 }
 
-export function ProjectCard({ project, locale, viewCaseLabel }: ProjectCardProps) {
+export function ProjectCard({ project, services, locale, viewCaseLabel }: ProjectCardProps) {
+  const t = useTranslations("projects_page");
   const title = locale === "en" ? project.business_en : project.business_es;
   const tagline = locale === "en" ? project.solution_en : project.solution_es;
-  const customTag = locale === "en" ? project.custom_tag_en : project.custom_tag_es;
-  const serviceName = customTag || getServiceName(project.service_id, locale);
-  const categoryLabel =
-    project.category === "demo"
-      ? "Demo"
-      : locale === "en"
-      ? "Client"
-      : "Cliente";
+  const serviceName = resolveServiceName(project, services, locale);
+  const isDemo = project.category === "demo";
+  const categoryLabel = isDemo ? t("card_badge_demo") : t("card_badge_cliente");
 
   return (
     <Link href={`/projects/${project.slug}`} className="project-card">
@@ -77,18 +78,13 @@ export function ProjectCard({ project, locale, viewCaseLabel }: ProjectCardProps
         }}
       >
         {project.image_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={project.image_url}
-            alt={locale === "en" ? project.business_en : project.business_es}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-              position: "absolute",
-              inset: 0,
-            }}
+            alt={title}
+            fill
+            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
+            style={{ objectFit: "cover" }}
           />
         )}
         <div className="card-glow" />
@@ -105,18 +101,22 @@ export function ProjectCard({ project, locale, viewCaseLabel }: ProjectCardProps
       >
         <div style={{ display: "flex", gap: "9px", alignItems: "center", flexWrap: "wrap" }}>
           <ServicePill>{serviceName}</ServicePill>
-          <span
-            style={{
-              fontSize: "13px",
-              fontWeight: 500,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              fontFamily: "var(--font-geist-mono)",
-            }}
-          >
-            {categoryLabel}
-          </span>
+          {isDemo ? (
+            <DemoPill>{categoryLabel}</DemoPill>
+          ) : (
+            <span
+              style={{
+                fontSize: "13px",
+                fontWeight: 500,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: "var(--muted)",
+                fontFamily: "var(--font-geist-mono)",
+              }}
+            >
+              {categoryLabel}
+            </span>
+          )}
         </div>
 
         <h3

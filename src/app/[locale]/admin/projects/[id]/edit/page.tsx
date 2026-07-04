@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getProjectById, getServices } from "@/lib/data";
-import { EditProjectForm } from "./EditProjectForm";
+import { ProjectForm } from "@/components/admin/ProjectForm";
 
 export default async function EditProjectPage({
   params,
@@ -13,5 +13,5 @@ export default async function EditProjectPage({
     getServices(),
   ]);
   if (!project) notFound();
-  return <EditProjectForm project={project} services={services} />;
+  return <ProjectForm project={project} services={services} />;
 }

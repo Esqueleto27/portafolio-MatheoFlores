@@ -1,6 +1,6 @@
 "use client";
 
-import type { Feature } from "@/lib/mock-data";
+import type { Feature } from "@/lib/types";
 import { Field, inputStyle, textAreaStyle } from "@/components/admin/form";
 
 interface FeaturesEditorProps {

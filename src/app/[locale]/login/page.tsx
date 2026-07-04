@@ -68,42 +68,72 @@ export default function LoginPage() {
           }}
           onSubmit={handleSubmit}
         >
-          <input
-            name="email"
-            type="email"
-            placeholder={t("email")}
-            required
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              fontSize: "15px",
-              fontFamily: "var(--font-geist-sans)",
-              color: "var(--text)",
-              background: "var(--fill)",
-              border: "1px solid var(--hair)",
-              borderRadius: "12px",
-              outline: "none",
-              boxSizing: "border-box" as const,
-            }}
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder={t("password")}
-            required
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              fontSize: "15px",
-              fontFamily: "var(--font-geist-sans)",
-              color: "var(--text)",
-              background: "var(--fill)",
-              border: "1px solid var(--hair)",
-              borderRadius: "12px",
-              outline: "none",
-              boxSizing: "border-box" as const,
-            }}
-          />
+          <div>
+            <label
+              htmlFor="login-email"
+              style={{
+                fontSize: "13px",
+                fontWeight: 500,
+                color: "var(--soft)",
+                marginBottom: "6px",
+                display: "block",
+              }}
+            >
+              {t("email")}
+            </label>
+            <input
+              id="login-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                fontSize: "15px",
+                fontFamily: "var(--font-geist-sans)",
+                color: "var(--text)",
+                background: "var(--fill)",
+                border: "1px solid var(--hair)",
+                borderRadius: "12px",
+                outline: "none",
+                boxSizing: "border-box" as const,
+              }}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="login-password"
+              style={{
+                fontSize: "13px",
+                fontWeight: 500,
+                color: "var(--soft)",
+                marginBottom: "6px",
+                display: "block",
+              }}
+            >
+              {t("password")}
+            </label>
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                fontSize: "15px",
+                fontFamily: "var(--font-geist-sans)",
+                color: "var(--text)",
+                background: "var(--fill)",
+                border: "1px solid var(--hair)",
+                borderRadius: "12px",
+                outline: "none",
+                boxSizing: "border-box" as const,
+              }}
+            />
+          </div>
           {error && (
             <p style={{ color: "#ef4444", fontSize: "13px", margin: 0 }}>
               {error}

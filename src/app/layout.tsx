@@ -1,8 +1,8 @@
 import "./globals.css";
-import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
   title: "Matheo Flores — Full-Stack Developer",
@@ -10,21 +10,33 @@ export const metadata: Metadata = {
     "Portafolio de Matheo Flores, desarrollador web full-stack en Quito, Ecuador.",
 };
 
-export default async function RootLayout({
+// This root layout sits above the [locale] segment, so it can't read the
+// current locale from params — and calling a next-intl/cookies API here
+// would force dynamic rendering on every page in the app (defeating the
+// `revalidate` caching set on the public pages below). Instead: render
+// with the default locale, then correct `lang` and the theme attribute
+// synchronously via an inline script that runs before first paint — no
+// network request, no visible flash, no dynamic rendering.
+const INIT_SCRIPT = `try{
+if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');
+var m=location.pathname.match(/^\\/(en|es)(\\/|$)/);
+if(m)document.documentElement.lang=m[1];
+}catch(e){}`;
+
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const theme = cookieStore.get("theme")?.value;
-
   return (
     <html
-      lang="es"
+      lang={routing.defaultLocale}
       suppressHydrationWarning
-      {...(theme === "light" ? { "data-theme": "light" } : {})}
       className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: INIT_SCRIPT }} />
+      </head>
       <body
         suppressHydrationWarning
         style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}

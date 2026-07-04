@@ -6,13 +6,22 @@ import { uploadImageAction } from "@/lib/admin-actions";
 interface ImageUploadProps {
   currentUrl?: string;
   onUploaded: (url: string) => void;
+  onRemove?: () => void;
 }
 
-export function ImageUpload({ currentUrl, onUploaded }: ImageUploadProps) {
+export function ImageUpload({ currentUrl, onUploaded, onRemove }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | undefined>(currentUrl);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function handleRemove(e: React.MouseEvent) {
+    e.stopPropagation();
+    setPreview(undefined);
+    setError(null);
+    if (inputRef.current) inputRef.current.value = "";
+    onRemove?.();
+  }
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -103,6 +112,37 @@ export function ImageUpload({ currentUrl, onUploaded }: ImageUploadProps) {
           >
             Cambiar
           </div>
+        )}
+
+        {preview && !loading && (
+          <button
+            type="button"
+            onClick={handleRemove}
+            aria-label="Eliminar imagen"
+            title="Eliminar imagen"
+            style={{
+              position: "absolute",
+              top: "8px",
+              right: "8px",
+              width: "26px",
+              height: "26px",
+              borderRadius: "50%",
+              background: "rgba(0,0,0,0.65)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              color: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+              lineHeight: 1,
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         )}
       </div>
 

@@ -1,9 +1,9 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { routing } from "@/i18n/routing";
-import { SetLang } from "@/components/SetLang";
+import { buildAlternates, SITE_URL } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -11,6 +11,8 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  setRequestLocale(locale);
+  const loc = locale === "en" ? "en" : "es";
 
   const title =
     locale === "en"
@@ -22,7 +24,7 @@ export async function generateMetadata({
       : "Diseño, desarrollo y lanzo webs completas para negocios que quieren verse profesionales, aparecer en Google y convertir visitas en clientes.";
 
   return {
-    metadataBase: new URL("https://matheoflores.dev"),
+    metadataBase: new URL(SITE_URL),
     title: {
       default: title,
       template: `%s | Matheo Flores`,
@@ -39,14 +41,24 @@ export async function generateMetadata({
       title,
       description,
     },
-    alternates: {
-      languages: {
-        es: "/es",
-        en: "/en",
-      },
-    },
+    alternates: buildAlternates(loc, "/"),
   };
 }
+
+const PERSON_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Matheo Flores",
+  url: SITE_URL,
+  jobTitle: "Full-Stack Developer",
+  address: { "@type": "PostalAddress", addressLocality: "Quito", addressCountry: "EC" },
+  sameAs: [
+    "https://www.linkedin.com/in/matheo-flores-281160278/",
+    "https://www.upwork.com/freelancers/~018e88181a81bc2eec",
+    "https://www.workana.com/freelancer/884b69b4188d8850b4253fc9e835a958",
+    "https://www.freelancer.com/u/Esqueleto27",
+  ],
+};
 
 export default async function LocaleLayout({
   children,
@@ -61,11 +73,16 @@ export default async function LocaleLayout({
     notFound();
   }
 
+  setRequestLocale(locale);
   const messages = await getMessages();
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <SetLang locale={locale} />
+      <script
+        type="application/ld+json"
+        // Static, non-user-controlled data — safe to inject directly.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD) }}
+      />
       {children}
     </NextIntlClientProvider>
   );

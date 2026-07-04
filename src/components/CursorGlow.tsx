@@ -1,12 +1,24 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function CursorGlow() {
   const glowRef = useRef<HTMLDivElement>(null);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setEnabled(!mq.matches);
+    const onChange = () => setEnabled(!mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
+
     let raf = 0;
+    let running = false;
     let tx = -600;
     let ty = -600;
     let cx = -600;
@@ -15,6 +27,10 @@ export function CursorGlow() {
     function onMove(e: MouseEvent) {
       tx = e.clientX;
       ty = e.clientY;
+      if (!running) {
+        running = true;
+        raf = requestAnimationFrame(tick);
+      }
     }
 
     function tick() {
@@ -23,16 +39,23 @@ export function CursorGlow() {
       if (glowRef.current) {
         glowRef.current.style.transform = `translate(${cx - 350}px, ${cy - 350}px)`;
       }
-      raf = requestAnimationFrame(tick);
+      // Stop the loop once the glow has caught up — resumes on the next
+      // mousemove instead of running requestAnimationFrame forever.
+      if (Math.abs(tx - cx) > 0.5 || Math.abs(ty - cy) > 0.5) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        running = false;
+      }
     }
 
     window.addEventListener("mousemove", onMove, { passive: true });
-    raf = requestAnimationFrame(tick);
     return () => {
       window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     <div

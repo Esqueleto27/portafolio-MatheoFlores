@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
-import { updateProjectAction } from "@/lib/admin-actions";
-import type { Project, Service, Feature } from "@/lib/mock-data";
+import type { Project, Service, Feature } from "@/lib/types";
+import { createProjectAction, updateProjectAction } from "@/lib/admin-actions";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { FeaturesEditor } from "@/components/admin/FeaturesEditor";
 import {
@@ -19,50 +19,73 @@ import {
   textAreaStyle,
 } from "@/components/admin/form";
 
-export function EditProjectForm({
+function toSlug(str: string) {
+  return str
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+export function ProjectForm({
   project,
   services,
 }: {
-  project: Project;
+  project?: Project;
   services: Service[];
 }) {
   const router = useRouter();
+  const isEdit = !!project;
 
   const [form, setForm] = useState({
-    slug: project.slug,
-    category: project.category as "demo" | "cliente",
-    service_id: project.service_id,
-    custom_tag_es: project.custom_tag_es ?? "",
-    custom_tag_en: project.custom_tag_en ?? "",
-    featured: project.featured,
-    business_es: project.business_es,
-    business_en: project.business_en,
-    description_es: project.description_es ?? "",
-    description_en: project.description_en ?? "",
-    objective_es: project.objective_es ?? "",
-    objective_en: project.objective_en ?? "",
-    problem_es: project.problem_es,
-    problem_en: project.problem_en,
-    solution_es: project.solution_es,
-    solution_en: project.solution_en,
-    results_es: project.results_es ?? "",
-    results_en: project.results_en ?? "",
-    live_url: project.live_url ?? "",
-    github_url: project.github_url ?? "",
-    show_code: project.show_code ?? true,
-    video_url: project.video_url ?? "",
-    image_url: project.image_url ?? "",
-    mobile_image_url: project.mobile_image_url ?? "",
+    slug: project?.slug ?? "",
+    category: (project?.category ?? "demo") as "demo" | "cliente",
+    service_id: project?.service_id ?? "",
+    custom_tag_es: project?.custom_tag_es ?? "",
+    custom_tag_en: project?.custom_tag_en ?? "",
+    featured: project?.featured ?? false,
+    business_es: project?.business_es ?? "",
+    business_en: project?.business_en ?? "",
+    description_es: project?.description_es ?? "",
+    description_en: project?.description_en ?? "",
+    objective_es: project?.objective_es ?? "",
+    objective_en: project?.objective_en ?? "",
+    problem_es: project?.problem_es ?? "",
+    problem_en: project?.problem_en ?? "",
+    solution_es: project?.solution_es ?? "",
+    solution_en: project?.solution_en ?? "",
+    results_es: project?.results_es ?? "",
+    results_en: project?.results_en ?? "",
+    live_url: project?.live_url ?? "",
+    github_url: project?.github_url ?? "",
+    show_code: project?.show_code ?? true,
+    video_url: project?.video_url ?? "",
+    image_url: project?.image_url ?? "",
+    mobile_image_url: project?.mobile_image_url ?? "",
+    before_image_url: project?.before_image_url ?? "",
+    before_mobile_image_url: project?.before_mobile_image_url ?? "",
   });
-  const [tags, setTags] = useState<string[]>(project.technologies);
+  const [tags, setTags] = useState<string[]>(project?.technologies ?? []);
   const [tagInput, setTagInput] = useState("");
-  const [features, setFeatures] = useState<Feature[]>(project.features ?? []);
+  // Editing an existing project keeps its slug fixed; only a brand-new
+  // project auto-derives the slug from the Spanish business name.
+  const [slugEdited, setSlugEdited] = useState(isEdit);
+  const [features, setFeatures] = useState<Feature[]>(project?.features ?? []);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      const updated = { ...prev, [name]: value };
+      if (name === "business_es" && !slugEdited) {
+        updated.slug = toSlug(value);
+      }
+      return updated;
+    });
   }
 
   function addTag(raw: string) {
@@ -86,7 +109,8 @@ export function EditProjectForm({
       alert("Selecciona un servicio.");
       return;
     }
-    await updateProjectAction(project.id, {
+
+    const payload = {
       slug: form.slug,
       category: form.category,
       service_id: form.service_id,
@@ -111,9 +135,17 @@ export function EditProjectForm({
       github_url: form.github_url || undefined,
       show_code: form.show_code,
       video_url: form.video_url || undefined,
-      image_url: form.image_url || undefined,
-      mobile_image_url: form.mobile_image_url || undefined,
-    });
+      image_url: form.image_url || null,
+      mobile_image_url: form.mobile_image_url || null,
+      before_image_url: form.before_image_url || null,
+      before_mobile_image_url: form.before_mobile_image_url || null,
+    };
+
+    if (isEdit) {
+      await updateProjectAction(project.id, payload);
+    } else {
+      await createProjectAction(payload);
+    }
     router.push("/admin/projects");
   }
 
@@ -129,7 +161,7 @@ export function EditProjectForm({
             margin: 0,
           }}
         >
-          Editar: {project.business_es}
+          {isEdit ? `Editar: ${project.business_es}` : "Nuevo proyecto"}
         </h1>
         <p style={{ fontSize: "13px", color: "var(--muted)", marginTop: "6px" }}>
           Los campos marcados con * son obligatorios
@@ -138,10 +170,7 @@ export function EditProjectForm({
 
       <form onSubmit={handleSubmit}>
         {/* ── Configuración ── */}
-        <Section
-          label="Configuración"
-          hint="Dónde y cómo aparece el proyecto en el sitio, más sus datos técnicos."
-        >
+        <Section label="Configuración" hint="Dónde y cómo aparece el proyecto en el sitio, más sus datos técnicos.">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
             <Field label="Categoría *" hint="Demo: proyecto de práctica. Cliente: trabajo real para alguien.">
               <SegmentedControl
@@ -150,9 +179,7 @@ export function EditProjectForm({
                   { value: "cliente", label: "Cliente" },
                 ]}
                 value={form.category}
-                onChange={(v) =>
-                  setForm((p) => ({ ...p, category: v as "demo" | "cliente" }))
-                }
+                onChange={(v) => setForm((p) => ({ ...p, category: v as "demo" | "cliente" }))}
               />
             </Field>
 
@@ -201,15 +228,8 @@ export function EditProjectForm({
 
           <SubHeading>Detalles técnicos</SubHeading>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginBottom: "20px",
-            }}
-          >
-            <Field label="Slug *" hint="URL del proyecto">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+            <Field label="Slug *" hint="URL del proyecto — se genera solo desde el nombre">
               <div style={{ position: "relative" }}>
                 <span
                   style={{
@@ -228,13 +248,12 @@ export function EditProjectForm({
                 <input
                   name="slug"
                   value={form.slug}
-                  onChange={handleChange}
-                  style={{
-                    ...inputStyle,
-                    paddingLeft: "86px",
-                    fontFamily: "var(--font-geist-mono)",
-                    fontSize: "13px",
+                  onChange={(e) => {
+                    setSlugEdited(true);
+                    setForm((p) => ({ ...p, slug: e.target.value }));
                   }}
+                  style={{ ...inputStyle, paddingLeft: "86px", fontFamily: "var(--font-geist-mono)", fontSize: "13px" }}
+                  placeholder="restaurante-la-ronda"
                   required
                 />
               </div>
@@ -246,19 +265,12 @@ export function EditProjectForm({
                 value={form.live_url}
                 onChange={handleChange}
                 style={inputStyle}
-                placeholder="https://..."
+                placeholder="https://restaurante.com"
               />
             </Field>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginBottom: "20px",
-            }}
-          >
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
             <Field label="GitHub" hint="Enlace al repositorio (opcional, se muestra discreto)">
               <input
                 name="github_url"
@@ -290,10 +302,7 @@ export function EditProjectForm({
             />
           </Field>
 
-          <Field
-            label="Tecnologías"
-            hint="Escribe una tecnología y presiona Enter o coma para agregar"
-          >
+          <Field label="Tecnologías" hint="Escribe una tecnología y presiona Enter o coma para agregar">
             <TagInput
               tags={tags}
               input={tagInput}
@@ -314,6 +323,7 @@ export function EditProjectForm({
                 value={form.business_es}
                 onChange={handleChange}
                 style={inputStyle}
+                placeholder="Restaurante La Ronda"
                 required
               />
             </Field>
@@ -323,6 +333,7 @@ export function EditProjectForm({
                 value={form.business_en}
                 onChange={handleChange}
                 style={inputStyle}
+                placeholder="La Ronda Restaurant"
                 required
               />
             </Field>
@@ -338,6 +349,7 @@ export function EditProjectForm({
                 value={form.description_es}
                 onChange={handleChange}
                 style={inputStyle}
+                placeholder="Tienda online para un taller artesanal en Quito."
               />
             </Field>
             <Field label="English" hint="One-line summary, shown at the top of the page">
@@ -346,6 +358,7 @@ export function EditProjectForm({
                 value={form.description_en}
                 onChange={handleChange}
                 style={inputStyle}
+                placeholder="Online store for an artisan workshop in Quito."
               />
             </Field>
           </div>
@@ -360,6 +373,7 @@ export function EditProjectForm({
                 value={form.objective_es}
                 onChange={handleChange}
                 style={textAreaStyle}
+                placeholder="Que el taller pudiera vender fuera de Instagram."
               />
             </Field>
             <Field label="English" hint="Shown together with Problem, as the challenge to solve">
@@ -382,6 +396,7 @@ export function EditProjectForm({
                 value={form.problem_es}
                 onChange={handleChange}
                 style={textAreaStyle}
+                placeholder="El negocio no tenía presencia en línea y perdía clientes frente a la competencia."
                 required
               />
             </Field>
@@ -391,6 +406,7 @@ export function EditProjectForm({
                 value={form.problem_en}
                 onChange={handleChange}
                 style={textAreaStyle}
+                placeholder="The business had no online presence and was losing customers to competitors."
                 required
               />
             </Field>
@@ -406,6 +422,7 @@ export function EditProjectForm({
                 value={form.solution_es}
                 onChange={handleChange}
                 style={textAreaStyle}
+                placeholder="Diseñé y desarrollé un sitio web completo con menú online, reservas y SEO local."
                 required
               />
             </Field>
@@ -415,6 +432,7 @@ export function EditProjectForm({
                 value={form.solution_en}
                 onChange={handleChange}
                 style={textAreaStyle}
+                placeholder="I designed and built a complete website with online menu, reservations, and local SEO."
                 required
               />
             </Field>
@@ -430,6 +448,7 @@ export function EditProjectForm({
                 value={form.results_es}
                 onChange={handleChange}
                 style={textAreaStyle}
+                placeholder="Redujeron los errores de inventario en un 90%."
               />
             </Field>
             <Field label="English" hint="The concrete result for the client">
@@ -451,37 +470,58 @@ export function EditProjectForm({
           <FeaturesEditor features={features} onChange={setFeatures} />
         </Section>
 
-        {/* ── Imagen ── */}
+        {/* ── Imagen de escritorio ── */}
         <Section
-          label="Imagen del proyecto"
-          hint="La captura de escritorio se muestra arriba de todo, dentro de un marco tipo navegador."
+          label="Captura de escritorio"
+          hint='La captura "Después" se muestra arriba de todo, dentro de un marco tipo navegador. Si además subes una captura "Antes", la ficha del proyecto muestra un slider interactivo para compararlas (útil para proyectos de "arregla mi web").'
         >
-          <ImageUpload
-            currentUrl={form.image_url || undefined}
-            onUploaded={(url) => setForm((p) => ({ ...p, image_url: url }))}
-          />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <Field label="Antes (opcional)" hint="Captura del sitio anterior, si este proyecto es un rediseño.">
+              <ImageUpload
+                currentUrl={form.before_image_url || undefined}
+                onUploaded={(url) => setForm((p) => ({ ...p, before_image_url: url }))}
+                onRemove={() => setForm((p) => ({ ...p, before_image_url: "" }))}
+              />
+            </Field>
+            <Field label="Después">
+              <ImageUpload
+                currentUrl={form.image_url || undefined}
+                onUploaded={(url) => setForm((p) => ({ ...p, image_url: url }))}
+                onRemove={() => setForm((p) => ({ ...p, image_url: "" }))}
+              />
+            </Field>
+          </div>
         </Section>
 
         {/* ── Vista en móvil ── */}
         <Section
-          label="Vista en móvil"
-          hint="Opcional. Sube una captura de cómo se ve el sitio en el celular — se muestra dentro de un marco de teléfono."
+          label="Captura móvil"
+          hint='Opcional. Se muestra dentro de un marco de teléfono. Si subes "Antes" y "Después", la ficha muestra el slider interactivo también en la vista móvil.'
         >
-          <ImageUpload
-            currentUrl={form.mobile_image_url || undefined}
-            onUploaded={(url) => setForm((p) => ({ ...p, mobile_image_url: url }))}
-          />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <Field label="Antes (opcional)">
+              <ImageUpload
+                currentUrl={form.before_mobile_image_url || undefined}
+                onUploaded={(url) => setForm((p) => ({ ...p, before_mobile_image_url: url }))}
+                onRemove={() => setForm((p) => ({ ...p, before_mobile_image_url: "" }))}
+              />
+            </Field>
+            <Field label="Después (opcional)">
+              <ImageUpload
+                currentUrl={form.mobile_image_url || undefined}
+                onUploaded={(url) => setForm((p) => ({ ...p, mobile_image_url: url }))}
+                onRemove={() => setForm((p) => ({ ...p, mobile_image_url: "" }))}
+              />
+            </Field>
+          </div>
         </Section>
 
+        {/* Actions */}
         <div style={{ display: "flex", gap: "10px", paddingTop: "28px" }}>
           <Button type="submit" variant="primary">
-            Guardar cambios
+            {isEdit ? "Guardar cambios" : "Crear proyecto"}
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => router.push("/admin/projects")}
-          >
+          <Button type="button" variant="secondary" onClick={() => router.push("/admin/projects")}>
             Cancelar
           </Button>
         </div>

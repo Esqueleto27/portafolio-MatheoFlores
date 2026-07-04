@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { reorderServiceAction } from "@/lib/admin-actions";
-import type { Service } from "@/lib/mock-data";
+import type { Service } from "@/lib/types";
 
 export function ServicesTable({ initial }: { initial: Service[] }) {
   const [services, setServices] = useState(initial);

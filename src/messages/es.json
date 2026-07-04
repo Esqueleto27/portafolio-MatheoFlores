@@ -5,7 +5,8 @@
     "contact": "Contacto",
     "cta": "Cotizar web",
     "menu_open": "Abrir menú",
-    "menu_close": "Cerrar menú"
+    "menu_close": "Cerrar menú",
+    "skip_to_content": "Saltar al contenido"
   },
   "hero": {
     "name": "Matheo Flores",
@@ -75,7 +76,10 @@
     "category_cliente": "Cliente",
     "category_demo": "Demo / Personal",
     "empty_title": "No hay proyectos con esos filtros",
-    "empty_desc": "Probá con otra combinación de categoría o servicio."
+    "empty_desc": "Probá con otra combinación de categoría o servicio.",
+    "view_case": "Ver caso",
+    "card_badge_cliente": "Cliente",
+    "card_badge_demo": "Demo"
   },
   "project_detail": {
     "back": "← Todos los proyectos",
@@ -86,11 +90,15 @@
     "results": "Resultados",
     "features_title": "Funcionalidades principales",
     "mobile_preview_title": "Vista en móvil",
+    "before": "Antes",
+    "after": "Después",
     "technologies": "Tecnologías",
     "live_site": "Ver sitio en vivo",
     "github_link": "Ver código",
     "code_unavailable": "Código no disponible por ahora",
-    "video_link": "Ver video"
+    "video_link": "Ver video",
+    "demo_notice_title": "Demo UI",
+    "demo_notice_desc": "Este proyecto es una demostración de interfaz y experiencia de usuario. No incluye backend ni lógica de negocio real (pagos, base de datos, autenticación, etc). Los proyectos para clientes reales sí incluyen esa capa completa."
   },
   "about": {
     "section_title": "Sobre mí",

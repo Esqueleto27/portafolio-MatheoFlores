@@ -1,37 +1,27 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
-import type { Service } from "@/lib/mock-data";
-
-const timelineOptions = ["urgent", "month", "no_rush", "exploring"] as const;
-
-const contactSchema = z.object({
-  name: z.string().min(1, "required"),
-  email: z.string().min(1, "required").email("invalid_email"),
-  service_id: z.string().min(1, "required"),
-  timeline: z.string().min(1, "required"),
-  message: z.string().min(1, "required"),
-});
-
-type FormData = z.infer<typeof contactSchema>;
+import type { Service } from "@/lib/types";
+import { contactSchema, TIMELINE_OPTIONS, type ContactFormData } from "@/lib/contact-schema";
 
 export function ContactForm({ services }: { services: Service[] }) {
   const t = useTranslations("contact");
   const router = useRouter();
   const locale = useLocale();
+  const [submitError, setSubmitError] = useState(false);
 
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({
+  } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
       name: "",
@@ -42,14 +32,15 @@ export function ContactForm({ services }: { services: Service[] }) {
     },
   });
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit(data: ContactFormData) {
+    setSubmitError(false);
     const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      alert(t("error_sending"));
+      setSubmitError(true);
       return;
     }
     router.push("/thank-you");
@@ -133,6 +124,7 @@ export function ContactForm({ services }: { services: Service[] }) {
             {/* Name */}
             <div>
               <label
+                htmlFor="contact-name"
                 style={{
                   fontSize: "13px",
                   fontWeight: 500,
@@ -144,6 +136,7 @@ export function ContactForm({ services }: { services: Service[] }) {
                 {t("form_name")}
               </label>
               <input
+                id="contact-name"
                 {...register("name")}
                 style={inputStyle(errors.name)}
               />
@@ -155,6 +148,7 @@ export function ContactForm({ services }: { services: Service[] }) {
             {/* Email */}
             <div>
               <label
+                htmlFor="contact-email"
                 style={{
                   fontSize: "13px",
                   fontWeight: 500,
@@ -166,6 +160,7 @@ export function ContactForm({ services }: { services: Service[] }) {
                 {t("form_email")}
               </label>
               <input
+                id="contact-email"
                 type="email"
                 {...register("email")}
                 style={inputStyle(errors.email)}
@@ -184,6 +179,7 @@ export function ContactForm({ services }: { services: Service[] }) {
             {/* Service type */}
             <div>
               <label
+                htmlFor="contact-service"
                 style={{
                   fontSize: "13px",
                   fontWeight: 500,
@@ -199,6 +195,7 @@ export function ContactForm({ services }: { services: Service[] }) {
                 control={control}
                 render={({ field }) => (
                   <Select
+                    id="contact-service"
                     value={field.value}
                     onChange={field.onChange}
                     error={!!errors.service_id}
@@ -217,6 +214,7 @@ export function ContactForm({ services }: { services: Service[] }) {
             {/* Timeline */}
             <div>
               <label
+                htmlFor="contact-timeline"
                 style={{
                   fontSize: "13px",
                   fontWeight: 500,
@@ -232,10 +230,11 @@ export function ContactForm({ services }: { services: Service[] }) {
                 control={control}
                 render={({ field }) => (
                   <Select
+                    id="contact-timeline"
                     value={field.value}
                     onChange={field.onChange}
                     error={!!errors.timeline}
-                    options={timelineOptions.map((opt) => ({
+                    options={TIMELINE_OPTIONS.map((opt) => ({
                       value: opt,
                       label: t(`timeline_${opt}`),
                     }))}
@@ -250,6 +249,7 @@ export function ContactForm({ services }: { services: Service[] }) {
             {/* Message */}
             <div>
               <label
+                htmlFor="contact-message"
                 style={{
                   fontSize: "13px",
                   fontWeight: 500,
@@ -261,6 +261,7 @@ export function ContactForm({ services }: { services: Service[] }) {
                 {t("form_message")}
               </label>
               <textarea
+                id="contact-message"
                 {...register("message")}
                 rows={5}
                 style={{
@@ -274,6 +275,12 @@ export function ContactForm({ services }: { services: Service[] }) {
                 <span style={errorStyle}>{t("required")}</span>
               )}
             </div>
+
+            {submitError && (
+              <p role="alert" style={{ ...errorStyle, fontSize: "14px" }}>
+                {t("error_sending")}
+              </p>
+            )}
 
             <Button
               type="submit"

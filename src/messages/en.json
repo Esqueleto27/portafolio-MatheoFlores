@@ -5,7 +5,8 @@
     "contact": "Contact",
     "cta": "Quote website",
     "menu_open": "Open menu",
-    "menu_close": "Close menu"
+    "menu_close": "Close menu",
+    "skip_to_content": "Skip to content"
   },
   "hero": {
     "name": "Matheo Flores",
@@ -75,7 +76,10 @@
     "category_cliente": "Client",
     "category_demo": "Demo / Personal",
     "empty_title": "No projects match those filters",
-    "empty_desc": "Try a different combination of category or service."
+    "empty_desc": "Try a different combination of category or service.",
+    "view_case": "See case",
+    "card_badge_cliente": "Client",
+    "card_badge_demo": "Demo"
   },
   "project_detail": {
     "back": "← All projects",
@@ -86,11 +90,15 @@
     "results": "Results",
     "features_title": "Key features",
     "mobile_preview_title": "Mobile preview",
+    "before": "Before",
+    "after": "After",
     "technologies": "Technologies",
     "live_site": "View live site",
     "github_link": "View code",
     "code_unavailable": "Code not available for now",
-    "video_link": "Watch video"
+    "video_link": "Watch video",
+    "demo_notice_title": "Demo UI",
+    "demo_notice_desc": "This project is a UI/UX demonstration. It does not include a real backend or business logic (payments, database, authentication, etc). Real client projects do include that full layer."
   },
   "about": {
     "section_title": "About me",

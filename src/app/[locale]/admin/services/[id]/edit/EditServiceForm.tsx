@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { updateServiceAction } from "@/lib/admin-actions";
-import type { Service } from "@/lib/mock-data";
+import type { Service } from "@/lib/types";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export function EditServiceForm({ service }: { service: Service }) {
@@ -37,7 +37,7 @@ export function EditServiceForm({ service }: { service: Service }) {
       description_es: form.description_es,
       description_en: form.description_en,
       order: form.order,
-      image_url: form.image_url || undefined,
+      image_url: form.image_url || null,
     });
     router.push("/admin/services");
   }
@@ -86,6 +86,7 @@ export function EditServiceForm({ service }: { service: Service }) {
           <ImageUpload
             currentUrl={form.image_url || undefined}
             onUploaded={(url) => setForm((prev) => ({ ...prev, image_url: url }))}
+            onRemove={() => setForm((prev) => ({ ...prev, image_url: "" }))}
           />
         </Field>
 
