@@ -1,22 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { createServiceAction } from "@/lib/admin-actions";
+import { updateServiceAction } from "@/lib/admin-actions";
+import type { Service } from "@/lib/types";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 
-export default function NewService() {
+export function EditServiceForm({ service }: { service: Service }) {
   const router = useRouter();
 
   const [form, setForm] = useState({
-    id: "",
-    name_es: "",
-    name_en: "",
-    description_es: "",
-    description_en: "",
-    order: 6,
-    image_url: "",
+    name_es: service.name_es,
+    name_en: service.name_en,
+    description_es: service.description_es,
+    description_en: service.description_en,
+    order: service.order,
+    image_url: service.image_url ?? "",
   });
 
   function handleChange(
@@ -31,7 +31,14 @@ export default function NewService() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await createServiceAction({ ...form, image_url: form.image_url || null });
+    await updateServiceAction(service.id, {
+      name_es: form.name_es,
+      name_en: form.name_en,
+      description_es: form.description_es,
+      description_en: form.description_en,
+      order: form.order,
+      image_url: form.image_url || null,
+    });
     router.push("/admin/services");
   }
 
@@ -46,22 +53,13 @@ export default function NewService() {
           marginBottom: "28px",
         }}
       >
-        Nuevo servicio
+        Editar: {service.name_es}
       </h1>
 
       <form
         onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          maxWidth: "600px",
-        }}
+        style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "600px" }}
       >
-        <Field label="ID (único, ejemplo: mi-servicio)">
-          <input name="id" value={form.id} onChange={handleChange} style={inputStyle} required />
-        </Field>
-
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
           <Field label="Nombre (ES)">
             <input name="name_es" value={form.name_es} onChange={handleChange} style={inputStyle} required />
@@ -93,7 +91,7 @@ export default function NewService() {
         </Field>
 
         <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
-          <Button type="submit" variant="primary">Crear servicio</Button>
+          <Button type="submit" variant="primary">Guardar cambios</Button>
           <Button type="button" variant="secondary" onClick={() => router.push("/admin/services")}>
             Cancelar
           </Button>

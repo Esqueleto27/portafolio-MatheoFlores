@@ -145,19 +145,5 @@
     "title": "Page not found",
     "desc": "The page you're looking for doesn't exist or has moved.",
     "back": "Back to home"
-  },
-  "login": {
-    "section_title": "Restricted access",
-    "email": "Email",
-    "password": "Password",
-    "submit": "Sign in",
-    "forgot": "Forgot your password?",
-    "error_required": "Required field",
-    "error_invalid": "Could not sign in. Check your email and password."
-  },
-  "forgot": {
-    "title": "Really?",
-    "desc": "This area is for Matheo only. If you're not Matheo, there's nothing to see here. 😉",
-    "back": "Back to home"
   }
 }

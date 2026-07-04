@@ -1,16 +1,17 @@
 "use client";
 
-import { useRouter, Link } from "@/i18n/navigation";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { deleteProjectAction } from "@/lib/admin-actions";
-import type { Project } from "@/lib/types";
+import { deleteServiceAction } from "@/lib/admin-actions";
+import type { Service } from "@/lib/types";
 
-export function DeleteProjectClient({ project }: { project: Project }) {
+export function DeleteServiceClient({ service }: { service: Service }) {
   const router = useRouter();
 
   async function handleDelete() {
-    await deleteProjectAction(project.id);
-    router.push("/admin/projects");
+    await deleteServiceAction(service.id);
+    router.push("/admin/services");
   }
 
   return (
@@ -24,7 +25,7 @@ export function DeleteProjectClient({ project }: { project: Project }) {
           marginBottom: "16px",
         }}
       >
-        Eliminar proyecto
+        Eliminar servicio
       </h1>
 
       <p
@@ -36,7 +37,7 @@ export function DeleteProjectClient({ project }: { project: Project }) {
         }}
       >
         ¿Estás seguro de que querés eliminar{" "}
-        <strong style={{ color: "var(--soft)" }}>{project.business_es}</strong>?
+        <strong style={{ color: "var(--soft)" }}>{service.name_es}</strong>?
         Esta acción no se puede deshacer.
       </p>
 
@@ -48,7 +49,7 @@ export function DeleteProjectClient({ project }: { project: Project }) {
         >
           Sí, eliminar
         </Button>
-        <Link href="/admin/projects" style={{ textDecoration: "none" }}>
+        <Link href="/admin/services" style={{ textDecoration: "none" }}>
           <Button variant="secondary" type="button">
             Cancelar
           </Button>

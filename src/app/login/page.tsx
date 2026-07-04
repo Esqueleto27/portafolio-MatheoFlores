@@ -1,13 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import { signIn } from "@/lib/auth";
 
+// This admin login is Spanish-only and lives outside the /es, /en locale
+// routes — hardcoded strings instead of next-intl, since there's no
+// audience here that needs English.
 export default function LoginPage() {
-  const t = useTranslations("login");
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,14 +23,21 @@ export default function LoginPage() {
     const email = form.get("email") as string;
     const password = form.get("password") as string;
 
-    const result = await signIn(email, password);
-    if (result.error) {
-      // Supabase errors come back in English ("Invalid login credentials") —
-      // show a translated generic message instead of the raw text.
-      setError(t("error_invalid"));
-      setLoading(false);
-    } else {
+    try {
+      const result = await signIn(email, password);
+      if (result.error) {
+        // Supabase errors come back in English ("Invalid login credentials") —
+        // show a translated generic message instead of the raw text.
+        setError("No se pudo iniciar sesión. Verifica el correo y la contraseña.");
+        setLoading(false);
+        return;
+      }
       router.replace("/admin");
+    } catch {
+      // Network failure or unexpected client error — signIn() itself
+      // shouldn't throw, but a stuck spinner is worse than a generic message.
+      setError("Error de conexión. Intenta de nuevo.");
+      setLoading(false);
     }
   }
 
@@ -59,7 +68,7 @@ export default function LoginPage() {
             marginBottom: "36px",
           }}
         >
-          {t("section_title")}
+          Acceso restringido
         </h1>
 
         <form
@@ -81,7 +90,7 @@ export default function LoginPage() {
                 display: "block",
               }}
             >
-              {t("email")}
+              Correo electrónico
             </label>
             <input
               id="login-email"
@@ -89,6 +98,7 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               required
+              disabled={loading}
               style={{
                 width: "100%",
                 padding: "14px 16px",
@@ -100,6 +110,7 @@ export default function LoginPage() {
                 borderRadius: "12px",
                 outline: "none",
                 boxSizing: "border-box" as const,
+                opacity: loading ? 0.6 : 1,
               }}
             />
           </div>
@@ -114,7 +125,7 @@ export default function LoginPage() {
                 display: "block",
               }}
             >
-              {t("password")}
+              Contraseña
             </label>
             <input
               id="login-password"
@@ -122,6 +133,7 @@ export default function LoginPage() {
               type="password"
               autoComplete="current-password"
               required
+              disabled={loading}
               style={{
                 width: "100%",
                 padding: "14px 16px",
@@ -133,11 +145,12 @@ export default function LoginPage() {
                 borderRadius: "12px",
                 outline: "none",
                 boxSizing: "border-box" as const,
+                opacity: loading ? 0.6 : 1,
               }}
             />
           </div>
           {error && (
-            <p style={{ color: "#ef4444", fontSize: "13px", margin: 0 }}>
+            <p role="alert" style={{ color: "#ef4444", fontSize: "13px", margin: 0 }}>
               {error}
             </p>
           )}
@@ -146,14 +159,15 @@ export default function LoginPage() {
             variant="primary"
             style={{ width: "100%" }}
             disabled={loading}
+            aria-busy={loading}
           >
-            {loading ? "..." : t("submit")}
+            {loading ? "Ingresando…" : "Ingresar"}
           </Button>
         </form>
 
         <div style={{ textAlign: "center", marginTop: "20px" }}>
           <Link href="/forgot" className="link-accent" style={{ fontSize: "13px" }}>
-            {t("forgot")}
+            ¿Olvidaste tu contraseña?
           </Link>
         </div>
       </div>

@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Spanish-only, lives outside the /es, /en locale routes.
 export default function ForgotPage() {
-  const t = useTranslations("forgot");
-
   return (
     <section
       style={{
@@ -55,7 +53,7 @@ export default function ForgotPage() {
             position: "relative",
           }}
         >
-          {t("title")}
+          ¿En serio?
         </h1>
 
         <p
@@ -67,7 +65,7 @@ export default function ForgotPage() {
             position: "relative",
           }}
         >
-          {t("desc")}
+          Esta área es solo para Matheo. Si no eres Matheo, no hay nada que ver acá. 😉
         </p>
 
         <Button
@@ -76,7 +74,7 @@ export default function ForgotPage() {
           variant="secondary"
           style={{ position: "relative" }}
         >
-          {t("back")}
+          Volver al inicio
         </Button>
       </div>
     </section>
