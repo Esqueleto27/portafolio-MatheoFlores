@@ -1,4 +1,4 @@
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { TechChip } from "@/components/ui/Badge";
 import { getProjects, getServices } from "@/lib/data";

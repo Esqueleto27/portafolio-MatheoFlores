@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth";
-import { useRouter } from "@/i18n/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function AdminHeader() {

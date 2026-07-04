@@ -10,18 +10,15 @@ export const metadata: Metadata = {
 
 export default async function AdminLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
   const user = await getServerUser();
 
   // Same check as the proxy middleware — being signed in is not enough,
   // only ADMIN_EMAIL may see the panel. Kept here as defense in depth.
   if (!isAdminEmail(user?.email)) {
-    redirect(`/${locale}/login`);
+    redirect("/login");
   }
 
   return (

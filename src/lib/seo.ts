@@ -1,4 +1,4 @@
-export const SITE_URL = "https://matheoflores.dev";
+export const SITE_URL = "https://www.matheoflores.dev";
 
 // Builds canonical + hreflang alternates for a given locale/path pair.
 // `path` is locale-agnostic, e.g. "/", "/about", "/projects/my-slug".

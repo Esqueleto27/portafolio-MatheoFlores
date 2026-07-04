@@ -2,19 +2,15 @@
 
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Search, ShoppingCart, Briefcase, Rocket, MessageCircle, Megaphone } from "lucide-react";
 import { ServicePill } from "@/components/ui/Badge";
 import type { Service, Locale } from "@/lib/types";
 
-// Ícono y nombre técnico por posición de la card (01-06), no por service_id.
-const SERVICE_META = [
-  { icon: Search, techName: "SEO / Presencia" },
-  { icon: ShoppingCart, techName: "E-commerce" },
-  { icon: Briefcase, techName: "Portafolio" },
-  { icon: Rocket, techName: "Landing Page" },
-  { icon: MessageCircle, techName: "Asesoría" },
-  { icon: Megaphone, techName: "Publicidad" },
-];
+// Purely decorative icon per card position — the actual service name/desc
+// always comes from the DB below, so a mismatched order here can't make the
+// label lie about what the card offers.
+const SERVICE_ICONS = [Search, ShoppingCart, Briefcase, Rocket, MessageCircle, Megaphone];
 
 function TiltCard({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -127,8 +123,7 @@ export function ServicesSection({
             const name = locale === "en" ? service.name_en : service.name_es;
             const desc =
               locale === "en" ? service.description_en : service.description_es;
-            const meta = SERVICE_META[i];
-            const Icon = meta?.icon;
+            const Icon = SERVICE_ICONS[i];
 
             return (
               <div
@@ -166,7 +161,7 @@ export function ServicesSection({
                       }}
                     />
 
-                    {/* Service header: icon + number · technical name */}
+                    {/* Service header: icon + number */}
                     <div
                       style={{
                         display: "flex",
@@ -187,18 +182,6 @@ export function ServicesSection({
                       >
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      {meta && (
-                        <span
-                          style={{
-                            fontSize: "13px",
-                            fontFamily: "var(--font-geist-mono)",
-                            color: "var(--muted)",
-                            letterSpacing: "0.1em",
-                          }}
-                        >
-                          · {meta.techName}
-                        </span>
-                      )}
                     </div>
 
                     <ServicePill>{name}</ServicePill>
@@ -216,32 +199,46 @@ export function ServicesSection({
                       {desc}
                     </p>
 
-                    {/* Image placeholder */}
+                    {/* Reference image — falls back to a striped placeholder
+                        until an image is uploaded for this service in admin */}
                     <div
                       style={{
                         height: "120px",
                         borderRadius: "10px",
-                        background: "var(--mockup)",
-                        backgroundImage:
-                          "repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 13px)",
+                        background: service.image_url ? undefined : "var(--mockup)",
+                        backgroundImage: service.image_url
+                          ? undefined
+                          : "repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 13px)",
                         border: "1px solid var(--hair)",
                         marginTop: "4px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         position: "relative",
+                        overflow: "hidden",
                         zIndex: 1,
                       }}
                     >
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          fontFamily: "var(--font-geist-mono)",
-                          color: "var(--muted)",
-                        }}
-                      >
-                        [ referencia ]
-                      </span>
+                      {service.image_url ? (
+                        <Image
+                          src={service.image_url}
+                          alt=""
+                          fill
+                          loading="lazy"
+                          sizes="(max-width: 640px) 100vw, 330px"
+                          style={{ objectFit: "cover" }}
+                        />
+                      ) : (
+                        <span
+                          style={{
+                            fontSize: "11px",
+                            fontFamily: "var(--font-geist-mono)",
+                            color: "var(--muted)",
+                          }}
+                        >
+                          [ referencia ]
+                        </span>
+                      )}
                     </div>
                   </div>
                 </TiltCard>

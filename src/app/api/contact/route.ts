@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     if (await isRateLimited(ip)) {
       return NextResponse.json(
-        { error: "Demasiados intentos. Esperá 15 minutos." },
+        { error: "Demasiados intentos. Espera 15 minutos." },
         { status: 429 }
       );
     }
@@ -34,7 +34,8 @@ export async function POST(request: Request) {
     }
 
     const services = await getServices();
-    if (!services.some((s) => s.id === parsed.data.service_id)) {
+    const service = services.find((s) => s.id === parsed.data.service_id);
+    if (!service) {
       return NextResponse.json(
         { error: "Datos inválidos", details: { service_id: "unknown" } },
         { status: 400 }
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
           text: [
             `Nombre: ${messageData.name}`,
             `Email: ${messageData.email}`,
-            `Servicio: ${messageData.service_id}`,
+            `Servicio: ${service.name_es}`,
             `Plazo: ${messageData.timeline}`,
             "",
             messageData.message,
