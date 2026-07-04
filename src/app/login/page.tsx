@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import { signIn } from "@/lib/auth";
 
+const SIGN_IN_TIMEOUT_MS = 12000;
+
+function timeout(ms: number): Promise<never> {
+  return new Promise((_, reject) => {
+    setTimeout(() => reject(new Error("timeout")), ms);
+  });
+}
+
 // This admin login is Spanish-only and lives outside the /es, /en locale
 // routes — hardcoded strings instead of next-intl, since there's no
 // audience here that needs English.
@@ -24,7 +32,13 @@ export default function LoginPage() {
     const password = form.get("password") as string;
 
     try {
-      const result = await signIn(email, password);
+      // Supabase itself can hang or time out during an incident — without a
+      // race, a slow/dead auth API leaves the button stuck on "Ingresando…"
+      // forever with no feedback.
+      const result = await Promise.race([
+        signIn(email, password),
+        timeout(SIGN_IN_TIMEOUT_MS),
+      ]);
       if (result.error) {
         // Supabase errors come back in English ("Invalid login credentials") —
         // show a translated generic message instead of the raw text.
@@ -33,10 +47,16 @@ export default function LoginPage() {
         return;
       }
       router.replace("/admin");
-    } catch {
-      // Network failure or unexpected client error — signIn() itself
-      // shouldn't throw, but a stuck spinner is worse than a generic message.
-      setError("Error de conexión. Intenta de nuevo.");
+    } catch (err) {
+      if (err instanceof Error && err.message === "timeout") {
+        setError(
+          "La solicitud está tardando demasiado. Supabase podría estar teniendo problemas — revisa status.supabase.com e intenta de nuevo en unos minutos."
+        );
+      } else {
+        // Network failure or unexpected client error — signIn() itself
+        // shouldn't throw, but a stuck spinner is worse than a generic message.
+        setError("Error de conexión. Intenta de nuevo.");
+      }
       setLoading(false);
     }
   }
