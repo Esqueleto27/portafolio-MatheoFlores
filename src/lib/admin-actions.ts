@@ -101,12 +101,20 @@ export async function updateMessageStatusAction(
   status: ContactMessage["status"]
 ): Promise<Pick<ContactMessage, "status"> | null> {
   const db = await adminClient();
+  // No revalidatePath here: messages never appear on public pages, so
+  // purging the whole site's cache on every toggle/delete is pure waste —
+  // the admin routes are force-dynamic and re-render on their own.
   const { data } = await db
     .from("mensajes_contacto")
     .update({ status })
     .eq("id", id)
     .select("status")
     .single();
-  if (data) revalidatePath("/", "layout");
   return data ?? null;
+}
+
+export async function deleteMessageAction(id: string) {
+  const db = await adminClient();
+  const { error } = await db.from("mensajes_contacto").delete().eq("id", id);
+  if (error) { console.error("[admin] deleteMessage:", error); throw new Error(error.message); }
 }

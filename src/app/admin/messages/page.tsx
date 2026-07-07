@@ -1,5 +1,6 @@
 import { getMessages } from "@/lib/data";
 import { StatusToggle } from "./StatusToggle";
+import { DeleteMessageButton } from "./DeleteMessageButton";
 
 export const dynamic = "force-dynamic";
 
@@ -78,7 +79,10 @@ export default async function AdminMessages() {
                     {m.email}
                   </span>
                 </div>
-                <StatusToggle id={m.id} status={m.status} />
+                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexShrink: 0 }}>
+                  <StatusToggle id={m.id} status={m.status} />
+                  <DeleteMessageButton id={m.id} />
+                </div>
               </div>
 
               <div
