@@ -40,7 +40,10 @@ test.describe("public site smoke flow", () => {
   });
 
   test("admin routes redirect to login when signed out", async ({ page }) => {
-    await page.goto("/es/admin");
-    await expect(page).toHaveURL(/\/es\/login/);
+    // The admin area lives outside the locale prefixes (/admin, not
+    // /es/admin) — the proxy middleware must bounce anonymous visitors
+    // to /login before anything renders.
+    await page.goto("/admin");
+    await expect(page).toHaveURL(/\/login/);
   });
 });

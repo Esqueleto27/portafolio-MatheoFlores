@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
+import { buildAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -9,9 +10,13 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const loc = locale === "en" ? "en" : "es";
   return {
     title: locale === "en" ? "Message sent" : "Mensaje enviado",
     robots: { index: false, follow: false },
+    // Without this the page inherits the layout's canonical (the home
+    // page), which would send crawlers a contradictory signal.
+    alternates: buildAlternates(loc, "/thank-you"),
   };
 }
 

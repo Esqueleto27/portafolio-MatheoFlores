@@ -24,7 +24,7 @@ export async function generateMetadata({
     description:
       locale === "en"
         ? "Tell me about your project and I'll respond within 24 hours with a personalised estimate."
-        : "Contame tu proyecto y te respondo en menos de 24 horas con un estimado personalizado.",
+        : "Cuéntame tu proyecto y te respondo en menos de 24 horas con un estimado personalizado.",
     alternates: buildAlternates(loc, "/contact"),
   };
 }

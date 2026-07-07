@@ -51,6 +51,7 @@ const PERSON_JSON_LD = {
   name: "Matheo Flores",
   url: SITE_URL,
   jobTitle: "Full-Stack Developer",
+  knowsLanguage: ["es", "en"],
   address: { "@type": "PostalAddress", addressLocality: "Quito", addressCountry: "EC" },
   sameAs: [
     "https://www.linkedin.com/in/matheo-flores-281160278/",
@@ -59,6 +60,17 @@ const PERSON_JSON_LD = {
     "https://www.freelancer.com/u/Esqueleto27",
   ],
 };
+
+// WebSite entity — helps search engines and AI crawlers attribute the
+// site name and understand it's the personal site of the Person above.
+const websiteJsonLd = (locale: string) => ({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Matheo Flores",
+  url: SITE_URL,
+  inLanguage: locale === "en" ? "en" : "es",
+  author: { "@type": "Person", name: "Matheo Flores", url: SITE_URL },
+});
 
 export default async function LocaleLayout({
   children,
@@ -81,7 +93,9 @@ export default async function LocaleLayout({
       <script
         type="application/ld+json"
         // Static, non-user-controlled data — safe to inject directly.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([PERSON_JSON_LD, websiteJsonLd(locale)]),
+        }}
       />
       {children}
     </NextIntlClientProvider>

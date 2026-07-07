@@ -1,13 +1,25 @@
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/seo";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // The theme is user-toggled (data-theme attribute), not media-query
+  // driven, so a single dark themeColor matches the default experience.
+  themeColor: "#070708",
+};
 
 export const metadata: Metadata = {
+  // The [locale] layout defines its own richer metadata — this base only
+  // covers the locale-free routes (/admin, /login, /forgot, 404).
+  metadataBase: new URL(SITE_URL),
   title: "Matheo Flores — Full-Stack Developer",
   description:
     "Portafolio de Matheo Flores, desarrollador web full-stack en Quito, Ecuador.",

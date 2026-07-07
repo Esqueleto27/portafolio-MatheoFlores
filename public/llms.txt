@@ -19,8 +19,9 @@
 
 ## Links
 
-- Website: https://matheoflores.dev
-- Projects: https://matheoflores.dev/es/projects
-- Contact: https://matheoflores.dev/es/contact
+- Website: https://www.matheoflores.dev
+- Projects (Spanish): https://www.matheoflores.dev/es/projects
+- Projects (English): https://www.matheoflores.dev/en/projects
+- Contact: https://www.matheoflores.dev/es/contact
 - LinkedIn: https://www.linkedin.com/in/matheo-flores-281160278/
 - Upwork: https://www.upwork.com/freelancers/~018e88181a81bc2eec

@@ -5,6 +5,20 @@ const LOCALES = ["es", "en"] as const;
 
 const STATIC_PATHS = ["/", "/projects", "/about", "/contact"];
 
+// hreflang alternates per entry — tells Google the /es and /en versions
+// are translations of each other, not duplicate content. x-default points
+// to Spanish, the site's primary locale.
+function languageAlternates(path: string) {
+  const clean = path === "/" ? "" : path;
+  return {
+    languages: {
+      es: `${BASE}/es${clean}`,
+      en: `${BASE}/en${clean}`,
+      "x-default": `${BASE}/es${clean}`,
+    },
+  };
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getProjects();
 
@@ -14,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: path === "/" ? ("weekly" as const) : ("monthly" as const),
       priority: path === "/" ? 1.0 : 0.8,
+      alternates: languageAlternates(path),
     }))
   );
 
@@ -23,6 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: project.created_at ? new Date(project.created_at) : new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.6,
+      alternates: languageAlternates(`/projects/${project.slug}`),
     }))
   );
 
