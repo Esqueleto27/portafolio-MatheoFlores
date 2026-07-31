@@ -5,7 +5,7 @@ import { SocialLinks } from "@/components/SocialLinks";
 
 const STACK_ITEMS = [
   "Next.js", "React", "TypeScript", "Node.js", "PostgreSQL",
-  "Tailwind CSS", "Supabase", "Framer Motion", "Stripe",
+  "Tailwind CSS", "Auth.js", "Framer Motion", "Stripe",
   "Git", "Docker", "REST APIs", "GraphQL", "Prisma",
   "Python", "Figma", "Vercel", "Cloudflare",
 ];

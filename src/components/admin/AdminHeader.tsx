@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+import { signOut } from "next-auth/react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function AdminHeader() {
@@ -12,7 +12,7 @@ export function AdminHeader() {
 
   async function handleLogout() {
     setLoggingOut(true);
-    await signOut();
+    await signOut({ redirect: false });
     router.replace("/login");
   }
 

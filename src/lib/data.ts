@@ -1,8 +1,8 @@
 import { unstable_cache } from "next/cache";
-import { getSupabase } from "./supabase/client";
-import { getAdminSupabase } from "./supabase/admin";
-import { requireAdmin } from "./supabase/server";
-import type { Project, Service } from "./types";
+import { prisma } from "./prisma";
+import { requireAdmin } from "./require-admin";
+import type { Project, Service, Feature, Locale } from "./types";
+import type { Proyecto, Servicio, MensajeContacto } from "@prisma/client";
 
 export interface ContactMessage {
   id: string;
@@ -15,15 +15,74 @@ export interface ContactMessage {
   created_at: string;
 }
 
+function mapServicio(s: Servicio): Service {
+  return {
+    id: s.id,
+    name_es: s.nameEs,
+    name_en: s.nameEn,
+    description_es: s.descriptionEs,
+    description_en: s.descriptionEn,
+    order: s.order,
+  };
+}
+
+function mapProyecto(p: Proyecto): Project {
+  return {
+    id: p.id,
+    slug: p.slug,
+    created_at: p.createdAt.toISOString(),
+    category: p.category,
+    service_id: p.serviceId,
+    custom_tag_es: p.customTagEs ?? undefined,
+    custom_tag_en: p.customTagEn ?? undefined,
+    featured: p.featured,
+    business_es: p.businessEs,
+    business_en: p.businessEn,
+    description_es: p.descriptionEs ?? undefined,
+    description_en: p.descriptionEn ?? undefined,
+    objective_es: p.objectiveEs ?? undefined,
+    objective_en: p.objectiveEn ?? undefined,
+    problem_es: p.problemEs,
+    problem_en: p.problemEn,
+    solution_es: p.solutionEs,
+    solution_en: p.solutionEn,
+    challenges_es: p.challengesEs ?? undefined,
+    challenges_en: p.challengesEn ?? undefined,
+    results_es: p.resultsEs ?? undefined,
+    results_en: p.resultsEn ?? undefined,
+    features: (p.features as unknown as Feature[]) ?? undefined,
+    technologies: p.technologies,
+    live_url: p.liveUrl ?? undefined,
+    github_url: p.githubUrl ?? undefined,
+    show_code: p.showCode,
+    video_url: p.videoUrl ?? undefined,
+    image_url: p.imageUrl,
+    mobile_image_url: p.mobileImageUrl,
+    before_image_url: p.beforeImageUrl,
+    before_mobile_image_url: p.beforeMobileImageUrl,
+  };
+}
+
+function mapMensaje(m: MensajeContacto): ContactMessage {
+  return {
+    id: m.id,
+    name: m.name,
+    email: m.email,
+    service_id: m.serviceId,
+    timeline: m.timeline,
+    message: m.message,
+    status: m.status,
+    created_at: m.createdAt.toISOString(),
+  };
+}
+
 // Public read paths are cached at the data layer — independent of whether
 // the route itself renders statically — and invalidated by admin-actions.ts
 // via updateTag() on every write, so edits show up immediately.
 export const getServices = unstable_cache(
   async (): Promise<Service[]> => {
-    const supabase = await getSupabase();
-    if (!supabase) return [];
-    const { data } = await supabase.from("servicios").select("*").order("order");
-    return data ?? [];
+    const rows = await prisma.servicio.findMany({ orderBy: { order: "asc" } });
+    return rows.map(mapServicio);
   },
   ["services"],
   { tags: ["services"], revalidate: 3600 }
@@ -31,13 +90,8 @@ export const getServices = unstable_cache(
 
 export const getProjects = unstable_cache(
   async (): Promise<Project[]> => {
-    const supabase = await getSupabase();
-    if (!supabase) return [];
-    const { data } = await supabase
-      .from("proyectos")
-      .select("*")
-      .order("created_at", { ascending: false });
-    return data ?? [];
+    const rows = await prisma.proyecto.findMany({ orderBy: { createdAt: "desc" } });
+    return rows.map(mapProyecto);
   },
   ["projects"],
   { tags: ["projects"], revalidate: 3600 }
@@ -45,14 +99,11 @@ export const getProjects = unstable_cache(
 
 export const getFeaturedProjects = unstable_cache(
   async (): Promise<Project[]> => {
-    const supabase = await getSupabase();
-    if (!supabase) return [];
-    const { data } = await supabase
-      .from("proyectos")
-      .select("*")
-      .eq("featured", true)
-      .order("created_at", { ascending: false });
-    return data ?? [];
+    const rows = await prisma.proyecto.findMany({
+      where: { featured: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return rows.map(mapProyecto);
   },
   ["featured-projects"],
   { tags: ["projects"], revalidate: 3600 }
@@ -60,84 +111,54 @@ export const getFeaturedProjects = unstable_cache(
 
 // Admin needs to see writes immediately, so these stay uncached.
 export async function getProjectById(id: string): Promise<Project | undefined> {
-  const supabase = await getSupabase();
-  if (!supabase) return undefined;
-  const { data } = await supabase
-    .from("proyectos")
-    .select("*")
-    .eq("id", id)
-    .single();
-  return data ?? undefined;
+  const row = await prisma.proyecto.findUnique({ where: { id } });
+  return row ? mapProyecto(row) : undefined;
 }
 
 export async function getServiceById(id: string): Promise<Service | undefined> {
-  const supabase = await getSupabase();
-  if (!supabase) return undefined;
-  const { data } = await supabase
-    .from("servicios")
-    .select("*")
-    .eq("id", id)
-    .single();
-  return data ?? undefined;
+  const row = await prisma.servicio.findUnique({ where: { id } });
+  return row ? mapServicio(row) : undefined;
 }
 
 export const getProjectBySlug = unstable_cache(
   async (slug: string): Promise<Project | undefined> => {
-    const supabase = await getSupabase();
-    if (!supabase) return undefined;
-    const { data } = await supabase
-      .from("proyectos")
-      .select("*")
-      .eq("slug", slug)
-      .single();
-    return data ?? undefined;
+    const row = await prisma.proyecto.findUnique({ where: { slug } });
+    return row ? mapProyecto(row) : undefined;
   },
   ["project-by-slug"],
   { tags: ["projects"], revalidate: 3600 }
 );
 
 export const getServiceName = unstable_cache(
-  async (id: string, locale: "es" | "en"): Promise<string> => {
-    const supabase = await getSupabase();
-    if (!supabase) return id;
-    const { data } = await supabase
-      .from("servicios")
-      .select(`name_${locale}`)
-      .eq("id", id)
-      .single();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return data ? (data as any)[`name_${locale}`] : id;
+  async (id: string, locale: Locale): Promise<string> => {
+    const row = await prisma.servicio.findUnique({ where: { id } });
+    if (!row) return id;
+    return locale === "en" ? row.nameEn : row.nameEs;
   },
   ["service-name"],
   { tags: ["services"], revalidate: 3600 }
 );
 
 export async function getMessages(): Promise<ContactMessage[]> {
-  // Reads private contact data with the service-role key — the auth check
-  // lives at the data source, not only in middleware/layouts.
+  // Re-validates the caller's session on every call — this is the real
+  // access-control boundary, not the UI.
   await requireAdmin();
-  const supabase = getAdminSupabase();
-  if (!supabase) return [];
-  const { data } = await supabase
-    .from("mensajes_contacto")
-    .select("*")
-    .order("created_at", { ascending: false });
-  return data ?? [];
+  const rows = await prisma.mensajeContacto.findMany({ orderBy: { createdAt: "desc" } });
+  return rows.map(mapMensaje);
 }
 
 export async function createMessage(
   msg: Omit<ContactMessage, "id" | "created_at" | "status">
 ): Promise<ContactMessage | null> {
-  const supabase = getAdminSupabase();
-  if (!supabase) throw new Error("SUPABASE_SERVICE_ROLE_KEY no configurado");
-  const { data, error } = await supabase
-    .from("mensajes_contacto")
-    .insert({ ...msg, status: "pendiente" })
-    .select()
-    .single();
-  if (error) {
-    console.error("[createMessage]", error);
-    throw new Error(error.message);
-  }
-  return data;
+  const row = await prisma.mensajeContacto.create({
+    data: {
+      name: msg.name,
+      email: msg.email,
+      serviceId: msg.service_id,
+      timeline: msg.timeline as "urgent" | "month" | "no_rush" | "exploring",
+      message: msg.message,
+      status: "pendiente",
+    },
+  });
+  return mapMensaje(row);
 }

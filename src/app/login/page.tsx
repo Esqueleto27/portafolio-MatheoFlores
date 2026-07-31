@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { useState } from "react";
-import { signIn } from "@/lib/auth";
+import { signIn } from "next-auth/react";
 
 const SIGN_IN_TIMEOUT_MS = 12000;
 
@@ -30,34 +30,30 @@ export default function LoginPage() {
     const password = form.get("password") as string;
 
     try {
-      // Supabase itself can hang or time out during an incident — without a
-      // race, a slow/dead auth API leaves the button stuck on "Ingresando…"
-      // forever with no feedback.
+      // The auth database itself can hang or time out during an incident —
+      // without a race, a dead connection leaves the button stuck on
+      // "Ingresando…" forever with no feedback.
       const result = await Promise.race([
-        signIn(email, password),
+        signIn("credentials", { email, password, redirect: false }),
         timeout(SIGN_IN_TIMEOUT_MS),
       ]);
-      if (result.error) {
-        // Supabase errors come back in English ("Invalid login credentials") —
-        // show a translated generic message instead of the raw text.
+      if (!result || result.error) {
         setError("No se pudo iniciar sesión. Verifica el correo y la contraseña.");
         setLoading(false);
         return;
       }
       // Hard navigation, not router.replace: the session was just written to
-      // cookies by the browser client, and a soft (RSC) navigation can race
-      // ahead of that cookie reaching the server — the /admin middleware then
+      // cookies by the sign-in request, and a soft (RSC) navigation can race
+      // ahead of that cookie reaching the server — the /admin proxy then
       // sees no session and bounces back to /login, leaving the button stuck
       // on "Ingresando…". A full page load guarantees the cookie is sent.
       window.location.assign("/admin");
     } catch (err) {
       if (err instanceof Error && err.message === "timeout") {
-        setError(
-          "La solicitud está tardando demasiado. Supabase podría estar teniendo problemas — revisa status.supabase.com e intenta de nuevo en unos minutos."
-        );
+        setError("La solicitud está tardando demasiado. Intenta de nuevo en unos minutos.");
       } else {
-        // Network failure or unexpected client error — signIn() itself
-        // shouldn't throw, but a stuck spinner is worse than a generic message.
+        // Network failure or unexpected client error — a stuck spinner
+        // is worse than a generic message.
         setError("Error de conexión. Intenta de nuevo.");
       }
       setLoading(false);

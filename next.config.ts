@@ -19,9 +19,9 @@ const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""};
   style-src 'self' 'unsafe-inline';
-  img-src 'self' blob: data: https://*.supabase.co;
+  img-src 'self' blob: data:;
   font-src 'self';
-  connect-src 'self' https://*.supabase.co${isDev ? " ws: http://localhost:*" : ""};
+  connect-src 'self'${isDev ? " ws: http://localhost:*" : ""};
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -49,15 +49,9 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "6mb",
     },
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "*.supabase.co",
-        pathname: "/storage/v1/object/public/**",
-      },
-    ],
-  },
+  // Uploaded project images are written to public/uploads (see
+  // uploadImageAction) and served same-origin — no remote image hosts
+  // to allowlist now that Supabase Storage / Vercel Blob are gone.
   async headers() {
     return [
       {

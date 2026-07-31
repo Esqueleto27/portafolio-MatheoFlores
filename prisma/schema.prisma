@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Single admin user for the credentials-based Auth.js login.
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+model Servicio {
+  id            String   @id
+  nameEs        String   @map("name_es")
+  nameEn        String   @map("name_en")
+  descriptionEs String   @map("description_es")
+  descriptionEn String   @map("description_en")
+  order         Int      @default(0)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  proyectos Proyecto[]
+  mensajes  MensajeContacto[]
+
+  @@map("servicios")
+}
+
+enum ProjectCategory {
+  cliente
+  demo
+}
+
+model Proyecto {
+  id                   String          @id @default(uuid())
+  slug                 String          @unique
+  category             ProjectCategory
+  serviceId            String          @map("service_id")
+  service              Servicio        @relation(fields: [serviceId], references: [id])
+  customTagEs          String?         @map("custom_tag_es")
+  customTagEn          String?         @map("custom_tag_en")
+  featured             Boolean         @default(false)
+  businessEs           String          @map("business_es")
+  businessEn           String          @map("business_en")
+  descriptionEs        String?         @map("description_es")
+  descriptionEn        String?         @map("description_en")
+  objectiveEs          String?         @map("objective_es")
+  objectiveEn          String?         @map("objective_en")
+  problemEs            String          @map("problem_es")
+  problemEn            String          @map("problem_en")
+  solutionEs           String          @map("solution_es")
+  solutionEn           String          @map("solution_en")
+  challengesEs         String?         @map("challenges_es")
+  challengesEn         String?         @map("challenges_en")
+  resultsEs            String?         @map("results_es")
+  resultsEn            String?         @map("results_en")
+  features             Json            @default("[]")
+  technologies         String[]        @default([])
+  liveUrl              String?         @map("live_url")
+  githubUrl            String?         @map("github_url")
+  showCode             Boolean         @default(true) @map("show_code")
+  videoUrl             String?         @map("video_url")
+  imageUrl             String?         @map("image_url")
+  mobileImageUrl       String?         @map("mobile_image_url")
+  beforeImageUrl       String?         @map("before_image_url")
+  beforeMobileImageUrl String?         @map("before_mobile_image_url")
+  createdAt            DateTime        @default(now()) @map("created_at")
+
+  @@index([slug])
+  @@index([serviceId])
+  @@index([category])
+  @@index([featured])
+  @@map("proyectos")
+}
+
+enum Timeline {
+  urgent
+  month
+  no_rush
+  exploring
+}
+
+enum MessageStatus {
+  pendiente
+  respondido
+}
+
+model MensajeContacto {
+  id        String        @id @default(uuid())
+  name      String
+  email     String
+  serviceId String        @map("service_id")
+  service   Servicio      @relation(fields: [serviceId], references: [id])
+  timeline  Timeline
+  message   String
+  status    MessageStatus @default(pendiente)
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@index([status])
+  @@map("mensajes_contacto")
+}

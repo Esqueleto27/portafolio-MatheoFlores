@@ -10,8 +10,8 @@ import { CtaSection } from "@/components/sections/CtaSection";
 import { routing } from "@/i18n/routing";
 
 // Data only changes via the admin panel, which already calls
-// revalidatePath on every write — this just avoids hitting Supabase
-// on every request in between.
+// revalidatePath on every write — this just avoids hitting the
+// database on every request in between.
 export const revalidate = 3600;
 
 export function generateStaticParams() {

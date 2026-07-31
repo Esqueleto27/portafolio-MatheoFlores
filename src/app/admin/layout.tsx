@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { getServerUser } from "@/lib/supabase/server";
+import { auth } from "@/auth";
 import { isAdminEmail } from "@/lib/admin-email";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 
@@ -13,11 +13,11 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getServerUser();
+  const session = await auth();
 
-  // Same check as the proxy middleware — being signed in is not enough,
-  // only ADMIN_EMAIL may see the panel. Kept here as defense in depth.
-  if (!isAdminEmail(user?.email)) {
+  // Same check as the proxy — being signed in is not enough, only
+  // ADMIN_EMAIL may see the panel. Kept here as defense in depth.
+  if (!isAdminEmail(session?.user?.email)) {
     redirect("/login");
   }
 

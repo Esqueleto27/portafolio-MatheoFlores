@@ -24,6 +24,9 @@
 # production
 /build
 
+# admin-uploaded project images (local disk storage, not committed)
+/public/uploads/
+
 # misc
 .DS_Store
 *.pem
