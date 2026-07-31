@@ -5,11 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "npm run db:deploy && next start",
     "lint": "eslint",
     "test:e2e": "playwright test",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
+    "db:deploy": "prisma db push && tsx prisma/seed-admin.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio"
   },
@@ -22,15 +23,18 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "bcryptjs": "^3.0.3",
+    "dotenv": "^16.4.7",
     "geist": "^1.7.2",
     "lucide-react": "^1.23.0",
     "next": "16.2.9",
     "next-auth": "5.0.0-beta.32",
     "next-intl": "^4.13.0",
+    "prisma": "^7.9.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.80.0",
     "resend": "^6.14.0",
+    "tsx": "^4.19.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
@@ -39,12 +43,9 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
-    "prisma": "^7.9.1",
     "tailwindcss": "^4",
-    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }
