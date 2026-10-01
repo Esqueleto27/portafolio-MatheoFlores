@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
 
-// /admin, /login and /forgot live outside the locale-prefixed routes, so
-// unlike the public pages they don't need /es and /en variants listed here.
-const PRIVATE_PATHS = ["/admin", "/login", "/forgot"];
+// /admin lives outside the locale-prefixed routes, so unlike the public
+// pages it doesn't need /es and /en variants listed here.
+const PRIVATE_PATHS = ["/admin"];
 
 export default function robots(): MetadataRoute.Robots {
   return {

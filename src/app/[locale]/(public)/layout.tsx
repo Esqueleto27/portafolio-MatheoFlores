@@ -13,8 +13,8 @@ export default async function PublicLayout({
   params: Promise<{ locale: string }>;
 }) {
   // Without this, getTranslations() reads the locale from the request and
-  // opts every public page into dynamic rendering — with it, the pages
-  // below can be statically generated as intended by their `revalidate`.
+  // opts every public page into dynamic rendering — with it, the pages that
+  // don't touch D1 (e.g. /about) can still be statically generated.
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("nav");

@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
@@ -14,14 +15,17 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 // 'unsafe-eval' is dev-only — React uses eval() in development to
 // reconstruct server error stacks in the browser; it's never used in
 // production builds.
+//
+// cloudflareinsights.com is Cloudflare Web Analytics (cookieless), which
+// Cloudflare injects on the custom domain once enabled in the dashboard.
 const isDev = process.env.NODE_ENV === "development";
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""};
+  script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${isDev ? " 'unsafe-eval'" : ""};
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data:;
   font-src 'self';
-  connect-src 'self'${isDev ? " ws: http://localhost:*" : ""};
+  connect-src 'self' https://cloudflareinsights.com${isDev ? " ws: http://localhost:*" : ""};
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -49,9 +53,8 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "6mb",
     },
   },
-  // Uploaded project images are written to public/uploads (see
-  // uploadImageAction) and served same-origin — no remote image hosts
-  // to allowlist now that Supabase Storage / Vercel Blob are gone.
+  // Uploaded project images live in R2 and are served same-origin through
+  // /api/media (see uploadImageAction) — no remote image hosts to allowlist.
   async headers() {
     return [
       {
@@ -63,3 +66,7 @@ const nextConfig: NextConfig = {
 };
 
 export default withNextIntl(nextConfig);
+
+// Makes the wrangler.jsonc bindings (D1, R2, vars) available to
+// getCloudflareContext() during `next dev`, backed by local .wrangler state.
+initOpenNextCloudflareForDev();

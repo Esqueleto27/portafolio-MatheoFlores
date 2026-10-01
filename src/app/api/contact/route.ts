@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { createMessage, getServices } from "@/lib/data";
 import { isRateLimited } from "@/lib/rate-limit";
 import { contactSchema } from "@/lib/contact-schema";
@@ -6,14 +7,13 @@ import { renderAdminNotificationEmail, renderVisitorConfirmationEmail } from "@/
 
 export async function POST(request: Request) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      request.headers.get("x-real-ip") ??
-      "unknown";
+    // Set by Cloudflare on every request — the real client IP, not
+    // spoofable from the client the way x-forwarded-for is.
+    const ip = request.headers.get("cf-connecting-ip") ?? "unknown";
 
     if (await isRateLimited(ip)) {
       return NextResponse.json(
-        { error: "Demasiados intentos. Espera 15 minutos." },
+        { error: "Demasiados intentos. Espera un minuto." },
         { status: 429 }
       );
     }
@@ -51,11 +51,12 @@ export async function POST(request: Request) {
     // notification failure must not surface as an error to the visitor,
     // or they'll retry and create duplicates.
     try {
-      const apiKey = process.env.RESEND_API_KEY;
+      const { env } = await getCloudflareContext({ async: true });
+      const apiKey = env.RESEND_API_KEY;
       if (apiKey) {
         const { Resend } = await import("resend");
         const resend = new Resend(apiKey);
-        const from = process.env.RESEND_FROM ?? "Portafolio <noreply@matheoflores.dev>";
+        const from = env.RESEND_FROM || "Matheo Flores <noreply@matheoflores.dev>";
 
         const adminEmail = renderAdminNotificationEmail({
           name,

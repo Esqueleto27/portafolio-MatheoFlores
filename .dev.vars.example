@@ -1,0 +1,9 @@
+# Copy to .dev.vars for local development (`next dev` and `npm run preview`).
+# Non-secret config (ADMIN_EMAIL, CF_ACCESS_*, RESEND_FROM) lives in
+# wrangler.jsonc "vars"; anything here overrides it locally.
+NEXTJS_ENV=development
+
+# Optional locally — without it the contact form still saves to D1, it just
+# doesn't send the notification emails. In production:
+#   npx wrangler secret put RESEND_API_KEY
+RESEND_API_KEY=

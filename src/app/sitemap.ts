@@ -3,6 +3,10 @@ import { getProjects } from "@/lib/data";
 import { SITE_URL as BASE } from "@/lib/seo";
 const LOCALES = ["es", "en"] as const;
 
+// Lists projects straight from D1 — rendered per request, not at build
+// time, so new projects appear without a redeploy.
+export const dynamic = "force-dynamic";
+
 const STATIC_PATHS = ["/", "/projects", "/about", "/contact"];
 
 // hreflang alternates per entry — tells Google the /es and /en versions

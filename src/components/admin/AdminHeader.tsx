@@ -1,21 +1,11 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
+// Cloudflare Access endpoint — ends the Access session for this domain.
+// A plain <a>, not <Link>: it's served by Cloudflare, not by this app.
+const ACCESS_LOGOUT_URL = "/cdn-cgi/access/logout";
+
 export function AdminHeader() {
-  const router = useRouter();
-  const [loggingOut, setLoggingOut] = useState(false);
-
-  async function handleLogout() {
-    setLoggingOut(true);
-    await signOut({ redirect: false });
-    router.replace("/login");
-  }
-
   return (
     <header className="h-14 border-b border-hair px-[clamp(20px,3vw,40px)] flex items-center justify-between bg-bg sticky top-0 z-10">
       <Link href="/admin" className="flex items-center gap-2.5 no-underline">
@@ -44,14 +34,11 @@ export function AdminHeader() {
 
         <ThemeToggle className="w-[30px] h-[30px] flex items-center justify-center rounded-lg border border-hair bg-fill text-muted cursor-pointer" />
 
-        <button
-          onClick={handleLogout}
-          disabled={loggingOut}
+        <a
+          href={ACCESS_LOGOUT_URL}
           aria-label="Cerrar sesión"
           title="Cerrar sesión"
-          className={`w-[30px] h-[30px] flex items-center justify-center rounded-lg border border-hair bg-fill text-muted transition-colors hover:text-text hover:border-soft focus-visible:text-text focus-visible:border-soft ${
-            loggingOut ? "cursor-default opacity-60" : "cursor-pointer"
-          }`}
+          className="w-[30px] h-[30px] flex items-center justify-center rounded-lg border border-hair bg-fill text-muted transition-colors hover:text-text hover:border-soft focus-visible:text-text focus-visible:border-soft"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path
@@ -62,7 +49,7 @@ export function AdminHeader() {
               strokeLinejoin="round"
             />
           </svg>
-        </button>
+        </a>
       </div>
     </header>
   );

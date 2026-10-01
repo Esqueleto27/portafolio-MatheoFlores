@@ -24,8 +24,11 @@
 # production
 /build
 
-# admin-uploaded project images (local disk storage, not committed)
-/public/uploads/
+# cloudflare / opennext
+/.open-next/
+/.wrangler/
+.dev.vars*
+!.dev.vars.example
 
 # misc
 .DS_Store
@@ -40,9 +43,6 @@ yarn-error.log*
 # env files (the .example file is tracked as deploy documentation)
 .env*
 !.env*.example
-
-# vercel
-.vercel
 
 # Claude Code session files (memory, launch config)
 .claude/

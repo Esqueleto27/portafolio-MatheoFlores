@@ -1,0 +1,47 @@
+name: CI / Deploy
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npx opennextjs-cloudflare build
+
+  # Off until the repo variable CLOUDFLARE_DEPLOY is set to "true", together
+  # with the secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID
+  # (Settings → Secrets and variables → Actions).
+  deploy:
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && vars.CLOUDFLARE_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Migrations first: new code may depend on new columns, and D1
+      # migrations here are additive.
+      - run: npm run db:migrate:remote
+      - run: npm run deploy

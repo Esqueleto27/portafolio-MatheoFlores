@@ -1,8 +1,10 @@
-import { unstable_cache } from "next/cache";
-import { prisma } from "./prisma";
+import { cache } from "react";
+import { asc, desc, eq } from "drizzle-orm";
+import { getDb } from "@/db";
+import { proyectos, servicios, mensajesContacto } from "@/db/schema";
+import type { Proyecto, Servicio, MensajeContacto } from "@/db/schema";
 import { requireAdmin } from "./require-admin";
-import type { Project, Service, Feature, Locale } from "./types";
-import type { Proyecto, Servicio, MensajeContacto } from "@prisma/client";
+import type { Project, Service, Locale } from "./types";
 
 export interface ContactMessage {
   id: string;
@@ -50,7 +52,7 @@ function mapProyecto(p: Proyecto): Project {
     challenges_en: p.challengesEn ?? undefined,
     results_es: p.resultsEs ?? undefined,
     results_en: p.resultsEn ?? undefined,
-    features: (p.features as unknown as Feature[]) ?? undefined,
+    features: p.features,
     technologies: p.technologies,
     live_url: p.liveUrl ?? undefined,
     github_url: p.githubUrl ?? undefined,
@@ -76,89 +78,78 @@ function mapMensaje(m: MensajeContacto): ContactMessage {
   };
 }
 
-// Public read paths are cached at the data layer — independent of whether
-// the route itself renders statically — and invalidated by admin-actions.ts
-// via updateTag() on every write, so edits show up immediately.
-export const getServices = unstable_cache(
-  async (): Promise<Service[]> => {
-    const rows = await prisma.servicio.findMany({ orderBy: { order: "asc" } });
-    return rows.map(mapServicio);
-  },
-  ["services"],
-  { tags: ["services"], revalidate: 3600 }
-);
+// D1 is read on every request (the pages that call these are
+// force-dynamic), so admin edits show up immediately with no cache to
+// invalidate. React's cache() only dedupes calls within one render — e.g.
+// generateMetadata and the page both asking for the same project.
+export const getServices = cache(async (): Promise<Service[]> => {
+  const db = await getDb();
+  const rows = await db.select().from(servicios).orderBy(asc(servicios.order));
+  return rows.map(mapServicio);
+});
 
-export const getProjects = unstable_cache(
-  async (): Promise<Project[]> => {
-    const rows = await prisma.proyecto.findMany({ orderBy: { createdAt: "desc" } });
-    return rows.map(mapProyecto);
-  },
-  ["projects"],
-  { tags: ["projects"], revalidate: 3600 }
-);
+export const getProjects = cache(async (): Promise<Project[]> => {
+  const db = await getDb();
+  const rows = await db.select().from(proyectos).orderBy(desc(proyectos.createdAt));
+  return rows.map(mapProyecto);
+});
 
-export const getFeaturedProjects = unstable_cache(
-  async (): Promise<Project[]> => {
-    const rows = await prisma.proyecto.findMany({
-      where: { featured: true },
-      orderBy: { createdAt: "desc" },
-    });
-    return rows.map(mapProyecto);
-  },
-  ["featured-projects"],
-  { tags: ["projects"], revalidate: 3600 }
-);
+export const getFeaturedProjects = cache(async (): Promise<Project[]> => {
+  const db = await getDb();
+  const rows = await db
+    .select()
+    .from(proyectos)
+    .where(eq(proyectos.featured, true))
+    .orderBy(desc(proyectos.createdAt));
+  return rows.map(mapProyecto);
+});
 
-// Admin needs to see writes immediately, so these stay uncached.
 export async function getProjectById(id: string): Promise<Project | undefined> {
-  const row = await prisma.proyecto.findUnique({ where: { id } });
+  const db = await getDb();
+  const row = await db.query.proyectos.findFirst({ where: eq(proyectos.id, id) });
   return row ? mapProyecto(row) : undefined;
 }
 
 export async function getServiceById(id: string): Promise<Service | undefined> {
-  const row = await prisma.servicio.findUnique({ where: { id } });
+  const db = await getDb();
+  const row = await db.query.servicios.findFirst({ where: eq(servicios.id, id) });
   return row ? mapServicio(row) : undefined;
 }
 
-export const getProjectBySlug = unstable_cache(
-  async (slug: string): Promise<Project | undefined> => {
-    const row = await prisma.proyecto.findUnique({ where: { slug } });
-    return row ? mapProyecto(row) : undefined;
-  },
-  ["project-by-slug"],
-  { tags: ["projects"], revalidate: 3600 }
-);
+export const getProjectBySlug = cache(async (slug: string): Promise<Project | undefined> => {
+  const db = await getDb();
+  const row = await db.query.proyectos.findFirst({ where: eq(proyectos.slug, slug) });
+  return row ? mapProyecto(row) : undefined;
+});
 
-export const getServiceName = unstable_cache(
-  async (id: string, locale: Locale): Promise<string> => {
-    const row = await prisma.servicio.findUnique({ where: { id } });
-    if (!row) return id;
-    return locale === "en" ? row.nameEn : row.nameEs;
-  },
-  ["service-name"],
-  { tags: ["services"], revalidate: 3600 }
-);
+export const getServiceName = cache(async (id: string, locale: Locale): Promise<string> => {
+  const service = (await getServices()).find((s) => s.id === id);
+  if (!service) return id;
+  return locale === "en" ? service.name_en : service.name_es;
+});
 
 export async function getMessages(): Promise<ContactMessage[]> {
   // Re-validates the caller's session on every call — this is the real
   // access-control boundary, not the UI.
   await requireAdmin();
-  const rows = await prisma.mensajeContacto.findMany({ orderBy: { createdAt: "desc" } });
+  const db = await getDb();
+  const rows = await db.select().from(mensajesContacto).orderBy(desc(mensajesContacto.createdAt));
   return rows.map(mapMensaje);
 }
 
 export async function createMessage(
   msg: Omit<ContactMessage, "id" | "created_at" | "status">
 ): Promise<ContactMessage | null> {
-  const row = await prisma.mensajeContacto.create({
-    data: {
+  const db = await getDb();
+  const [row] = await db
+    .insert(mensajesContacto)
+    .values({
       name: msg.name,
       email: msg.email,
       serviceId: msg.service_id,
-      timeline: msg.timeline as "urgent" | "month" | "no_rush" | "exploring",
+      timeline: msg.timeline as MensajeContacto["timeline"],
       message: msg.message,
-      status: "pendiente",
-    },
-  });
-  return mapMensaje(row);
+    })
+    .returning();
+  return row ? mapMensaje(row) : null;
 }

@@ -5,7 +5,9 @@ import { ContactForm } from "./ContactForm";
 import { buildAlternates } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 
-export const revalidate = 3600;
+// Reads D1 on every request: admin edits show up immediately, and the
+// build never needs database access.
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

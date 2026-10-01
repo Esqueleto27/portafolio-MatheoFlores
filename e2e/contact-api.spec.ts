@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test";
 // Rate limiting is checked first in the handler (before body parsing), so
 // these requests never reach the point of writing to the database.
 //
-// .serial + ordering matters: the rate limit (3 req/15min) is shared by
+// .serial + ordering matters: the rate limit (3 req/min) is shared by
 // IP across all requests this file makes, so the budget-exhausting test
 // must run last or it starves the validation checks above it.
 test.describe.serial("POST /api/contact", () => {

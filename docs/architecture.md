@@ -1,5 +1,11 @@
 # architecture.md — Portafolio de Matheo Flores
 
+> ⚠️ **Stack técnico reemplazado (2026-10-01).** Las secciones 1–3 describen
+> el plan original (Supabase + Vercel), que ya no aplica. El sitio corre
+> sobre Cloudflare Workers (OpenNext) + D1 + Drizzle + R2 + Cloudflare
+> Access — ver `README.md`. El modelo de datos y las decisiones de producto
+> (contenido bilingüe manual, dark por defecto, etc.) siguen vigentes.
+
 > **Fase 4 de 6 — Arquitectura técnica.** Este documento define *cómo se
 > construye* la web: stack, servicios externos y decisiones técnicas. Deriva
 > de `business.md` (por qué), `requirements.md` (qué) y `design.md` (cómo se

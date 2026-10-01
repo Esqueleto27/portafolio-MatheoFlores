@@ -24,7 +24,7 @@ test.describe("public site smoke flow", () => {
     await expect(page.getByText("Este campo es obligatorio").first()).toBeVisible();
 
     // Fill valid data. The actual network call is mocked so this test
-    // doesn't write a real row into the contact_messages table.
+    // doesn't write a real row into the mensajes_contacto table.
     await page.route("**/api/contact", async (route) => {
       await route.fulfill({ status: 200, json: { success: true } });
     });
@@ -39,11 +39,11 @@ test.describe("public site smoke flow", () => {
     await expect(page).toHaveURL(/\/es\/thank-you/);
   });
 
-  test("admin routes redirect to login when signed out", async ({ page }) => {
+  test("admin routes are closed without Cloudflare Access", async ({ page }) => {
     // The admin area lives outside the locale prefixes (/admin, not
-    // /es/admin) — the proxy middleware must bounce anonymous visitors
-    // to /login before anything renders.
-    await page.goto("/admin");
-    await expect(page).toHaveURL(/\/login/);
+    // /es/admin). In production Cloudflare Access sits in front of it; a
+    // request that didn't go through Access must be refused outright.
+    const res = await page.goto("/admin");
+    expect(res?.status()).toBe(403);
   });
 });

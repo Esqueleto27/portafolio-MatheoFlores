@@ -1,8 +1,10 @@
-import { redirect } from "next/navigation";
+import { notFound, unstable_rethrow } from "next/navigation";
 import type { Metadata } from "next";
-import { auth } from "@/auth";
-import { isAdminEmail } from "@/lib/admin-email";
+import { requireAdmin } from "@/lib/require-admin";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+
+// Every admin page reads D1 and the Access JWT of the current request.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -13,12 +15,14 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-
-  // Same check as the proxy — being signed in is not enough, only
-  // ADMIN_EMAIL may see the panel. Kept here as defense in depth.
-  if (!isAdminEmail(session?.user?.email)) {
-    redirect("/login");
+  // Verifies the Cloudflare Access JWT (signature, audience, ADMIN_EMAIL).
+  // There's no login page to send anyone to — Access handles sign-in
+  // before the request gets here, so a failure means "not for you".
+  try {
+    await requireAdmin();
+  } catch (err) {
+    unstable_rethrow(err);
+    notFound();
   }
 
   return (

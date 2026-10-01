@@ -1,0 +1,67 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "matheo-flores-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": { "enabled": true },
+
+  // Cloudflare Access only guards the custom domain, so workers.dev and
+  // per-version preview URLs would serve /admin without it. requireAdmin()
+  // still rejects requests without a valid Access JWT there, but turn the
+  // extra hostnames off once the custom domain below is live.
+  "workers_dev": true,
+  "preview_urls": false,
+
+  // Uncomment once the matheoflores.dev zone is in this Cloudflare account;
+  // `npm run deploy` then provisions DNS + certificate by itself.
+  // "routes": [
+  //   { "pattern": "matheoflores.dev", "custom_domain": true },
+  //   { "pattern": "www.matheoflores.dev", "custom_domain": true }
+  // ],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "matheo-flores-db",
+      // Thexify Studio account (d77e905a…). Local dev uses .wrangler state.
+      "database_id": "42b47af0-3cde-4696-84a7-6e9829ab8f46",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      // Admin-uploaded project images. Private bucket — served through
+      // /api/media/[...key], so no public bucket domain is needed.
+      "binding": "PHOTOS",
+      "bucket_name": "matheo-flores-photos"
+    }
+  ],
+  // next/image optimization on Workers (resize + WebP/AVIF).
+  "images": { "binding": "IMAGES" },
+  "ratelimits": [
+    {
+      // Contact form: 3 submissions per minute per IP.
+      "name": "CONTACT_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 3, "period": 60 }
+    }
+  ],
+
+  // Not secrets — safe to commit. Secrets (RESEND_API_KEY) go through
+  // `npx wrangler secret put`, and locally through .dev.vars.
+  "vars": {
+    // Only this email may use /admin, even if the Access policy allows more.
+    "ADMIN_EMAIL": "matheofloresloor@gmail.com",
+    // Zero Trust → Settings → Custom Pages → team domain, e.g.
+    // "matheo.cloudflareaccess.com". Empty = /admin is closed in production.
+    "CF_ACCESS_TEAM_DOMAIN": "",
+    // Application Audience (AUD) tag of the /admin Access application.
+    "CF_ACCESS_AUD": "",
+    "RESEND_FROM": "Matheo Flores <noreply@matheoflores.dev>"
+  }
+}

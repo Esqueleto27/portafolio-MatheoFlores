@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 
-// Catches errors in /admin, /login, /forgot — the Spanish-only area outside
+// Catches errors in /admin — the Spanish-only area outside
 // the /es, /en locale routes, so no next-intl here (matches src/app/not-found.tsx).
 export default function RootError({
   error,

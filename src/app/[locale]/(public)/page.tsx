@@ -12,7 +12,9 @@ import { routing } from "@/i18n/routing";
 // Data only changes via the admin panel, which already calls
 // revalidatePath on every write — this just avoids hitting the
 // database on every request in between.
-export const revalidate = 3600;
+// Reads D1 on every request: admin edits show up immediately, and the
+// build never needs database access.
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

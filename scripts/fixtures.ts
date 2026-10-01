@@ -1,9 +1,6 @@
-// Shared fixture content used by both prisma/seed.ts (full local-dev
-// seed, run manually) and prisma/bootstrap.ts (auto-run on every boot,
-// only fills the Servicio table when it's empty). Mirrors what used to
-// live in supabase/seed.sql before the migration away from Supabase.
-// The real production content (Servicios/Proyectos/Mensajes) that was
-// live in Supabase is NOT in this file and must be migrated separately.
+// Demo content for local development. SERVICIOS also ships to production
+// via migrations/0001_seed_servicios.sql (keep the two in sync if you edit
+// the defaults here); PROYECTOS is local-only — see build-demo-seed.ts.
 
 export const SERVICIOS = [
   {

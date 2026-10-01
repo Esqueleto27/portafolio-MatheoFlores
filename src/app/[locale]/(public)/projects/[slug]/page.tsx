@@ -5,9 +5,8 @@ import { getLocale, setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ServicePill } from "@/components/ui/Badge";
-import { getProjectBySlug, getServiceName, getProjects } from "@/lib/data";
+import { getProjectBySlug, getServiceName } from "@/lib/data";
 import type { Project, Locale } from "@/lib/types";
-import { routing } from "@/i18n/routing";
 import { BrowserFrame, PhoneFrame } from "@/components/project-detail/DeviceFrames";
 import { BeforeAfterSlider } from "@/components/project-detail/BeforeAfterSlider";
 import { DescriptionHeader } from "@/components/project-detail/DescriptionHeader";
@@ -19,14 +18,9 @@ import { LinksSection } from "@/components/project-detail/LinksSection";
 import { DemoNotice } from "@/components/project-detail/DemoNotice";
 import { buildAlternates, SITE_URL } from "@/lib/seo";
 
-export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  const projects = await getProjects();
-  return routing.locales.flatMap((locale) =>
-    projects.map((project) => ({ locale, slug: project.slug }))
-  );
-}
+// Reads D1 on every request: admin edits show up immediately, and the
+// build never needs database access.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

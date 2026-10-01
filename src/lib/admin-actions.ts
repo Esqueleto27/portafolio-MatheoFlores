@@ -1,16 +1,17 @@
 "use server";
 
-import { revalidatePath, updateTag } from "next/cache";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { prisma } from "./prisma";
+import { revalidatePath } from "next/cache";
+import { eq } from "drizzle-orm";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getDb } from "@/db";
+import { proyectos, servicios, mensajesContacto, type NewProyecto } from "@/db/schema";
 import { requireAdmin } from "./require-admin";
+import { mediaUrl } from "./media";
 import type { Project, Service } from "./types";
 import type { ContactMessage } from "./data";
-import type { Prisma } from "@prisma/client";
 
-function toProyectoData(project: Partial<Omit<Project, "id">>): Prisma.ProyectoUncheckedUpdateInput {
-  const data: Prisma.ProyectoUncheckedUpdateInput = {};
+function toProyectoData(project: Partial<Omit<Project, "id">>): Partial<NewProyecto> {
+  const data: Partial<NewProyecto> = {};
   if (project.slug !== undefined) data.slug = project.slug;
   if (project.category !== undefined) data.category = project.category;
   if (project.service_id !== undefined) data.serviceId = project.service_id;
@@ -31,8 +32,7 @@ function toProyectoData(project: Partial<Omit<Project, "id">>): Prisma.ProyectoU
   if (project.challenges_en !== undefined) data.challengesEn = project.challenges_en || null;
   if (project.results_es !== undefined) data.resultsEs = project.results_es || null;
   if (project.results_en !== undefined) data.resultsEn = project.results_en || null;
-  if (project.features !== undefined)
-    data.features = project.features as unknown as Prisma.InputJsonValue;
+  if (project.features !== undefined) data.features = project.features;
   if (project.technologies !== undefined) data.technologies = project.technologies;
   if (project.live_url !== undefined) data.liveUrl = project.live_url || null;
   if (project.github_url !== undefined) data.githubUrl = project.github_url || null;
@@ -48,70 +48,66 @@ function toProyectoData(project: Partial<Omit<Project, "id">>): Prisma.ProyectoU
 
 export async function createProjectAction(project: Omit<Project, "id">) {
   await requireAdmin();
-  await prisma.proyecto.create({
-    data: toProyectoData(project) as Prisma.ProyectoUncheckedCreateInput,
-  });
-  updateTag("projects");
+  const db = await getDb();
+  await db.insert(proyectos).values(toProyectoData(project) as NewProyecto);
   revalidatePath("/", "layout");
 }
 
 export async function updateProjectAction(id: string, updates: Partial<Project>) {
   await requireAdmin();
-  await prisma.proyecto.update({ where: { id }, data: toProyectoData(updates) });
-  updateTag("projects");
+  const db = await getDb();
+  await db.update(proyectos).set(toProyectoData(updates)).where(eq(proyectos.id, id));
   revalidatePath("/", "layout");
 }
 
 export async function deleteProjectAction(id: string) {
   await requireAdmin();
-  await prisma.proyecto.delete({ where: { id } });
-  updateTag("projects");
+  const db = await getDb();
+  await db.delete(proyectos).where(eq(proyectos.id, id));
   revalidatePath("/", "layout");
 }
 
 export async function createServiceAction(service: Service) {
   await requireAdmin();
-  await prisma.servicio.create({
-    data: {
-      id: service.id,
-      nameEs: service.name_es,
-      nameEn: service.name_en,
-      descriptionEs: service.description_es,
-      descriptionEn: service.description_en,
-      order: service.order,
-    },
+  const db = await getDb();
+  await db.insert(servicios).values({
+    id: service.id,
+    nameEs: service.name_es,
+    nameEn: service.name_en,
+    descriptionEs: service.description_es,
+    descriptionEn: service.description_en,
+    order: service.order,
   });
-  updateTag("services");
   revalidatePath("/", "layout");
 }
 
 export async function updateServiceAction(id: string, updates: Partial<Service>) {
   await requireAdmin();
-  await prisma.servicio.update({
-    where: { id },
-    data: {
+  const db = await getDb();
+  await db
+    .update(servicios)
+    .set({
       ...(updates.name_es !== undefined && { nameEs: updates.name_es }),
       ...(updates.name_en !== undefined && { nameEn: updates.name_en }),
       ...(updates.description_es !== undefined && { descriptionEs: updates.description_es }),
       ...(updates.description_en !== undefined && { descriptionEn: updates.description_en }),
       ...(updates.order !== undefined && { order: updates.order }),
-    },
-  });
-  updateTag("services");
+    })
+    .where(eq(servicios.id, id));
   revalidatePath("/", "layout");
 }
 
 export async function deleteServiceAction(id: string) {
   await requireAdmin();
-  await prisma.servicio.delete({ where: { id } });
-  updateTag("services");
+  const db = await getDb();
+  await db.delete(servicios).where(eq(servicios.id, id));
   revalidatePath("/", "layout");
 }
 
 export async function reorderServiceAction(id: string, newOrder: number) {
   await requireAdmin();
-  await prisma.servicio.update({ where: { id }, data: { order: newOrder } });
-  updateTag("services");
+  const db = await getDb();
+  await db.update(servicios).set({ order: newOrder }).where(eq(servicios.id, id));
   revalidatePath("/", "layout");
 }
 
@@ -122,9 +118,9 @@ const ALLOWED_IMAGE_TYPES: Record<string, string> = {
 };
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 
-// Writes to the local filesystem under public/uploads — this assumes a
-// persistent disk (the VPS this app is deployed on), not ephemeral
-// serverless storage. Served directly by Next.js as a static public asset.
+// Stored in the private R2 bucket and served same-origin by
+// /api/media/[...key]. Keys are unique per upload, so that route can cache
+// them forever.
 export async function uploadImageAction(formData: FormData): Promise<string> {
   await requireAdmin();
   const file = formData.get("file") as File;
@@ -133,14 +129,14 @@ export async function uploadImageAction(formData: FormData): Promise<string> {
   const ext = ALLOWED_IMAGE_TYPES[file.type];
   if (!ext) throw new Error("Formato no permitido. Usa JPG, PNG o WebP.");
 
-  const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "projects");
-  await mkdir(uploadDir, { recursive: true });
+  const key = `projects/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+  const { env } = await getCloudflareContext({ async: true });
+  // arrayBuffer(), not file.stream(): R2 rejects streams of unknown length.
+  await env.PHOTOS.put(key, await file.arrayBuffer(), {
+    httpMetadata: { contentType: file.type },
+  });
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(uploadDir, filename), buffer);
-
-  return `/uploads/projects/${filename}`;
+  return mediaUrl(key);
 }
 
 export async function updateMessageStatusAction(
@@ -151,11 +147,17 @@ export async function updateMessageStatusAction(
   // No revalidatePath here: messages never appear on public pages, so
   // purging the whole site's cache on every toggle/delete is pure waste —
   // the admin routes are force-dynamic and re-render on their own.
-  const row = await prisma.mensajeContacto.update({ where: { id }, data: { status } });
-  return { status: row.status };
+  const db = await getDb();
+  const [row] = await db
+    .update(mensajesContacto)
+    .set({ status })
+    .where(eq(mensajesContacto.id, id))
+    .returning({ status: mensajesContacto.status });
+  return row ?? null;
 }
 
 export async function deleteMessageAction(id: string) {
   await requireAdmin();
-  await prisma.mensajeContacto.delete({ where: { id } });
+  const db = await getDb();
+  await db.delete(mensajesContacto).where(eq(mensajesContacto.id, id));
 }
